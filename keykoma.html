@@ -49,10 +49,9 @@ body[data-skin="alu"] .k{box-shadow:inset 0 0 0 1.5px #2B3036,0 2px 0 var(--key-
 body[data-skin="alu"] .k.lit,body[data-skin="alu"] .k[data-mod].on{box-shadow:inset 0 0 0 1.5px #000}
 body[data-skin="gameboy"] .lcd{border:9px solid #55546A;border-radius:8px 8px 30px 8px;box-shadow:inset 0 0 0 2px #7F9C0C}
 body[data-skin="gameboy"] .lcd-row{opacity:.85}
-body[data-skin="gameboy"] .brand b{color:#33339A;font-style:italic}
 body[data-skin="tube"] .lcd{box-shadow:inset 0 0 0 1px var(--line),inset 0 0 30px rgba(255,140,40,.15)!important}
 body[data-skin="piano"] .kbwrap{box-shadow:inset 0 0 0 1px #2A2A2D,inset 0 6px 0 #8E1024}
-body[data-skin="piano"] :is(.brand b,.pad .nm,.today .nm,.card h2,.sh-name,.cand .nm,.sk){font-weight:300;letter-spacing:.06em}
+body[data-skin="piano"] :is(.pad .nm,.today .nm,.card h2,.sh-name,.cand .nm,.sk){font-weight:300;letter-spacing:.06em}
 body[data-skin="piano"] .lcd input{font-weight:300;letter-spacing:.04em}
 body[data-skin="piano"] .cmb{font-weight:400;letter-spacing:.04em}
 body[data-skin="console"] .k[data-mod]{box-shadow:0 2px 0 var(--key-edge),inset 0 -3px 0 var(--mc,transparent)}
@@ -73,7 +72,8 @@ button:disabled{opacity:.35;cursor:default}
 /* header */
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{display:flex;flex-direction:column;min-width:0}
-.brand b{font-family:var(--f-disp);font-weight:900;font-size:18px;line-height:1.3;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* アプリ名は機材の刻印風：細めの文字で字間を広く。どのカラーでも同じ */
+.brand b{font-family:"Zen Kaku Gothic New","Hiragino Sans",sans-serif;font-weight:400;font-size:15px;line-height:1.4;letter-spacing:.32em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand small{font-family:var(--f-key);font-size:10px;color:var(--sub);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
 .skinbtn{display:flex;align-items:center;gap:7px;font-size:12px;padding:5px 10px 5px 6px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);white-space:nowrap}
 .skinbtn svg{width:18px;height:18px}
@@ -246,7 +246,7 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
   .app{grid-template-columns:minmax(220px,.55fr) minmax(0,2fr);column-gap:14px;
     padding-left:calc(68px + env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
   .tabbar{width:calc(58px + env(safe-area-inset-left,0px));padding-left:calc(6px + env(safe-area-inset-left,0px));padding-right:6px}
-  .brand b{font-size:15px}
+  .brand b{font-size:13px;letter-spacing:.14em}
   .lcd input{font-size:16px}
   .kb{--kh:clamp(30px,10.5vh,52px);--kf:12px}
   .kbwrap{padding:7px} .kr{gap:4px} .kb{gap:4px}
@@ -257,7 +257,7 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
 
 <div class="app" id="app">
   <header class="top">
-    <div class="brand"><b>DAWショートカット辞典</b><small id="appName">Logic Pro 12</small></div>
+    <div class="brand"><b>DAW ショートカット辞典</b><small id="appName">Logic Pro 12</small></div>
     <button class="skinbtn" id="setBtn" aria-label="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3v18M12 3v18M18 3v18"/><rect x="3.5" y="13" width="5" height="3.5" rx="1" fill="currentColor"/><rect x="9.5" y="6" width="5" height="3.5" rx="1" fill="currentColor"/><rect x="15.5" y="10" width="5" height="3.5" rx="1" fill="currentColor"/></svg><span>設定</span></button>
   </header>
 
