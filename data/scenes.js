@@ -1,7 +1,7 @@
 // 場面（やりたいこと）の一覧。どのDAWでも共通で使う
 // basic は各ソフトのデータで basic:1 が付いたものを集める（もとの場面にも出る）
 window.KK_SCENES=[
- {id:'basic',code:'BASIC',name:'基本',feature:1},
+ {id:'basic',code:'BASIC',name:'基本'},
  {id:'rec',code:'REC',name:'録音する'},
  {id:'play',code:'PLAY',name:'再生・移動する'},
  {id:'range',code:'CYCLE',name:'サイクル・マーカー'},

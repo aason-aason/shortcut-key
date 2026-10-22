@@ -154,7 +154,6 @@ section{display:flex;flex-direction:column;gap:10px}
 
 .subpads{display:flex;flex-wrap:wrap;gap:6px}
 .subpad small{font-weight:400;font-size:10.5px;color:var(--sub);margin-left:6px;font-variant-numeric:tabular-nums}
-.subpad.feature{box-shadow:inset 0 0 0 1.5px var(--lit),0 2px 0 var(--key-edge)}
 #branch .seg{align-self:flex-start}
 #branch .seg button{font-family:var(--f-body);font-size:12px;padding:4px 14px}
 .subpad{font-size:13px;font-weight:700;padding:8px 13px;border-radius:calc(var(--kr) + 4px);background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 2px 0 var(--key-edge)}
@@ -572,7 +571,7 @@ const subName=x=>br.by==='win'?sceneName(x):x;
 // 「一覧から探す」は1つの欄。［やりたいこと｜画面］の切りかえと、名前だけの札が並ぶ
 function listHTML(){
   const tags=listAxis==='scene'
-    ?SCENES.map(sc=>`<button class="subpad${sc.feature?' feature':''}" data-sc="${sc.id}">${esc(sc.name)}<small>${itemsOf('scene',sc.id).length}</small></button>`)
+    ?SCENES.map(sc=>`<button class="subpad" data-sc="${sc.id}">${esc(sc.name)}<small>${itemsOf('scene',sc.id).length}</small></button>`)
     :APP.groups.map(g=>`<button class="subpad" data-g="${g.id}">${esc(g.name)}<small>${itemsOf('win',g.id).length}</small></button>`);
   return `<div class="seg"><button data-axis="scene" aria-pressed="${listAxis==='scene'}">やりたいこと</button><button data-axis="win" aria-pressed="${listAxis==='win'}">使う画面</button></div>
     <div class="subpads">${tags.join('')}</div>`;
