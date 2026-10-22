@@ -89,6 +89,8 @@ button:disabled{opacity:.35;cursor:default}
 .lcd input{all:unset;font-family:var(--f-lcd);font-size:20px;line-height:1.4;color:var(--lcd-ink);caret-color:var(--lcd-ink);text-shadow:var(--glow);width:100%;min-width:0;position:relative;z-index:1}
 .lcd input::placeholder{color:var(--lcd-dim);text-shadow:none;opacity:1}
 .lcd input::-webkit-search-cancel-button{display:none}
+.lcd-in{display:flex;align-items:center;gap:8px}
+.clr{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-body);font-size:18px;line-height:1;color:var(--lcd-bg);background:var(--lcd-ink);opacity:.75;position:relative;z-index:1;text-align:center}
 .lcd-now{display:flex;align-items:center;gap:10px;min-height:24px;font-size:13px;position:relative;z-index:1;overflow:hidden;white-space:nowrap}
 .lcd-now .nm{overflow:hidden;text-overflow:ellipsis;text-shadow:var(--glow)}
 .lcd-now .dim{color:var(--lcd-dim)}
@@ -254,7 +256,7 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
     <div class="lcdbox">
       <div class="lcd" id="lcd">
         <div class="lcd-row"><span id="lcdMode">SEARCH</span><span id="lcdCount"></span></div>
-        <input id="q" type="search" placeholder="何をしたい？ 例：ミスった" autocomplete="off" aria-label="やりたいことで検索">
+        <div class="lcd-in"><input id="q" type="search" placeholder="何をしたい？ 例：ミスった" autocomplete="off" aria-label="やりたいことで検索"><button class="clr" id="qClear" hidden aria-label="入力を消す">×</button></div>
         <div class="lcd-now" id="lcdNow" aria-live="polite"></div>
         <div class="lcd-mn" id="lcdMn"></div>
       </div>
@@ -542,7 +544,7 @@ function rowHTML(s){
 }
 function renderSearch(typed){
   const q=$('#q').value.trim();
-  $('#resultSec').hidden=!q;$('#branchSec').hidden=!!q;
+  $('#resultSec').hidden=!q;$('#branchSec').hidden=!!q;$('#qClear').hidden=!$('#q').value;
   if(!q){renderBranch();setNow();return}
   const res=search(q);
   $('#resCount').textContent=res.length?`${res.length}件`:'';
@@ -630,6 +632,9 @@ document.addEventListener('click',e=>{
   if(t.id==='scrim'||t.id==='shDone')return closeSheets();
   if(t.id==='skinBtn'){renderSkins();return openPanel('#skinSheet')}
   if(t.dataset.skin){S.skin=t.dataset.skin;save();applySkin();toast((SKINS.find(s=>s.id===S.skin)||{}).name+' に変更しました');return}
+  if(t.id==='qClear'){$('#q').value='';renderSearch(true);return}
+  // 検索画面で「さがす」をもう一度押すと、入力と場面選びを消して最初の画面に戻る
+  if(t.classList.contains('tb')&&t.dataset.v==='search'&&current==='search'){$('#q').value='';br={scene:null,sub:null};renderSearch(true);window.scrollTo({top:0,behavior:'smooth'});return}
   if(t.classList.contains('tb'))return show(t.dataset.v);
   if(t.dataset.l){S.layout=t.dataset.l;save();renderKB();return}
   if(t.closest('#kb')){
