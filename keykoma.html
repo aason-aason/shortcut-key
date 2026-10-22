@@ -141,7 +141,9 @@ section{display:flex;flex-direction:column;gap:10px}
 .crumb{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:13px;color:var(--sub)}
 .crumb button{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 .crumb .here{color:var(--ink);font-weight:700}
-.crumb .fold{flex:1;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;border-radius:var(--r);background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);text-decoration:none;font-size:14px}
+.row .w{display:block;font-size:11px;color:var(--sub);line-height:1.4}
+.fold .here{font-weight:700}
+.fold{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;border-radius:var(--r);background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);text-decoration:none;font-size:14px}
 .fold .ct{font-weight:400;font-size:11.5px;color:var(--sub);margin-left:auto}
 .fold .chev{color:var(--sub);transition:transform .2s}
 .fold[aria-expanded="true"] .chev{transform:rotate(90deg)}
@@ -315,7 +317,7 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
       <div class="datab"><button class="btn" id="expBtn">書き出す</button><button class="btn" id="impBtn">読み込む</button></div>
       <p class="hint">マイリスト・覚えた・メモは、この端末のブラウザに保存されます。別の端末やWeb版に移すときに使います。</p>
     </section>
-    <p class="mock">モックアップ v3。収録は見本の33個です。<br>正式版では Apple 公式ガイドをもとに全部を収録します。</p>
+    <p class="mock">試作版 v4。Apple 公式ユーザガイド「キーコマンドの表」の初期設定のショートカットをすべて収録しています。<br>言いかえ語と覚え方は順に追加中です。</p>
   </main>
 </div>
 
@@ -386,12 +388,18 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const sortMods=m=>ORDER.filter(o=>m.includes(o));
 const sameMods=(a,b)=>sortMods(a).join()===sortMods(b).join();
 const cmbHTML=(mods,key)=>`<span class="cmb">${sortMods(mods).map(m=>`<i class="m ${m}">${MODS[m].sym}</i>`).join('')}${esc(key)}</span>`;
-const pill=s=>`<span class="pill">${cmbHTML(s.mods,s.key)}</span>`;
+const KEYNAME={FwdDel:'Fwd Del',PgUp:'PageUp',PgDn:'PageDown'};
+// ノートパソコンのキーボードでは fn と一緒に押すキー（フルキーボードには専用キーがある）
+const FN={Home:'←',End:'→',PgUp:'↑',PgDn:'↓',FwdDel:'Delete',Enter:'Return'};
+const keyOf=s=>S.layout==='jis'&&s.jk?s.jk:s.key;
+const keyLabel=s=>(s.pad?'テンキー':'')+(KEYNAME[keyOf(s)]||keyOf(s));
+const pill=s=>`<span class="pill">${cmbHTML(s.mods,keyLabel(s))}</span>`;
 const sceneName=id=>(SCENES.find(x=>x.id===id)||{}).name||'';
 function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1600)}
 
 /* ---------- state ---------- */
-let current='search', sel=null, mods=[], probe=null, br={scene:null,sub:null}, brOpen=false, myTab='star', openId=null;
+// br.by: 'scene'（やりたいことから）か 'win'（使う画面から）。null は最初の画面
+let current='search', sel=null, mods=[], probe=null, br={by:null,id:null,sub:null}, folds={scene:false,win:false}, myTab='star', openId=null;
 
 /* ---------- keyboard ---------- */
 const LAYOUTS={
@@ -419,11 +427,13 @@ function kbHTML(){
     return `<button class="k${small?' small':''}" style="flex-grow:${w}" data-key="${esc(k)}">${esc(lab)}</button>`;
   }).join('')}</div>`).join('');
 }
-const lookup=(k,m)=>SC.find(s=>!s.alias&&s.key===k&&sameMods(s.mods,m));
-function paintKB(root,{mods:m,key,dots,probe:p}){
+// 同じキーでも画面によって働きが違うので、当てはまるものを全部返す（並びはガイドの順＝どこでも使うものが先）
+const lookupAll=(k,m)=>SC.filter(s=>!s.pad&&keyOf(s)===k&&sameMods(s.mods,m));
+const lookup=(k,m)=>lookupAll(k,m)[0];
+function paintKB(root,{mods:m,key,dots,probe:p,fn}){
   root.querySelectorAll('.k[data-key]').forEach(b=>{
     const k=b.dataset.key;
-    b.classList.toggle('lit',!!key&&k===key);
+    b.classList.toggle('lit',!!key&&k===key||!!fn&&k==='fn');
     b.classList.toggle('probe',!!p&&k===p);
     b.classList.toggle('has',!!dots&&!!lookup(k,m));
   });
@@ -436,20 +446,24 @@ function renderKB(){
 }
 function paintMain(){
   const s=sel&&BY[sel];
-  paintKB($('#kb'),{mods:s?s.mods:mods,key:s?s.key:null,dots:!s,probe});
-  $('#kbHint').textContent=s?'光っているキーを同時に押します':(mods.length?'印のあるキーに機能があります':'キーをタップすると、その機能がわかります');
+  let key=s&&!s.pad?keyOf(s):null,fn=false;
+  if(key&&FN[key]){fn=true;key=FN[key]}
+  paintKB($('#kb'),{mods:s?s.mods:mods,key,dots:!s,probe,fn});
+  $('#kbHint').textContent=s?(s.pad?'テンキー（数字だけのキーの区画）で押します':fn?`${KEYNAME[s.key]||s.key} キーがないキーボードでは fn と一緒に押します`:'光っているキーを同時に押します'):(mods.length?'印のあるキーに機能があります':'キーをタップすると、その機能がわかります');
 }
 
 /* ---------- LCD ---------- */
 function setNow(){
   const s=sel&&BY[sel];
   const now=$('#lcdNow');
-  if(s)now.innerHTML=`${cmbHTML(s.mods,s.key)}<span class="nm">${esc(s.name)}</span>`;
+  if(s)now.innerHTML=`${cmbHTML(s.mods,keyLabel(s))}<span class="nm">${esc(s.name)}</span>`;
   else if(probe)now.innerHTML=`${cmbHTML(mods,probe)}<span class="dim">初期設定では割り当てなし</span>`;
   else if(mods.length)now.innerHTML=`${cmbHTML(mods,'')}<span class="dim">＋ キーを選ぶ</span>`;
   else now.innerHTML=`<span class="dim">言葉で探すか、下から選ぶ</span>`;
-  $('#lcdMn').textContent=s?(s.mn?'覚え方　'+s.mn:sceneName(s.scene)+' › '+s.sub):'';
-  $('#lcdMode').textContent=s?(br.scene&&!$('#q').value?'SCENE · '+(SCENES.find(x=>x.id===br.scene)||{}).code:'SELECT'):($('#q').value?'SEARCH':'READY');
+  const others=s&&!s.pad?lookupAll(keyOf(s),s.mods).length-1:0;
+  $('#lcdMn').textContent=s?[`［${s.win}］`,s.mn?'覚え方 '+s.mn:'',s.note?s.note:'',others>0?`同じキーで別の働き ${others}件`:''].filter(Boolean).join('　'):'';
+  const code=br.by==='scene'?(SCENES.find(x=>x.id===br.id)||{}).code:br.by==='win'?'WINDOW':'';
+  $('#lcdMode').textContent=s?(code&&!$('#q').value?code:'SELECT'):($('#q').value?'SEARCH':'READY');
   for(const id of ['skStar','skMemo'])$('#'+id).disabled=!s;
   $('#skStar').setAttribute('aria-pressed',!!s&&S.star.includes(sel));
   $('#skMemo').dataset.has=s&&S.memo[sel]?'1':'';
@@ -478,15 +492,16 @@ function search(q){
   const out=[];
   for(const s of SC){
     let sc=0,why='';
-    const raw=s.tags.split(' '),tags=raw.map(norm),nn=norm(s.name);
+    const raw=(s.tags||'').split(' ').filter(Boolean),tags=raw.map(norm),nn=norm(s.name);
     if(nn===nq){sc=100;why='名前が一致'}
     else if(nn.includes(nq)){sc=70;why='名前に含む'}
     tags.forEach((t,i)=>{
       if(t===nq){if(sc<90){sc=90;why='「'+raw[i]+'」で登録'}}
       else if(t.length>1&&(t.includes(nq)||nq.includes(t))){const v=55+Math.min(t.length,nq.length)*3;if(v>sc){sc=v;why='近い言葉：'+raw[i]}}
     });
-    if(want.length&&sameMods(want,s.mods)&&(!keyPart||keyPart===String(s.key).toUpperCase())){sc=Math.max(sc,keyPart?95:40);why='キーの組み合わせ'}
-    else if(!want.length&&nq.length===1&&s.mods.length===0&&keyPart===String(s.key).toUpperCase()){sc=Math.max(sc,80);why='キー '+s.key}
+    const k=String(keyOf(s)).toUpperCase();
+    if(want.length&&sameMods(want,s.mods)&&(!keyPart||keyPart===k)){sc=Math.max(sc,keyPart?95:40);why='キーの組み合わせ'}
+    else if(!want.length&&nq.length===1&&s.mods.length===0&&keyPart===k){sc=Math.max(sc,80);why='キー '+keyLabel(s)}
     if(sc<40&&nq.length>=2){
       const qb=bigrams(nq);let best=0;
       for(const t of [nn,...tags]){const tb=bigrams(t);let c=0;qb.forEach(b=>{if(tb.has(b))c++});best=Math.max(best,c/qb.size)}
@@ -498,7 +513,7 @@ function search(q){
 }
 function rowHTML(s){
   const st=S.star.includes(s.id)?'<span class="st">★</span>':'';
-  return `<button class="row${s.id===sel?' sel':''}" data-id="${s.id}"><span class="nm">${esc(s.name)}${st}</span>${pill(s)}</button>`;
+  return `<button class="row${s.id===sel?' sel':''}" data-id="${s.id}"><span class="nm">${esc(s.name)}${st}<small class="w">${esc(s.win)}</small></span>${pill(s)}</button>`;
 }
 function renderSearch(typed){
   const q=$('#q').value.trim();
@@ -506,7 +521,7 @@ function renderSearch(typed){
   if(!q){renderBranch();setNow();return}
   const res=search(q);
   $('#resCount').textContent=res.length?`${res.length}件`:'';
-  $('#cands').innerHTML=res.slice(0,3).map((r,i)=>`<button class="cand" data-id="${r.s.id}"><span class="rank">${i+1}</span><span><div class="nm">${esc(r.s.name)}</div><div class="why">${esc(r.why)}</div></span>${pill(r.s)}</button>`).join('')||'<div class="empty">見つかりませんでした。別の言い方を試してください。</div>';
+  $('#cands').innerHTML=res.slice(0,3).map((r,i)=>`<button class="cand" data-id="${r.s.id}"><span class="rank">${i+1}</span><span><div class="nm">${esc(r.s.name)}</div><div class="why">${esc(r.why)} · ${esc(r.s.win)}</div></span>${pill(r.s)}</button>`).join('')||'<div class="empty">見つかりませんでした。別の言い方を試してください。</div>';
   const more=res.slice(3);
   $('#moreList').hidden=!more.length;
   $('#moreList').innerHTML=more.map(r=>rowHTML(r.s)).join('');
@@ -516,26 +531,37 @@ function renderSearch(typed){
 }
 
 /* ---------- branch ---------- */
-function itemsOf(scene){return scene==='top'?SC.filter(s=>s.top):SC.filter(s=>s.scene===scene)}
+// 場面から選ぶと「使う画面」で、画面から選ぶと「場面」で、さらに絞り込める
+function itemsOf(by,id){return by==='win'?SC.filter(s=>s.g===id):id==='basic'?SC.filter(s=>s.basic):SC.filter(s=>s.scene===id)}
+const groupName=id=>(APP.groups.find(x=>x.id===id)||{}).name||'';
+const subOf=s=>br.by==='win'?s.scene:s.win;
+const subName=x=>br.by==='win'?sceneName(x):x;
+function foldHTML(kind,title,count,pads){
+  return `<button class="fold" data-fold="${kind}" aria-expanded="${folds[kind]}"><span class="here">${title}</span><span class="ct">${count}</span><span class="chev">▸</span></button>${folds[kind]?`<div class="pads">${pads}</div>`:''}`;
+}
 function renderBranch(){
   const c=$('#crumb'),b=$('#branch');
-  if(!br.scene){
-    c.innerHTML=`<button class="fold" data-fold aria-expanded="${brOpen}"><span class="here">やりたいことから探す</span><span class="ct">${SCENES.length}つの場面</span><span class="chev">▸</span></button>`;
-    const d=new Date(),pool=SC.filter(s=>!s.alias),t=pool[(d.getFullYear()*372+d.getMonth()*31+d.getDate())%pool.length];
-    b.innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
-      ${brOpen?`<div class="pads">${SCENES.map(sc=>`<button class="pad${sc.feature?' feature':''}" data-sc="${sc.id}"><span class="led"></span><span class="code">${sc.code}</span><span class="nm">${esc(sc.name)}</span><span class="ct">${itemsOf(sc.id).length} 個</span></button>`).join('')}</div>`:''}
-      <div class="label">今日の1個 <em>${d.getMonth()+1}月${d.getDate()}日</em></div>
-      <button class="today" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span><span class="mn">${esc(t.mn||sceneName(t.scene)+'ときに使う')}</span></span>${pill(t)}</button>
+  if(!br.by){
+    c.innerHTML='';c.hidden=true;
+    const d=new Date(),pool=SC.filter(s=>s.basic||s.mn),t=pool[(d.getFullYear()*372+d.getMonth()*31+d.getDate())%pool.length];
+    const scenePads=SCENES.map(sc=>`<button class="pad${sc.feature?' feature':''}" data-sc="${sc.id}"><span class="led"></span><span class="code">${sc.code}</span><span class="nm">${esc(sc.name)}</span><span class="ct">${itemsOf('scene',sc.id).length} 個</span></button>`).join('');
+    const winPads=APP.groups.map(g=>`<button class="pad" data-g="${g.id}"><span class="led"></span><span class="nm">${esc(g.name)}</span><span class="ct">${itemsOf('win',g.id).length} 個</span></button>`).join('');
+    b.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">
+      ${foldHTML('scene','やりたいことから探す',`${SCENES.length}つの場面`,scenePads)}
+      ${foldHTML('win','使う画面から探す',`${APP.groups.length}つの画面`,winPads)}
+      <div class="label" style="margin-top:4px">今日の1個 <em>${d.getMonth()+1}月${d.getDate()}日</em></div>
+      <button class="today" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span><span class="mn">${esc(t.mn||t.win+'で使う')}</span></span>${pill(t)}</button>
     </div>`;
     return;
   }
-  const sc=SCENES.find(x=>x.id===br.scene);
-  const items=itemsOf(br.scene);
-  const subs=br.scene==='top'?[]:[...new Set(items.map(s=>s.sub))];
-  c.innerHTML=`<button data-crumb="root">やりたいこと</button><span>›</span>`+(br.sub?`<button data-crumb="scene">${esc(sc.name)}</button><span>›</span><span class="here">${esc(br.sub)}</span>`:`<span class="here">${esc(sc.name)}</span>`);
-  const list=items.filter(s=>!br.sub||s.sub===br.sub);
+  c.hidden=false;
+  const name=br.by==='win'?groupName(br.id):sceneName(br.id);
+  const items=itemsOf(br.by,br.id);
+  const subs=[...new Set(items.map(subOf))];
+  c.innerHTML=`<button data-crumb="root">${br.by==='win'?'使う画面':'やりたいこと'}</button><span>›</span>`+(br.sub?`<button data-crumb="mid">${esc(name)}</button><span>›</span><span class="here">${esc(subName(br.sub))}</span>`:`<span class="here">${esc(name)}</span>`);
+  const list=items.filter(s=>!br.sub||subOf(s)===br.sub);
   b.innerHTML=`<div style="display:flex;flex-direction:column;gap:12px">
-    ${subs.length?`<div class="subpads">${subs.map(x=>`<button class="subpad" data-sub="${esc(x)}" aria-pressed="${x===br.sub}">${esc(x)}</button>`).join('')}</div>`:''}
+    ${subs.length>1?`<div class="subpads">${subs.map(x=>`<button class="subpad" data-sub="${esc(x)}" aria-pressed="${x===br.sub}">${esc(subName(x))}</button>`).join('')}</div>`:''}
     <div class="list">${list.map(rowHTML).join('')}</div></div>`;
 }
 
@@ -592,7 +618,7 @@ document.addEventListener('click',e=>{
   if(t.dataset.skin){S.skin=t.dataset.skin;save();applySkin();toast((SKINS.find(s=>s.id===S.skin)||{}).name+' に変更しました');return}
   if(t.id==='qClear'){$('#q').value='';renderSearch(true);return}
   // 検索画面で「さがす」をもう一度押すと、入力と場面選びを消して最初の画面に戻る
-  if(t.classList.contains('tb')&&t.dataset.v==='search'&&current==='search'){$('#q').value='';br={scene:null,sub:null};renderSearch(true);window.scrollTo({top:0,behavior:'smooth'});return}
+  if(t.classList.contains('tb')&&t.dataset.v==='search'&&current==='search'){$('#q').value='';br={by:null,id:null,sub:null};renderSearch(true);window.scrollTo({top:0,behavior:'smooth'});return}
   if(t.classList.contains('tb'))return show(t.dataset.v);
   if(t.dataset.l){S.layout=t.dataset.l;save();renderKB();return}
   if(t.closest('#kb')){
@@ -604,11 +630,12 @@ document.addEventListener('click',e=>{
       return;
     }
   }
-  if(t.hasAttribute('data-fold')){brOpen=!brOpen;renderBranch();return}
-  if(t.dataset.sc){br={scene:t.dataset.sc,sub:null};renderBranch();return}
+  if(t.dataset.fold){folds[t.dataset.fold]=!folds[t.dataset.fold];renderBranch();return}
+  if(t.dataset.sc){br={by:'scene',id:t.dataset.sc,sub:null};renderBranch();setNow();return}
+  if(t.dataset.g){br={by:'win',id:t.dataset.g,sub:null};renderBranch();setNow();return}
   if(t.dataset.sub!==undefined){br.sub=br.sub===t.dataset.sub?null:t.dataset.sub;renderBranch();return}
-  if(t.dataset.crumb==='root'){br={scene:null,sub:null};renderBranch();return}
-  if(t.dataset.crumb==='scene'){br.sub=null;renderBranch();return}
+  if(t.dataset.crumb==='root'){br={by:null,id:null,sub:null};renderBranch();setNow();return}
+  if(t.dataset.crumb==='mid'){br.sub=null;renderBranch();return}
   if(t.dataset.t){myTab=t.dataset.t;renderMy();return}
   if(t.id==='skStar'){if(!sel)return;const on=!S.star.includes(sel);S.star=on?[sel,...S.star]:S.star.filter(x=>x!==sel);save();setNow();toast(on?'マイリストに追加しました':'マイリストから外しました');if(current==='my')renderMy();return}
   if(t.id==='skMemo'){if(sel)openMemo(sel);return}
@@ -634,6 +661,6 @@ document.addEventListener('keydown',e=>{
 
 applySkin();renderKB();
 $('#appName').textContent=APP.name+' '+APP.version;
-$('#lcdCount').textContent=String(SC.filter(s=>!s.alias).length).padStart(3,'0')+' CMDS';
+$('#lcdCount').textContent=String(SC.length).padStart(3,'0')+' CMDS';
 show('search');
 </script>
