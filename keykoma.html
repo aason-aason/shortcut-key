@@ -151,11 +151,6 @@ section{display:flex;flex-direction:column;gap:10px}
 .crumb button{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 .crumb .here{color:var(--ink);font-weight:700}
 .row .w{display:block;font-size:11px;color:var(--sub);line-height:1.4}
-.fold .here{font-weight:700}
-.fold{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;border-radius:var(--r);background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);text-decoration:none;font-size:14px}
-.fold .ct{font-weight:400;font-size:11.5px;color:var(--sub);margin-left:auto}
-.fold .chev{color:var(--sub);transition:transform .2s}
-.fold[aria-expanded="true"] .chev{transform:rotate(90deg)}
 
 .subpads{display:flex;flex-wrap:wrap;gap:6px}
 .subpad small{font-weight:400;font-size:10.5px;color:var(--sub);margin-left:6px;font-variant-numeric:tabular-nums}
@@ -412,7 +407,7 @@ function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show')
 
 /* ---------- state ---------- */
 // br.by: 'scene'（やりたいことから）か 'win'（使う画面から）。null は最初の画面
-let current='search', sel=null, mods=[], probe=null, br={by:null,id:null,sub:null}, listOpen=true, listAxis='scene', myTab='star', openId=null;
+let current='search', sel=null, mods=[], probe=null, br={by:null,id:null,sub:null}, listAxis='scene', myTab='star', openId=null;
 
 /* ---------- keyboard ---------- */
 const LAYOUTS={
@@ -574,9 +569,8 @@ function itemsOf(by,id){return by==='win'?SC.filter(s=>s.g===id):id==='basic'?SC
 const groupName=id=>(APP.groups.find(x=>x.id===id)||{}).name||'';
 const subOf=s=>br.by==='win'?s.scene:s.win;
 const subName=x=>br.by==='win'?sceneName(x):x;
-// 「一覧から探す」は1つの欄。開くと［やりたいこと｜画面］の切りかえと、名前だけの札が並ぶ
+// 「一覧から探す」は1つの欄。［やりたいこと｜画面］の切りかえと、名前だけの札が並ぶ
 function listHTML(){
-  if(!listOpen)return '';
   const tags=listAxis==='scene'
     ?SCENES.map(sc=>`<button class="subpad${sc.feature?' feature':''}" data-sc="${sc.id}">${esc(sc.name)}<small>${itemsOf('scene',sc.id).length}</small></button>`)
     :APP.groups.map(g=>`<button class="subpad" data-g="${g.id}">${esc(g.name)}<small>${itemsOf('win',g.id).length}</small></button>`);
@@ -589,7 +583,7 @@ function renderBranch(){
     c.innerHTML='';c.hidden=true;
     const t=BY[S.recent[0]];
     b.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">
-      <button class="fold" data-fold aria-expanded="${listOpen}"><span class="here">一覧から探す</span><span class="ct">やりたいこと・使う画面</span><span class="chev">▸</span></button>
+      <div class="label">一覧から探す</div>
       ${listHTML()}
       ${t?`<div class="label" style="margin-top:4px">直前の検索</div>
       <button class="today" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span><span class="mn">${esc(t.mn||t.win+'で使う')}</span></span>${pill(t)}</button>`:''}
@@ -690,7 +684,6 @@ document.addEventListener('click',e=>{
       return;
     }
   }
-  if(t.hasAttribute('data-fold')){listOpen=!listOpen;renderBranch();return}
   if(t.dataset.axis){listAxis=t.dataset.axis;renderBranch();return}
   if(t.dataset.sc){br={by:'scene',id:t.dataset.sc,sub:null};renderBranch();setNow();return}
   if(t.dataset.g){br={by:'win',id:t.dataset.g,sub:null};renderBranch();setNow();return}
