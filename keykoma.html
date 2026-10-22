@@ -583,7 +583,6 @@ function renderBranch(){
     c.innerHTML='';c.hidden=true;
     const t=BY[S.recent[0]];
     b.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">
-      <div class="label">一覧から探す</div>
       ${listHTML()}
       ${t?`<div class="label" style="margin-top:4px">直前の検索</div>
       <button class="today" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span><span class="mn">${esc(t.mn||t.win+'で使う')}</span></span>${pill(t)}</button>`:''}
