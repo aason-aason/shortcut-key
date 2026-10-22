@@ -173,9 +173,11 @@ def main(cache):
                 it['pad'] = 1
             if note:
                 it['note'] = '「コードを編集」ダイアログが開いているとき'
-            ex = EXTRA.get((win, name))
-            if ex:
-                it.update(ex)
+            ex = dict(EXTRA.get((win, name)) or {})
+            # _keep: 自動で振り分けた場面がこの中なら、まとめて指定した場面より優先する
+            if it['scene'] in ex.pop('_keep', ()):
+                ex.pop('scene', None)
+            it.update(ex)
             items.append(it)
     missing = [k for k in list(EXTRA) + list(BASIC) if not any((i['win'], i['name']) == k for i in items)]
     for k in missing:

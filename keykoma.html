@@ -531,6 +531,10 @@ function search(q){
       if(t===nq){if(sc<90){sc=90;why='「'+raw[i]+'」で登録'}}
       else if(t.length>1&&(t.includes(nq)||nq.includes(t))){const v=55+Math.min(t.length,nq.length)*3;if(v>sc){sc=v;why='近い言葉：'+raw[i]}}
     });
+    // 言いかえ語が同じくらい当てはまるときは、機能名にその言葉が入っているほうを上にする
+    if(sc>=55&&sc<100&&nn.includes(nq))sc+=5;
+    // 「基本」に入っているものを少し優先する
+    if(sc>=55&&s.basic)sc+=6;
     const k=String(keyOf(s)).toUpperCase();
     if(want.length&&sameMods(want,s.mods)&&(!keyPart||keyPart===k)){sc=Math.max(sc,keyPart?95:40);why='キーの組み合わせ'}
     else if(!want.length&&nq.length===1&&s.mods.length===0&&keyPart===k){sc=Math.max(sc,80);why='キー '+keyLabel(s)}
