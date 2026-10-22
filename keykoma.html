@@ -249,7 +249,7 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
 
 <div class="app" id="app">
   <header class="top">
-    <div class="brand"><b>DAWショートカット辞典</b><small>Logic Pro 12</small></div>
+    <div class="brand"><b>DAWショートカット辞典</b><small id="appName">Logic Pro 12</small></div>
     <button class="skinbtn" id="skinBtn" aria-label="カラーを選ぶ"><i></i><span id="skinName">自動</span></button>
   </header>
 
@@ -345,6 +345,8 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="data/scenes.js"></script>
+<script src="data/logic-pro.js"></script>
 <script>
 const MODS={ctrl:{sym:'⌃',name:'control'},opt:{sym:'⌥',name:'option'},shift:{sym:'⇧',name:'shift'},cmd:{sym:'⌘',name:'command'}};
 const ORDER=['ctrl','opt','shift','cmd'];
@@ -361,54 +363,11 @@ const SKINS=[
 // v2 で選んでいて今回なくなったカラーは、近いものか「自動」に置きかえる
 const SKIN_MOVED={hc:'alu'};
 
-const SCENES=[
- {id:'top',code:'TOP',name:'よく使うもの',feature:1},
- {id:'rec',code:'REC',name:'録音する'},
- {id:'play',code:'PLAY',name:'再生・移動する'},
- {id:'edit',code:'EDIT',name:'編集する'},
- {id:'midi',code:'MIDI',name:'打ち込む'},
- {id:'mix',code:'MIX',name:'ミックスする'},
- {id:'view',code:'VIEW',name:'画面を切り替える'},
- {id:'track',code:'TRK',name:'トラックを作る'}
-];
+const SCENES=window.KK_SCENES;
 
-// 見本データ（正式版では Apple 公式ガイドから全件を作成）
-const SC=[
- {id:'play',name:'再生／停止',key:'Space',mods:[],scene:'play',sub:'再生・停止',top:1,mn:'一番大きいキー＝一番よく使う操作',tags:'再生 停止 止める 止まる 流す 聴く 聞く 鳴らす プレイ スタート ストップ 一時停止 ポーズ play stop'},
- {id:'rec',name:'録音を開始',key:'R',mods:[],scene:'rec',sub:'始める・止める',top:1,mn:'R ＝ Record',tags:'録音 レコーディング 録る 収録 歌を録る 宅録 録り始め 録音開始 rec record'},
- {id:'recstop',name:'録音を停止',key:'Space',mods:[],scene:'rec',sub:'始める・止める',mn:'再生と同じスペースで止まる',tags:'録音停止 録音を止める 止める ストップ stop',alias:1},
- {id:'home',name:'先頭へ移動',key:'Return',mods:[],scene:'play',sub:'移動',top:1,mn:'Return ＝ 最初に「戻る」',tags:'先頭 最初 頭 頭出し 戻る 始め スタート位置 ゼロ 曲頭 最初から beginning'},
- {id:'barback',name:'1小節戻る',key:',',mods:[],scene:'play',sub:'移動',mn:'キーの「<」の向き＝左へ',tags:'戻る 巻き戻し 小節 前 左 少し戻る リワインド rewind'},
- {id:'barfwd',name:'1小節進む',key:'.',mods:[],scene:'play',sub:'移動',mn:'キーの「>」の向き＝右へ',tags:'進む 早送り 小節 次 右 少し進む フォワード forward'},
- {id:'cycle',name:'サイクル（ループ再生）',key:'C',mods:[],scene:'play',sub:'くり返す',top:1,mn:'C ＝ Cycle',tags:'サイクル ループ 繰り返し くり返し 反復 リピート 何度も 同じところ 区間 cycle loop repeat'},
- {id:'cycleset',name:'選択範囲をサイクル範囲にする',key:'U',mods:['cmd'],scene:'play',sub:'くり返す',mn:'',tags:'サイクル範囲 ループ範囲 ロケータ 区間 範囲指定 locator'},
- {id:'metro',name:'メトロノーム',key:'K',mods:[],scene:'rec',sub:'準備する',top:1,mn:'K ＝ Klick（ドイツ語のクリック）',tags:'メトロノーム クリック テンポ 拍 リズム ガイド カチカチ click metronome'},
- {id:'mute',name:'トラックをミュート',key:'M',mods:[],scene:'mix',sub:'ミュート・ソロ',top:1,mn:'M ＝ Mute',tags:'ミュート 消音 音を消す 黙らせる 鳴らさない 無音 うるさい mute'},
- {id:'solo',name:'トラックをソロ',key:'S',mods:[],scene:'mix',sub:'ミュート・ソロ',top:1,mn:'S ＝ Solo',tags:'ソロ 単独 それだけ聴く 1つだけ 一つだけ 他を消す solo'},
- {id:'mixer',name:'ミキサーを表示',key:'X',mods:[],scene:'mix',sub:'画面',top:1,mn:'X ＝ miXer',tags:'ミキサー ミックス 音量 バランス フェーダー コンソール mixer'},
- {id:'auto',name:'オートメーションを表示',key:'A',mods:[],scene:'mix',sub:'オートメーション',mn:'A ＝ Automation',tags:'オートメーション 自動 音量変化 フェード 線を書く automation'},
- {id:'editor',name:'エディタを表示',key:'E',mods:[],scene:'view',sub:'パネル',mn:'E ＝ Editor',tags:'エディタ 編集画面 下の画面 詳細 editor'},
- {id:'piano',name:'ピアノロールを表示',key:'P',mods:[],scene:'midi',sub:'画面',top:1,mn:'P ＝ Piano roll',tags:'ピアノロール 打ち込み ノート 音符 MIDI 鍵盤 piano roll'},
- {id:'library',name:'ライブラリを表示',key:'Y',mods:[],scene:'view',sub:'パネル',mn:'',tags:'ライブラリ 音色 プリセット 楽器を選ぶ 音を変える サウンド library'},
- {id:'smart',name:'Smart Controls を表示',key:'B',mods:[],scene:'view',sub:'パネル',mn:'',tags:'スマートコントロール つまみ ノブ 音作り エフェクト smart controls'},
- {id:'inspector',name:'インスペクタを表示',key:'I',mods:[],scene:'view',sub:'パネル',mn:'I ＝ Inspector',tags:'インスペクタ 左のパネル 詳細 設定 プロパティ inspector'},
- {id:'zoomfit',name:'選択範囲にズーム',key:'Z',mods:[],scene:'view',sub:'ズーム',mn:'Z ＝ Zoom',tags:'ズーム 拡大 見やすく 寄る フィット 画面に合わせる zoom'},
- {id:'zoomin',name:'横方向に拡大',key:'→',mods:['cmd'],scene:'view',sub:'ズーム',mn:'→ で広げる',tags:'拡大 ズームイン 大きく 横 広げる zoom in'},
- {id:'zoomout',name:'横方向に縮小',key:'←',mods:['cmd'],scene:'view',sub:'ズーム',mn:'← で縮める',tags:'縮小 ズームアウト 小さく 引く 全体を見る zoom out'},
- {id:'tool',name:'ツールメニューを開く',key:'T',mods:[],scene:'edit',sub:'ツール',mn:'T ＝ Tool',tags:'ツール 道具 ハサミ 鉛筆 消しゴム カーソル tool'},
- {id:'undo',name:'元に戻す',key:'Z',mods:['cmd'],scene:'edit',sub:'取り消す',top:1,mn:'Mac共通。どのアプリでも同じ',tags:'元に戻す 戻す 取り消し 取り消す やり直したい 間違えた ミス ミスった 失敗 アンドゥ ひとつ前 undo'},
- {id:'redo',name:'やり直す（取り消しを戻す）',key:'Z',mods:['shift','cmd'],scene:'edit',sub:'取り消す',mn:'元に戻す ＋ ⇧ ＝ 逆向き',tags:'やり直す 戻しすぎ 取り消しを取り消す リドゥ redo'},
- {id:'save',name:'保存',key:'S',mods:['cmd'],scene:'edit',sub:'保存する',top:1,mn:'Mac共通',tags:'保存 セーブ 上書き 残す save'},
- {id:'saveas',name:'別名で保存',key:'S',mods:['shift','cmd'],scene:'edit',sub:'保存する',mn:'保存 ＋ ⇧ ＝ 別の名前で',tags:'別名 名前を付けて保存 コピーを保存 別ファイル save as'},
- {id:'split',name:'再生ヘッドの位置で分割',key:'T',mods:['cmd'],scene:'edit',sub:'切る・つなぐ',top:1,mn:'',tags:'分割 切る カット ハサミ 分ける 切り離す 真っ二つ split cut'},
- {id:'join',name:'リージョンを結合',key:'J',mods:['cmd'],scene:'edit',sub:'切る・つなぐ',mn:'J ＝ Join',tags:'結合 つなげる くっつける まとめる 合体 1つにする join merge'},
- {id:'repeat',name:'リージョンを繰り返す',key:'R',mods:['cmd'],scene:'edit',sub:'増やす・伸ばす',mn:'R ＝ Repeat',tags:'繰り返す リピート 複製 コピー 増やす 並べる repeat'},
- {id:'loopreg',name:'リージョンをループ',key:'L',mods:[],scene:'edit',sub:'増やす・伸ばす',mn:'L ＝ Loop',tags:'ループ 伸ばす 繰り返し リージョン 延長 loop'},
- {id:'quant',name:'クオンタイズ',key:'Q',mods:[],scene:'midi',sub:'タイミング',top:1,mn:'Q ＝ Quantize',tags:'クオンタイズ ずれ ズレ 揃える そろえる タイミング 補正 リズムを直す quantize'},
- {id:'musical',name:'ミュージカルタイピング',key:'K',mods:['cmd'],scene:'midi',sub:'入力',mn:'K ＝ Keyboard',tags:'ミュージカルタイピング キーボードで弾く PCで演奏 鍵盤がない 入力 musical typing'},
- {id:'newtrack',name:'新規トラック',key:'N',mods:['opt','cmd'],scene:'track',sub:'作る',top:1,mn:'N ＝ New',tags:'新規 トラック 追加 作る 増やす 新しい new track'},
- {id:'duptrack',name:'同じ設定でトラックを追加',key:'D',mods:['cmd'],scene:'track',sub:'作る',mn:'D ＝ Duplicate',tags:'複製 同じ設定 コピー トラック 増やす duplicate'}
-];
+// 収録データは data/ フォルダ（ソフトごとに1ファイル）。今は Logic Pro のみ
+const APP=window.KK_APPS[0];
+const SC=APP.items;
 const BY=Object.fromEntries(SC.map(s=>[s.id,s]));
 
 /* ---------- storage ---------- */
@@ -674,6 +633,7 @@ document.addEventListener('keydown',e=>{
 });
 
 applySkin();renderKB();
+$('#appName').textContent=APP.name+' '+APP.version;
 $('#lcdCount').textContent=String(SC.filter(s=>!s.alias).length).padStart(3,'0')+' CMDS';
 show('search');
 </script>

@@ -3,7 +3,9 @@
 Logic Pro のショートカット（キーコマンド）を、スマホで探して「どう押すか」を確かめるWebアプリ。
 
 - モックアップ: https://claude.ai/artifact/MnwuGiqbNtRfeRzSiEnPNL （`keykoma.html` を公開したもの）
-- 本体: `keykoma.html`（1ファイルで完結。外部サービスに依存しない）
+- 本体: `keykoma.html`（画面と仕組み。外部サービスに依存しない）
+- データ: `data/scenes.js`（どのDAWでも共通の場面一覧）、`data/logic-pro.js`（Logic Pro のショートカット）。DAWを足すときは `data/` にファイルを1つ追加する
+- 公式ガイド（support.apple.com）を読むには、クラウド環境のネットワーク設定で `support.apple.com` を許可する必要がある
 
 ## 決まっている方針
 
