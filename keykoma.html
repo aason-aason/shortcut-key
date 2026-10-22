@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Mono:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Zen+Old+Mincho:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Mono:wght@500;600&family=Jost:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&family=Zen+Old+Mincho:wght@400;700;900&display=swap">
 <style>
 /* Layout: portrait = sticky "deck" (LCD search + soft keys + keyboard) above a scrolling branch/results area;
    landscape or wide = left column (LCD + results) beside a large sticky keyboard, tabs become a left rail. */
@@ -32,39 +32,33 @@
   --cmd:#5E8DFF; --opt:#35C77C; --shift:#FFA047; --ctrl:#FF5F8B; --on-mod:#0E1012; --star:#FFC23D; color-scheme:dark}
 
 /* ===== Skins: each sets the whole token set on body, so it wins over the system theme ===== */
-body[data-skin="alu"]{--bg:#E3E5E8;--bg2:#D8DBDF;--panel:#F2F3F4;--ink:#16181B;--sub:#5B616A;--line:#C8CCD1;--key:#FBFBFC;--key-ink:#23262B;--key-edge:#B4B9C0;--tray:#CDD1D6;--lcd-bg:#1A1E19;--lcd-ink:#C8F25C;--lcd-dim:#56683A;--lit:#16181B;--lit-ink:#C8F25C;--cmd:#2D66F5;--opt:#13915A;--shift:#E8710F;--ctrl:#D9335F;--on-mod:#FFFFFF;--star:#D99A0B;color-scheme:light}
-body[data-skin="studio"]{--bg:#101214;--bg2:#0A0B0D;--panel:#191C1F;--ink:#ECEEF0;--sub:#8C939B;--line:#2A2F34;--key:#25292D;--key-ink:#DDE1E5;--key-edge:#07080A;--tray:#0C0E10;--lcd-bg:#0A0D0B;--lcd-ink:#FF9A3C;--lcd-dim:#6A4019;--lit:#F2F4F6;--lit-ink:#101214;--cmd:#5E8DFF;--opt:#35C77C;--shift:#FFA047;--ctrl:#FF5F8B;--on-mod:#0E1012;--star:#FFC23D;color-scheme:dark}
+/* alu = アルミの見た目 + ハイコントラストの読みやすさ（黒い文字・濃い枠・濃いめの修飾キー色） */
+body[data-skin="alu"]{--bg:#E3E5E8;--bg2:#D8DBDF;--panel:#F7F8F9;--ink:#000000;--sub:#2E3338;--line:#7D838B;--key:#FFFFFF;--key-ink:#000000;--key-edge:#6E747C;--tray:#C3C8CE;--lcd-bg:#000000;--lcd-ink:#D4FF4F;--lcd-dim:#7E9A3A;--lit:#000000;--lit-ink:#D4FF4F;--cmd:#0038E0;--opt:#006B2D;--shift:#A84300;--ctrl:#B0003A;--on-mod:#FFFFFF;--star:#A86F00;--bdw:1.5px;color-scheme:light}
 body[data-skin="console"]{--bg:#4B5763;--bg2:#3E4852;--panel:#56636F;--ink:#F1F4F6;--sub:#C3CCD4;--line:#6B7884;--key:#DCE1E5;--key-ink:#1E252B;--key-edge:#29313A;--tray:#353E47;--lcd-bg:#0C1820;--lcd-ink:#7FE3FF;--lcd-dim:#2A5566;--lit:#F7E15A;--lit-ink:#1E252B;--cmd:#3D7BFF;--opt:#1FB86A;--shift:#FF8A1F;--ctrl:#F0436E;--on-mod:#FFFFFF;--star:#F7E15A;color-scheme:dark}
-body[data-skin="score"]{--bg:#FFFFFF;--bg2:#FFFFFF;--panel:#FFFFFF;--ink:#111111;--sub:#6A6A6A;--line:#1A1A1A;--key:#FFFFFF;--key-ink:#111111;--key-edge:#111111;--tray:#FFFFFF;--lcd-bg:#FFFFFF;--lcd-ink:#111111;--lcd-dim:#9A9A9A;--lit:#C8102E;--lit-ink:#FFFFFF;--cmd:#1F4FBF;--opt:#1D7A47;--shift:#C25A0E;--ctrl:#9E1B6B;--on-mod:#FFFFFF;--star:#C8102E;--staff:#E1E1E1;--r:2px;--kr:3px;--glow:none;--scan:none;--f-lcd:"Zen Old Mincho","Hiragino Mincho ProN",serif;--f-body:"Zen Old Mincho","Hiragino Mincho ProN",serif;--f-disp:"Zen Old Mincho","Hiragino Mincho ProN",serif;color-scheme:light}
-body[data-skin="gameboy"]{--bg:#9BBC0F;--bg2:#9BBC0F;--panel:#8BAC0F;--ink:#0F380F;--sub:#306230;--line:#306230;--key:#9BBC0F;--key-ink:#0F380F;--key-edge:#306230;--tray:#8BAC0F;--lcd-bg:#8BAC0F;--lcd-ink:#0F380F;--lcd-dim:#4F7A2A;--lit:#0F380F;--lit-ink:#9BBC0F;--cmd:#306230;--opt:#306230;--shift:#306230;--ctrl:#306230;--on-mod:#9BBC0F;--star:#0F380F;--r:0px;--kr:0px;--bdw:2px;--glow:none;--scan:repeating-linear-gradient(0deg,transparent 0 3px,rgba(15,56,15,.08) 3px 4px);--f-lcd:"DotGothic16",monospace;--f-body:"DotGothic16",monospace;--f-disp:"DotGothic16",monospace;--f-key:"DotGothic16",monospace;color-scheme:light}
-body[data-skin="scope"]{--bg:#050806;--bg2:#000000;--panel:#0A110C;--ink:#BFFFD0;--sub:#5A9A6B;--line:#163A21;--key:#07100A;--key-ink:#8CFFA8;--key-edge:#123020;--tray:#030604;--lcd-bg:#020403;--lcd-ink:#59FF8A;--lcd-dim:#1F6232;--lit:#59FF8A;--lit-ink:#021006;--cmd:#66B3FF;--opt:#B6FF6A;--shift:#FFD25A;--ctrl:#FF6A8E;--on-mod:#021006;--star:#FFD25A;--r:6px;--kr:4px;--glow:0 0 8px rgba(89,255,138,.7);--scan:linear-gradient(rgba(89,255,138,.10) 1px,transparent 1px) 0 0/100% 18px,linear-gradient(90deg,rgba(89,255,138,.10) 1px,transparent 1px) 0 0/18px 100%;--f-lcd:"IBM Plex Mono",monospace;color-scheme:dark}
-body[data-skin="piano"]{--bg:#0B0B0C;--bg2:#18181B;--panel:#141416;--ink:#F4EFE6;--sub:#9C968C;--line:#2A2A2D;--key:#F6F1E7;--key-ink:#1A1A1A;--key-edge:#B9B09F;--tray:#050505;--lcd-bg:#050505;--lcd-ink:#F6F1E7;--lcd-dim:#57524A;--lit:#B3122E;--lit-ink:#FFFFFF;--cmd:#4F7BFF;--opt:#2FB574;--shift:#F08A2A;--ctrl:#E0457B;--on-mod:#FFFFFF;--star:#D9B35A;--r:10px;--kr:4px;--glow:none;--scan:none;--f-disp:"Zen Old Mincho",serif;--f-lcd:"Zen Old Mincho",serif;color-scheme:dark}
+/* GB = グレーの本体、紺の縁取りの中に黄緑の液晶、A/Bボタンの赤紫 */
+body[data-skin="gameboy"]{--bg:#CAC8C2;--bg2:#C0BEB7;--panel:#D8D6D0;--ink:#2B2A35;--sub:#5F5E6B;--line:#A3A19B;--key:#E4E2DC;--key-ink:#2B2A35;--key-edge:#8F8D88;--tray:#B3B1AB;--lcd-bg:#9BBC0F;--lcd-ink:#0F380F;--lcd-dim:#4E7A1E;--lit:#9A2257;--lit-ink:#FFFFFF;--cmd:#33339A;--opt:#2E7A36;--shift:#C2741B;--ctrl:#7048A8;--on-mod:#FFFFFF;--star:#9A2257;--r:8px;--kr:5px;--bdw:1.5px;--glow:none;--scan:repeating-linear-gradient(0deg,transparent 0 2px,rgba(15,56,15,.10) 2px 3px),repeating-linear-gradient(90deg,transparent 0 2px,rgba(15,56,15,.06) 2px 3px);--f-lcd:"DotGothic16",monospace;--f-body:"DotGothic16",monospace;--f-disp:"DotGothic16",monospace;--f-key:"DotGothic16",monospace;color-scheme:light}
+/* piano = 艶のある黒と象牙、赤いフェルト。字は細身で上品なゴシック */
+body[data-skin="piano"]{--bg:#0B0B0C;--bg2:#18181B;--panel:#141416;--ink:#F4EFE6;--sub:#A39D93;--line:#2A2A2D;--key:#F6F1E7;--key-ink:#1A1A1A;--key-edge:#B9B09F;--tray:#050505;--lcd-bg:#050505;--lcd-ink:#F6F1E7;--lcd-dim:#6A655C;--lit:#B3122E;--lit-ink:#FFFFFF;--cmd:#4F7BFF;--opt:#2FB574;--shift:#F08A2A;--ctrl:#E0457B;--on-mod:#FFFFFF;--star:#D9B35A;--r:10px;--kr:4px;--glow:none;--scan:none;--f-body:"Jost","Zen Kaku Gothic New",sans-serif;--f-disp:"Jost","Zen Kaku Gothic New",sans-serif;--f-lcd:"Jost","Zen Kaku Gothic New",sans-serif;--f-key:"Jost","Zen Kaku Gothic New",sans-serif;color-scheme:dark}
 body[data-skin="tube"]{--bg:#161311;--bg2:#0F0D0B;--panel:#1F1A16;--ink:#EFE3C8;--sub:#AA997C;--line:#7A6236;--key:#2A231D;--key-ink:#EFE3C8;--key-edge:#0A0806;--tray:#0E0B09;--lcd-bg:#140A03;--lcd-ink:#FFB35C;--lcd-dim:#6A4416;--lit:#FFB35C;--lit-ink:#1A0F05;--cmd:#7EA0FF;--opt:#69D39A;--shift:#FF9F4A;--ctrl:#FF7096;--on-mod:#140C06;--star:#E2B65A;--r:8px;--glow:0 0 14px rgba(255,150,60,.75);--f-disp:"Zen Old Mincho",serif;color-scheme:dark}
 body[data-skin="braun"]{--bg:#ECECEA;--bg2:#E4E4E1;--panel:#F8F8F7;--ink:#1D1D1D;--sub:#737373;--line:#D2D2CF;--key:#FFFFFF;--key-ink:#2A2A2A;--key-edge:#C2C2BF;--tray:#DCDCD9;--lcd-bg:#2B2B2B;--lcd-ink:#F2F2F0;--lcd-dim:#777777;--lit:#F2C200;--lit-ink:#1D1D1D;--cmd:#2E64D8;--opt:#2E9B5F;--shift:#E0731B;--ctrl:#D23C5E;--on-mod:#FFFFFF;--star:#E0A800;--r:20px;--kr:10px;--glow:none;--scan:none;--f-lcd:"Zen Kaku Gothic New",sans-serif;color-scheme:light}
-body[data-skin="synth"]{--bg:#1A0B2E;--bg2:#2B0F45;--panel:#241040;--ink:#F7E9FF;--sub:#B79BD6;--line:#43246A;--key:#2A1348;--key-ink:#F3DDFF;--key-edge:#0D0418;--tray:#12061F;--lcd-bg:#0C0418;--lcd-ink:#FF4FD8;--lcd-dim:#6A2766;--lit:#29E6FF;--lit-ink:#0C0418;--cmd:#29A8FF;--opt:#3CFFB0;--shift:#FFB547;--ctrl:#FF4F8B;--on-mod:#0C0418;--star:#FFE14F;--r:12px;--glow:0 0 12px rgba(255,79,216,.85);color-scheme:dark}
-body[data-skin="urushi"]{--bg:#0E0B0A;--bg2:#1A0F0C;--panel:#18110F;--ink:#F2E8DA;--sub:#A38F7C;--line:#3A2820;--key:#1E1512;--key-ink:#F2E8DA;--key-edge:#040202;--tray:#0A0706;--lcd-bg:#0A0605;--lcd-ink:#E8452C;--lcd-dim:#5E2216;--lit:#D93A22;--lit-ink:#FFF4E8;--cmd:#7C9BE8;--opt:#4FB38A;--shift:#E59A3A;--ctrl:#E06A8A;--on-mod:#0E0B0A;--star:#C9A45C;--r:3px;--kr:3px;--glow:none;--scan:none;--f-lcd:"Zen Old Mincho",serif;--f-body:"Zen Old Mincho",serif;--f-disp:"Zen Old Mincho",serif;color-scheme:dark}
-body[data-skin="hc"]{--bg:#FFFFFF;--bg2:#FFFFFF;--panel:#FFFFFF;--ink:#000000;--sub:#000000;--line:#000000;--key:#FFFFFF;--key-ink:#000000;--key-edge:#000000;--tray:#FFFFFF;--lcd-bg:#000000;--lcd-ink:#FFFFFF;--lcd-dim:#9A9A9A;--lit:#000000;--lit-ink:#FFFFFF;--cmd:#0038E0;--opt:#006B2D;--shift:#A84300;--ctrl:#B0003A;--on-mod:#FFFFFF;--star:#000000;--bdw:2px;--glow:none;--scan:none;color-scheme:light}
 
 /* skin textures */
-body[data-skin="score"]{background-image:linear-gradient(180deg,transparent 40px,var(--staff) 40px 41px,transparent 41px 48px,var(--staff) 48px 49px,transparent 49px 56px,var(--staff) 56px 57px,transparent 57px 64px,var(--staff) 64px 65px,transparent 65px 72px,var(--staff) 72px 73px,transparent 73px)!important;background-size:100% 104px!important}
 body[data-skin="tube"]{background-image:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1.6px),linear-gradient(180deg,var(--bg),var(--bg2))!important;background-size:4px 4px,auto!important}
-body[data-skin="synth"]{background-image:linear-gradient(0deg,rgba(255,79,216,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(41,230,255,.07) 1px,transparent 1px),linear-gradient(180deg,var(--bg),var(--bg2))!important;background-size:100% 44px,44px 100%,auto!important}
 body[data-skin="piano"]{background-image:linear-gradient(160deg,#1E1E21 0%,var(--bg) 42%,var(--bg2) 100%)!important}
-body[data-skin="score"] .lcd{box-shadow:inset 0 2px 0 var(--ink),inset 0 -2px 0 var(--ink)!important;border-radius:0}
-body[data-skin="score"] .k{box-shadow:inset 0 0 0 1.2px var(--ink)!important}
-body[data-skin="score"] .kbwrap{background:transparent;box-shadow:none}
-body[data-skin="gameboy"] .lcd{box-shadow:inset 0 0 0 3px var(--ink)!important}
-body[data-skin="scope"] .k{box-shadow:inset 0 0 0 1px var(--line)!important}
-body[data-skin="scope"] .k.lit{box-shadow:0 0 12px var(--lit)!important}
-body[data-skin="tube"] .panelish{box-shadow:inset 0 0 0 1px var(--line)}
+body[data-skin="alu"] .k{box-shadow:inset 0 0 0 1.5px #2B3036,0 2px 0 var(--key-edge)}
+body[data-skin="alu"] .k.lit,body[data-skin="alu"] .k[data-mod].on{box-shadow:inset 0 0 0 1.5px #000}
+body[data-skin="gameboy"] .lcd{border:9px solid #55546A;border-radius:8px 8px 30px 8px;box-shadow:inset 0 0 0 2px #7F9C0C}
+body[data-skin="gameboy"] .lcd-row{opacity:.85}
+body[data-skin="gameboy"] .brand b{color:#33339A;font-style:italic}
 body[data-skin="tube"] .lcd{box-shadow:inset 0 0 0 1px var(--line),inset 0 0 30px rgba(255,140,40,.15)!important}
-body[data-skin="synth"] .k.lit{box-shadow:0 0 14px var(--lit)!important}
-body[data-skin="hc"] .k{box-shadow:inset 0 0 0 2px #000!important}
 body[data-skin="piano"] .kbwrap{box-shadow:inset 0 0 0 1px #2A2A2D,inset 0 6px 0 #8E1024}
-body[data-skin="urushi"] .lcd{box-shadow:inset 0 0 0 1px #6B5530!important}
+body[data-skin="piano"] :is(.brand b,.pad .nm,.today .nm,.card h2,.sh-name,.cand .nm,.sk){font-weight:300;letter-spacing:.06em}
+body[data-skin="piano"] .lcd input{font-weight:300;letter-spacing:.04em}
+body[data-skin="piano"] .cmb{font-weight:400;letter-spacing:.04em}
 body[data-skin="console"] .k[data-mod]{box-shadow:0 2px 0 var(--key-edge),inset 0 -3px 0 var(--mc,transparent)}
 
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{height:100%}
 body{background-color:var(--bg);background-image:linear-gradient(180deg,var(--bg),var(--bg2));background-attachment:fixed;color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
@@ -100,11 +94,14 @@ button:disabled{opacity:.35;cursor:default}
 .lcd-now .dim{color:var(--lcd-dim)}
 .lcd-now .cmb{font-size:16px;letter-spacing:.06em;text-shadow:var(--glow)}
 .lcd-now .cmb .m{font-style:normal}
+.lcd-mn{min-height:18px;font-size:11.5px;line-height:1.5;opacity:.78;position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .soft{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .sk{height:32px;border-radius:calc(var(--kr) + 2px);background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 2px 0 var(--key-edge);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;transition:transform .06s}
 .sk:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
 .sk[aria-pressed="true"]{background:var(--lit);color:var(--lit-ink);box-shadow:0 2px 0 var(--key-edge)}
 .sk .s{color:var(--star)} .sk[aria-pressed="true"] .s{color:inherit}
+.sk{position:relative}
+.sk[data-has="1"]::after{content:"";position:absolute;top:5px;right:7px;width:6px;height:6px;border-radius:50%;background:var(--lit)}
 
 /* keyboard */
 .kbbox{display:flex;flex-direction:column;gap:6px}
@@ -127,7 +124,6 @@ button:disabled{opacity:.35;cursor:default}
 .seg button{font-family:var(--f-key);font-size:10.5px;padding:3px 11px;border-radius:999px;color:var(--sub)}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .hint{font-size:11.5px;color:var(--sub);line-height:1.5}
-.kb.static .k{pointer-events:none}
 
 /* combo text (quiet) */
 .cmb{font-family:var(--f-key);font-weight:600;white-space:nowrap}
@@ -143,6 +139,10 @@ section{display:flex;flex-direction:column;gap:10px}
 .crumb{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:13px;color:var(--sub)}
 .crumb button{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 .crumb .here{color:var(--ink);font-weight:700}
+.crumb .fold{flex:1;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;border-radius:var(--r);background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);text-decoration:none;font-size:14px}
+.fold .ct{font-weight:400;font-size:11.5px;color:var(--sub);margin-left:auto}
+.fold .chev{color:var(--sub);transition:transform .2s}
+.fold[aria-expanded="true"] .chev{transform:rotate(90deg)}
 
 .pads{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .pad{position:relative;background:var(--panel);border-radius:var(--r);padding:12px 13px 11px;min-height:86px;display:flex;flex-direction:column;gap:2px;
@@ -207,15 +207,7 @@ section{display:flex;flex-direction:column;gap:10px}
 .grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto}
 .sh-path{font-size:12px;color:var(--sub)}
 .sh-name{font-family:var(--f-disp);font-size:22px;font-weight:900;line-height:1.3;text-wrap:balance}
-.bigcombo{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.bigcombo .cap{font-family:var(--f-key);font-weight:600;font-size:20px;min-width:50px;height:50px;padding:0 14px;border-radius:calc(var(--kr) + 6px);display:inline-grid;place-items:center;background:var(--key);color:var(--key-ink);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 3px 0 var(--key-edge)}
-.bigcombo .cap small{display:block;font-size:8.5px;font-weight:500;letter-spacing:.06em;color:var(--sub);margin-top:-6px}
-.bigcombo .cap.cmd{color:var(--cmd)} .bigcombo .cap.opt{color:var(--opt)} .bigcombo .cap.shift{color:var(--shift)} .bigcombo .cap.ctrl{color:var(--ctrl)}
-.mnemo{background:var(--lcd-bg);color:var(--lcd-ink);font-family:var(--f-lcd);border-radius:var(--r);padding:10px 14px;font-size:14px}
-.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.act{height:44px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px}
-.act[aria-pressed="true"]{background:var(--lit);color:var(--lit-ink);box-shadow:none}
-.act .s{color:var(--star)} .act[aria-pressed="true"] .s{color:inherit}
+.sh-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
 textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);padding:10px 12px;font:inherit;font-size:14px;color:var(--ink);resize:vertical}
 .skingrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .skt{display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:14px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
@@ -264,11 +256,12 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
         <div class="lcd-row"><span id="lcdMode">SEARCH</span><span id="lcdCount"></span></div>
         <input id="q" type="search" placeholder="何をしたい？ 例：ミスった" autocomplete="off" aria-label="やりたいことで検索">
         <div class="lcd-now" id="lcdNow" aria-live="polite"></div>
+        <div class="lcd-mn" id="lcdMn"></div>
       </div>
       <div class="soft">
         <button class="sk" id="skStar" disabled aria-pressed="false"><span class="s">★</span>マイ</button>
         <button class="sk" id="skLearn" disabled aria-pressed="false">✓ 覚えた</button>
-        <button class="sk" id="skInfo" disabled>詳細 ▸</button>
+        <button class="sk" id="skMemo" disabled>✎ メモ</button>
       </div>
     </div>
     <div class="kbbox">
@@ -320,7 +313,7 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
       <div class="datab"><button class="btn" id="expBtn">書き出す</button><button class="btn" id="impBtn">読み込む</button></div>
       <p class="hint">マイリスト・覚えた・メモは、この端末のブラウザに保存されます。別の端末やWeb版に移すときに使います。</p>
     </section>
-    <p class="mock">モックアップ v2。収録は見本の33個です。<br>正式版では Apple 公式ガイドをもとに全部を収録します。</p>
+    <p class="mock">モックアップ v3。収録は見本の33個です。<br>正式版では Apple 公式ガイドをもとに全部を収録します。</p>
   </main>
 </div>
 
@@ -336,16 +329,9 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shName">
   <div class="in">
     <div class="grab"></div>
-    <div><div class="sh-path" id="shPath"></div><div class="sh-name" id="shName"></div></div>
-    <div class="bigcombo" id="shCombo"></div>
-    <div class="kbwrap"><div class="kb static" id="shKb"></div></div>
-    <div class="mnemo" id="shMnemo"></div>
-    <div class="acts">
-      <button class="act" id="shStar" aria-pressed="false"><span class="s">★</span>マイリスト</button>
-      <button class="act" id="shLearn" aria-pressed="false">✓ 覚えた</button>
-    </div>
+    <div class="sh-head"><div class="sh-name" id="shName"></div><span id="shCombo"></span></div>
     <div><div class="label" style="margin-bottom:6px">自分のメモ</div><textarea id="shMemo" placeholder="自分用の覚え方や、変更した割り当てなど"></textarea></div>
-    <div id="shSimWrap"><div class="label" style="margin-bottom:6px">似ているキー</div><div class="list" id="shSim"></div></div>
+    <button class="btn" id="shDone" style="align-self:flex-end">閉じる</button>
   </div>
 </div>
 <div class="sheet" id="skinSheet" role="dialog" aria-modal="true" aria-label="カラーを選ぶ">
@@ -363,19 +349,15 @@ const ORDER=['ctrl','opt','shift','cmd'];
 
 const SKINS=[
  {id:'auto',name:'自動',g:'基本',d:'端末のライト／ダークに合わせる',pv:['#E3E5E8','#1A1E19','#C8F25C','#FBFBFC','#16181B']},
- {id:'hc',name:'ハイコントラスト',g:'基本',d:'白と黒だけ。屋外や見やすさ重視',pv:['#FFFFFF','#000000','#FFFFFF','#FFFFFF','#000000']},
- {id:'alu',name:'アルミ',g:'機材',d:'明るい金属に緑の液晶',pv:['#E3E5E8','#1A1E19','#C8F25C','#FBFBFC','#16181B']},
- {id:'studio',name:'スタジオ',g:'機材',d:'黒いボディにオレンジの液晶',pv:['#101214','#0A0D0B','#FF9A3C','#25292D','#F2F4F6']},
+ {id:'alu',name:'アルミ',g:'機材',d:'明るい金属に緑の液晶。文字くっきりで見やすい',pv:['#E3E5E8','#000000','#D4FF4F','#FFFFFF','#000000']},
  {id:'console',name:'コンソール',g:'機材',d:'大型ミキサー卓のブルーグレー',pv:['#4B5763','#0C1820','#7FE3FF','#DCE1E5','#F7E15A']},
- {id:'score',name:'五線譜',g:'世界観',d:'白い紙と黒インク、赤鉛筆',pv:['#FFFFFF','#FFFFFF','#111111','#FFFFFF','#C8102E']},
- {id:'gameboy',name:'ゲームボーイ',g:'世界観',d:'緑4色のドットの世界',pv:['#9BBC0F','#8BAC0F','#0F380F','#9BBC0F','#0F380F']},
- {id:'scope',name:'オシロスコープ',g:'世界観',d:'黒い画面に光る蛍光グリーン',pv:['#050806','#020403','#59FF8A','#07100A','#59FF8A']},
- {id:'piano',name:'グランドピアノ',g:'世界観',d:'艶のある黒と象牙、赤いフェルト',pv:['#0B0B0C','#050505','#F6F1E7','#F6F1E7','#B3122E']},
- {id:'tube',name:'真空管アンプ',g:'世界観',d:'黒いレザーに金、灯る真空管',pv:['#161311','#140A03','#FFB35C','#2A231D','#FFB35C']},
+ {id:'tube',name:'真空管アンプ',g:'機材',d:'黒いレザーに金、灯る真空管',pv:['#161311','#140A03','#FFB35C','#2A231D','#FFB35C']},
+ {id:'gameboy',name:'GB',g:'世界観',d:'グレーの本体に黄緑の液晶、ドットの文字',pv:['#CAC8C2','#9BBC0F','#0F380F','#E4E2DC','#9A2257']},
  {id:'braun',name:'白い家電',g:'世界観',d:'白とグレーに黄色をひとつ',pv:['#ECECEA','#2B2B2B','#F2F2F0','#FFFFFF','#F2C200']},
- {id:'synth',name:'シンセウェイヴ',g:'世界観',d:'夜の紫にネオンのピンクと青',pv:['#1A0B2E','#0C0418','#FF4FD8','#2A1348','#29E6FF']},
- {id:'urushi',name:'漆と朱',g:'世界観',d:'漆黒に朱。和楽器の世界',pv:['#0E0B0A','#0A0605','#E8452C','#1E1512','#D93A22']}
+ {id:'piano',name:'グランドピアノ',g:'世界観',d:'艶のある黒と象牙、細身の上品な文字',pv:['#0B0B0C','#050505','#F6F1E7','#F6F1E7','#B3122E']}
 ];
+// v2 で選んでいて今回なくなったカラーは、近いものか「自動」に置きかえる
+const SKIN_MOVED={hc:'alu'};
 
 const SCENES=[
  {id:'top',code:'TOP',name:'よく使うもの',feature:1},
@@ -426,7 +408,6 @@ const SC=[
  {id:'duptrack',name:'同じ設定でトラックを追加',key:'D',mods:['cmd'],scene:'track',sub:'作る',mn:'D ＝ Duplicate',tags:'複製 同じ設定 コピー トラック 増やす duplicate'}
 ];
 const BY=Object.fromEntries(SC.map(s=>[s.id,s]));
-const PAIRS=[['zoomin','zoomout'],['barback','barfwd'],['cycle','cycleset'],['undo','redo'],['save','saveas']];
 
 /* ---------- storage ---------- */
 const store={
@@ -434,6 +415,7 @@ const store={
   set(k,v){try{localStorage.setItem('kk2_'+k,JSON.stringify(v))}catch(e){}}
 };
 const S={star:store.get('star',[]),learned:store.get('learned',[]),memo:store.get('memo',{}),recent:store.get('recent',[]),skin:store.get('skin','auto'),layout:store.get('layout','us')};
+if(!SKINS.some(s=>s.id===S.skin))S.skin=SKIN_MOVED[S.skin]||'auto';
 function save(){for(const k in S)store.set(k,S[k])}
 
 /* ---------- helpers ---------- */
@@ -448,7 +430,7 @@ const sceneName=id=>(SCENES.find(x=>x.id===id)||{}).name||'';
 function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1600)}
 
 /* ---------- state ---------- */
-let current='search', sel=null, mods=[], probe=null, br={scene:null,sub:null}, myTab='star', openId=null;
+let current='search', sel=null, mods=[], probe=null, br={scene:null,sub:null}, brOpen=false, myTab='star', openId=null;
 
 /* ---------- keyboard ---------- */
 const LAYOUTS={
@@ -505,10 +487,12 @@ function setNow(){
   else if(probe)now.innerHTML=`${cmbHTML(mods,probe)}<span class="dim">初期設定では割り当てなし</span>`;
   else if(mods.length)now.innerHTML=`${cmbHTML(mods,'')}<span class="dim">＋ キーを選ぶ</span>`;
   else now.innerHTML=`<span class="dim">言葉で探すか、下から選ぶ</span>`;
+  $('#lcdMn').textContent=s?(s.mn?'覚え方　'+s.mn:sceneName(s.scene)+' › '+s.sub):'';
   $('#lcdMode').textContent=s?(br.scene&&!$('#q').value?'SCENE · '+(SCENES.find(x=>x.id===br.scene)||{}).code:'SELECT'):($('#q').value?'SEARCH':'READY');
-  for(const id of ['skStar','skLearn','skInfo'])$('#'+id).disabled=!s;
+  for(const id of ['skStar','skLearn','skMemo'])$('#'+id).disabled=!s;
   $('#skStar').setAttribute('aria-pressed',!!s&&S.star.includes(sel));
   $('#skLearn').setAttribute('aria-pressed',!!s&&S.learned.includes(sel));
+  $('#skMemo').dataset.has=s&&S.memo[sel]?'1':'';
 }
 
 /* ---------- selection ---------- */
@@ -566,7 +550,7 @@ function renderSearch(typed){
   const more=res.slice(3);
   $('#moreList').hidden=!more.length;
   $('#moreList').innerHTML=more.map(r=>rowHTML(r.s)).join('');
-  // 入力中だけ1位を自動で選ぶ（タブ切替や詳細を閉じたときは今の選択を保つ）
+  // 入力中だけ1位を自動で選ぶ（タブ切替やメモを閉じたときは今の選択を保つ）
   if(typed===true)select(res[0]?res[0].s.id:null,false);
   else $$('[data-id]').forEach(el=>el.classList.toggle('sel',el.dataset.id===sel));
 }
@@ -576,10 +560,10 @@ function itemsOf(scene){return scene==='top'?SC.filter(s=>s.top):SC.filter(s=>s.
 function renderBranch(){
   const c=$('#crumb'),b=$('#branch');
   if(!br.scene){
-    c.innerHTML='<span class="here">やりたいことから探す</span>';
+    c.innerHTML=`<button class="fold" data-fold aria-expanded="${brOpen}"><span class="here">やりたいことから探す</span><span class="ct">${SCENES.length}つの場面</span><span class="chev">▸</span></button>`;
     const d=new Date(),pool=SC.filter(s=>!s.alias),t=pool[(d.getFullYear()*372+d.getMonth()*31+d.getDate())%pool.length];
     b.innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
-      <div class="pads">${SCENES.map(sc=>`<button class="pad${sc.feature?' feature':''}" data-sc="${sc.id}"><span class="led"></span><span class="code">${sc.code}</span><span class="nm">${esc(sc.name)}</span><span class="ct">${itemsOf(sc.id).length} 個</span></button>`).join('')}</div>
+      ${brOpen?`<div class="pads">${SCENES.map(sc=>`<button class="pad${sc.feature?' feature':''}" data-sc="${sc.id}"><span class="led"></span><span class="code">${sc.code}</span><span class="nm">${esc(sc.name)}</span><span class="ct">${itemsOf(sc.id).length} 個</span></button>`).join('')}</div>`:''}
       <div class="label">今日の1個 <em>${d.getMonth()+1}月${d.getDate()}日</em></div>
       <button class="today" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span><span class="mn">${esc(t.mn||sceneName(t.scene)+'ときに使う')}</span></span>${pill(t)}</button>
     </div>`;
@@ -598,29 +582,19 @@ function renderBranch(){
 /* ---------- my ---------- */
 function renderMy(){
   const ids=myTab==='star'?S.star:myTab==='learned'?S.learned:myTab==='recent'?S.recent:Object.keys(S.memo).filter(k=>S.memo[k]);
-  const msg={star:'「★ マイ」を押すと、ここに追加されます',learned:'「✓ 覚えた」を押すと、ここに並びます',memo:'詳細画面で自分のメモを書けます',recent:'選んだショートカットがここに残ります'}[myTab];
+  const msg={star:'「★ マイ」を押すと、ここに追加されます',learned:'「✓ 覚えた」を押すと、ここに並びます',memo:'「✎ メモ」を押すと、自分のメモを書けます',recent:'選んだショートカットがここに残ります'}[myTab];
   $('#myList').innerHTML=ids.filter(id=>BY[id]).map(id=>rowHTML(BY[id])).join('')||`<div class="empty">${msg}</div>`;
   $$('#myTabs .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.t===myTab));
 }
 
 /* ---------- sheets ---------- */
-function openSheet(id){
+function openMemo(id){
   const s=BY[id];if(!s)return;openId=id;
-  $('#shPath').textContent=sceneName(s.scene)+' › '+s.sub;
   $('#shName').textContent=s.name;
-  $('#shCombo').innerHTML=sortMods(s.mods).map(m=>`<span class="cap ${m}"><span>${MODS[m].sym}<small>${MODS[m].name}</small></span></span>`).join('')+`<span class="cap">${esc(s.key)}</span>`;
-  $('#shKb').innerHTML=kbHTML();
-  paintKB($('#shKb'),{mods:s.mods,key:s.key,dots:false});
-  $('#shMnemo').textContent='覚え方　'+(s.mn||'—');
-  $('#shStar').setAttribute('aria-pressed',S.star.includes(id));
-  $('#shLearn').setAttribute('aria-pressed',S.learned.includes(id));
+  $('#shCombo').innerHTML=pill(s);
   $('#shMemo').value=S.memo[id]||'';
-  const sim=new Set();
-  SC.forEach(o=>{if(o.id!==id&&!o.alias&&!s.alias&&o.key===s.key)sim.add(o.id)});
-  PAIRS.forEach(([a,b])=>{if(a===id)sim.add(b);if(b===id)sim.add(a)});
-  $('#shSimWrap').hidden=!sim.size;
-  $('#shSim').innerHTML=[...sim].map(x=>rowHTML(BY[x])).join('');
   openPanel('#sheet');
+  setTimeout(()=>$('#shMemo').focus(),300);
 }
 function openPanel(id){$$('.sheet').forEach(x=>x.classList.toggle('open','#'+x.id===id));$('#scrim').classList.add('open')}
 function closeSheets(){$$('.sheet').forEach(x=>x.classList.remove('open'));$('#scrim').classList.remove('open');openId=null;refresh()}
@@ -653,7 +627,7 @@ function refresh(){
 /* ---------- events ---------- */
 document.addEventListener('click',e=>{
   const t=e.target.closest('button,#scrim');if(!t)return;
-  if(t.id==='scrim')return closeSheets();
+  if(t.id==='scrim'||t.id==='shDone')return closeSheets();
   if(t.id==='skinBtn'){renderSkins();return openPanel('#skinSheet')}
   if(t.dataset.skin){S.skin=t.dataset.skin;save();applySkin();toast((SKINS.find(s=>s.id===S.skin)||{}).name+' に変更しました');return}
   if(t.classList.contains('tb'))return show(t.dataset.v);
@@ -667,24 +641,20 @@ document.addEventListener('click',e=>{
       return;
     }
   }
+  if(t.hasAttribute('data-fold')){brOpen=!brOpen;renderBranch();return}
   if(t.dataset.sc){br={scene:t.dataset.sc,sub:null};renderBranch();return}
   if(t.dataset.sub!==undefined){br.sub=br.sub===t.dataset.sub?null:t.dataset.sub;renderBranch();return}
   if(t.dataset.crumb==='root'){br={scene:null,sub:null};renderBranch();return}
   if(t.dataset.crumb==='scene'){br.sub=null;renderBranch();return}
   if(t.dataset.t){myTab=t.dataset.t;renderMy();return}
-  if(t.id==='skStar'||t.id==='shStar'){const id=openId||sel;if(!id)return;const on=!S.star.includes(id);S.star=on?[id,...S.star]:S.star.filter(x=>x!==id);save();$('#shStar').setAttribute('aria-pressed',on);setNow();toast(on?'マイリストに追加しました':'マイリストから外しました');if(current==='my')renderMy();return}
-  if(t.id==='skLearn'||t.id==='shLearn'){const id=openId||sel;if(!id)return;const on=!S.learned.includes(id);S.learned=on?[id,...S.learned]:S.learned.filter(x=>x!==id);save();$('#shLearn').setAttribute('aria-pressed',on);setNow();toast(on?'覚えたに追加しました':'覚えたから外しました');if(current==='my')renderMy();return}
-  if(t.id==='skInfo'){if(sel)openSheet(sel);return}
+  if(t.id==='skStar'){if(!sel)return;const on=!S.star.includes(sel);S.star=on?[sel,...S.star]:S.star.filter(x=>x!==sel);save();setNow();toast(on?'マイリストに追加しました':'マイリストから外しました');if(current==='my')renderMy();return}
+  if(t.id==='skLearn'){if(!sel)return;const on=!S.learned.includes(sel);S.learned=on?[sel,...S.learned]:S.learned.filter(x=>x!==sel);save();setNow();toast(on?'覚えたに追加しました':'覚えたから外しました');if(current==='my')renderMy();return}
+  if(t.id==='skMemo'){if(sel)openMemo(sel);return}
   if(t.id==='expBtn'||t.id==='impBtn'){toast('モックアップでは動きません');return}
-  if(t.dataset.id){
-    const id=t.dataset.id;
-    if(openId){closeSheets();select(id,true);setTimeout(()=>openSheet(id),200);return}
-    if(sel===id&&t.closest('.view'))return openSheet(id);
-    select(id,true);
-  }
+  if(t.dataset.id)select(t.dataset.id,true);
 });
 $('#q').addEventListener('input',()=>renderSearch(true));
-$('#q').addEventListener('keydown',e=>{if(e.key==='Escape'){e.target.value='';renderSearch(true)}if(e.key==='Enter'&&sel)openSheet(sel)});
+$('#q').addEventListener('keydown',e=>{if(e.key==='Escape'){e.target.value='';renderSearch(true)}if(e.key==='Enter')e.target.blur()});
 $('#shMemo').addEventListener('input',e=>{if(!openId)return;S.memo[openId]=e.target.value;save()});
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&$('#scrim').classList.contains('open'))return closeSheets();
