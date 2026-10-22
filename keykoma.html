@@ -1,4 +1,4 @@
-<title>キーコマ帳</title>
+<title>DAWショートカット辞典</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,8 +72,8 @@ button:disabled{opacity:.35;cursor:default}
 
 /* header */
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:baseline;gap:8px;min-width:0}
-.brand b{font-family:var(--f-disp);font-weight:900;font-size:20px;letter-spacing:.02em}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand b{font-family:var(--f-disp);font-weight:900;font-size:18px;line-height:1.3;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand small{font-family:var(--f-key);font-size:10px;color:var(--sub);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
 .skinbtn{display:flex;align-items:center;gap:7px;font-size:12px;padding:5px 10px 5px 6px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);white-space:nowrap}
 .skinbtn i{width:16px;height:16px;border-radius:50%;background:conic-gradient(var(--cmd) 0 25%,var(--opt) 0 50%,var(--shift) 0 75%,var(--ctrl) 0);display:inline-block}
@@ -230,6 +230,7 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
     padding-left:calc(84px + env(safe-area-inset-left,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
   .deck{display:contents}
   .top{grid-area:head}
+  .skinbtn span{display:none} .skinbtn{padding:5px}
   .lcdbox{grid-area:lcd}
   .kbbox{grid-area:kb;position:sticky;top:calc(12px + env(safe-area-inset-top,0px));align-self:start}
   .view{grid-area:content;min-width:0}
@@ -248,8 +249,8 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
 
 <div class="app" id="app">
   <header class="top">
-    <div class="brand"><b>キーコマ帳</b><small>Logic Pro 12</small></div>
-    <button class="skinbtn" id="skinBtn"><i></i><span id="skinName">自動</span></button>
+    <div class="brand"><b>DAWショートカット辞典</b><small>Logic Pro 12</small></div>
+    <button class="skinbtn" id="skinBtn" aria-label="カラーを選ぶ"><i></i><span id="skinName">自動</span></button>
   </header>
 
   <div class="deck" id="deck">
