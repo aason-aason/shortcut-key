@@ -157,16 +157,11 @@ section{display:flex;flex-direction:column;gap:10px}
 .fold .chev{color:var(--sub);transition:transform .2s}
 .fold[aria-expanded="true"] .chev{transform:rotate(90deg)}
 
-.pads{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.pad{position:relative;background:var(--panel);border-radius:var(--r);padding:12px 13px 11px;min-height:86px;display:flex;flex-direction:column;gap:2px;
-  box-shadow:inset 0 0 0 var(--bdw) var(--line),0 3px 0 var(--key-edge);transition:transform .07s, box-shadow .07s}
-.pad:active{transform:translateY(3px);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
-.pad .code{font-family:var(--f-lcd);font-size:11px;letter-spacing:.16em;color:var(--sub)}
-.pad .nm{font-family:var(--f-disp);font-weight:900;font-size:16.5px;line-height:1.3}
-.pad .ct{font-size:11px;color:var(--sub);margin-top:auto;font-variant-numeric:tabular-nums}
-.pad .led{position:absolute;top:12px;right:12px;width:6px;height:6px;border-radius:50%;background:var(--line)}
-.pad.feature .led{background:var(--lit);box-shadow:0 0 8px var(--lit)}
 .subpads{display:flex;flex-wrap:wrap;gap:6px}
+.subpad small{font-weight:400;font-size:10.5px;color:var(--sub);margin-left:6px;font-variant-numeric:tabular-nums}
+.subpad.feature{box-shadow:inset 0 0 0 1.5px var(--lit),0 2px 0 var(--key-edge)}
+#branch .seg{align-self:flex-start}
+#branch .seg button{font-family:var(--f-body);font-size:12px;padding:4px 14px}
 .subpad{font-size:13px;font-weight:700;padding:8px 13px;border-radius:calc(var(--kr) + 4px);background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 2px 0 var(--key-edge)}
 .subpad[aria-pressed="true"]{background:var(--lit);color:var(--lit-ink);transform:translateY(2px);box-shadow:none}
 
@@ -251,9 +246,8 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
     padding:calc(12px + env(safe-area-inset-top,0px)) 8px calc(12px + env(safe-area-inset-bottom,0px)) calc(8px + env(safe-area-inset-left,0px))}
   .tabbar .in{grid-template-columns:1fr;grid-auto-rows:min-content;gap:10px}
   .toast{bottom:calc(20px + env(safe-area-inset-bottom,0px))}
-  .pads{grid-template-columns:repeat(2,1fr)}
 }
-@media (min-width:960px){ .kb{--kh:52px;--kf:13px} .pads{grid-template-columns:repeat(3,1fr)} }
+@media (min-width:960px){ .kb{--kh:52px;--kf:13px} }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -418,7 +412,7 @@ function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show')
 
 /* ---------- state ---------- */
 // br.by: 'scene'（やりたいことから）か 'win'（使う画面から）。null は最初の画面
-let current='search', sel=null, mods=[], probe=null, br={by:null,id:null,sub:null}, folds={scene:false,win:false}, myTab='star', openId=null;
+let current='search', sel=null, mods=[], probe=null, br={by:null,id:null,sub:null}, listOpen=false, listAxis='scene', myTab='star', openId=null;
 
 /* ---------- keyboard ---------- */
 const LAYOUTS={
@@ -580,19 +574,23 @@ function itemsOf(by,id){return by==='win'?SC.filter(s=>s.g===id):id==='basic'?SC
 const groupName=id=>(APP.groups.find(x=>x.id===id)||{}).name||'';
 const subOf=s=>br.by==='win'?s.scene:s.win;
 const subName=x=>br.by==='win'?sceneName(x):x;
-function foldHTML(kind,title,count,pads){
-  return `<button class="fold" data-fold="${kind}" aria-expanded="${folds[kind]}"><span class="here">${title}</span><span class="ct">${count}</span><span class="chev">▸</span></button>${folds[kind]?`<div class="pads">${pads}</div>`:''}`;
+// 「一覧から探す」は1つの欄。開くと［やりたいこと｜画面］の切りかえと、名前だけの札が並ぶ
+function listHTML(){
+  if(!listOpen)return '';
+  const tags=listAxis==='scene'
+    ?SCENES.map(sc=>`<button class="subpad${sc.feature?' feature':''}" data-sc="${sc.id}">${esc(sc.name)}<small>${itemsOf('scene',sc.id).length}</small></button>`)
+    :APP.groups.map(g=>`<button class="subpad" data-g="${g.id}">${esc(g.name)}<small>${itemsOf('win',g.id).length}</small></button>`);
+  return `<div class="seg"><button data-axis="scene" aria-pressed="${listAxis==='scene'}">やりたいこと</button><button data-axis="win" aria-pressed="${listAxis==='win'}">使う画面</button></div>
+    <div class="subpads">${tags.join('')}</div>`;
 }
 function renderBranch(){
   const c=$('#crumb'),b=$('#branch');
   if(!br.by){
     c.innerHTML='';c.hidden=true;
     const d=new Date(),pool=SC.filter(s=>s.basic||s.mn),t=pool[(d.getFullYear()*372+d.getMonth()*31+d.getDate())%pool.length];
-    const scenePads=SCENES.map(sc=>`<button class="pad${sc.feature?' feature':''}" data-sc="${sc.id}"><span class="led"></span><span class="code">${sc.code}</span><span class="nm">${esc(sc.name)}</span><span class="ct">${itemsOf('scene',sc.id).length} 個</span></button>`).join('');
-    const winPads=APP.groups.map(g=>`<button class="pad" data-g="${g.id}"><span class="led"></span><span class="nm">${esc(g.name)}</span><span class="ct">${itemsOf('win',g.id).length} 個</span></button>`).join('');
     b.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">
-      ${foldHTML('scene','やりたいことから探す',`${SCENES.length}つの場面`,scenePads)}
-      ${foldHTML('win','使う画面から探す',`${APP.groups.length}つの画面`,winPads)}
+      <button class="fold" data-fold aria-expanded="${listOpen}"><span class="here">一覧から探す</span><span class="ct">やりたいこと・使う画面</span><span class="chev">▸</span></button>
+      ${listHTML()}
       <div class="label" style="margin-top:4px">今日の1個 <em>${d.getMonth()+1}月${d.getDate()}日</em></div>
       <button class="today" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span><span class="mn">${esc(t.mn||t.win+'で使う')}</span></span>${pill(t)}</button>
     </div>`;
@@ -692,7 +690,8 @@ document.addEventListener('click',e=>{
       return;
     }
   }
-  if(t.dataset.fold){folds[t.dataset.fold]=!folds[t.dataset.fold];renderBranch();return}
+  if(t.hasAttribute('data-fold')){listOpen=!listOpen;renderBranch();return}
+  if(t.dataset.axis){listAxis=t.dataset.axis;renderBranch();return}
   if(t.dataset.sc){br={by:'scene',id:t.dataset.sc,sub:null};renderBranch();setNow();return}
   if(t.dataset.g){br={by:'win',id:t.dataset.g,sub:null};renderBranch();setNow();return}
   if(t.dataset.sub!==undefined){br.sub=br.sub===t.dataset.sub?null:t.dataset.sub;renderBranch();return}
