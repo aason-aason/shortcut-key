@@ -412,7 +412,7 @@ function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show')
 
 /* ---------- state ---------- */
 // br.by: 'scene'（やりたいことから）か 'win'（使う画面から）。null は最初の画面
-let current='search', sel=null, mods=[], probe=null, br={by:null,id:null,sub:null}, listOpen=false, listAxis='scene', myTab='star', openId=null;
+let current='search', sel=null, mods=[], probe=null, br={by:null,id:null,sub:null}, listOpen=true, listAxis='scene', myTab='star', openId=null;
 
 /* ---------- keyboard ---------- */
 const LAYOUTS={
@@ -587,12 +587,12 @@ function renderBranch(){
   const c=$('#crumb'),b=$('#branch');
   if(!br.by){
     c.innerHTML='';c.hidden=true;
-    const d=new Date(),pool=SC.filter(s=>s.basic||s.mn),t=pool[(d.getFullYear()*372+d.getMonth()*31+d.getDate())%pool.length];
+    const t=BY[S.recent[0]];
     b.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">
       <button class="fold" data-fold aria-expanded="${listOpen}"><span class="here">一覧から探す</span><span class="ct">やりたいこと・使う画面</span><span class="chev">▸</span></button>
       ${listHTML()}
-      <div class="label" style="margin-top:4px">今日の1個 <em>${d.getMonth()+1}月${d.getDate()}日</em></div>
-      <button class="today" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span><span class="mn">${esc(t.mn||t.win+'で使う')}</span></span>${pill(t)}</button>
+      ${t?`<div class="label" style="margin-top:4px">直前の検索</div>
+      <button class="today" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span><span class="mn">${esc(t.mn||t.win+'で使う')}</span></span>${pill(t)}</button>`:''}
     </div>`;
     return;
   }
