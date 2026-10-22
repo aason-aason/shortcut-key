@@ -674,7 +674,14 @@ document.addEventListener('click',e=>{
   if(t.classList.contains('tb')&&t.dataset.v==='search'&&current==='search'){$('#q').value='';br={by:null,id:null,sub:null};renderSearch(true);window.scrollTo({top:0,behavior:'smooth'});return}
   if(t.classList.contains('tb'))return show(t.dataset.v);
   if(t.closest('#kb')){
-    if(t.dataset.mod){const m=t.dataset.mod;const base=sel?BY[sel].mods:mods;mods=base.includes(m)?base.filter(x=>x!==m):[...base,m];sel=null;probe=null;select(null);return}
+    if(t.dataset.mod){
+      // 選んでいる文字キーは残したまま修飾キーだけ切り替え、その組み合わせのショートカットを探し直す
+      const m=t.dataset.mod,cur=sel&&BY[sel],base=cur?cur.mods:mods,k=cur?(cur.pad?null:keyOf(cur)):probe;
+      mods=base.includes(m)?base.filter(x=>x!==m):[...base,m];
+      const s=k&&lookup(k,mods);
+      if(s){select(s.id,true);return}
+      sel=null;probe=k;paintMain();setNow();$$('[data-id]').forEach(el=>el.classList.remove('sel'));return
+    }
     if(t.dataset.key){
       const k=t.dataset.key,cur=sel&&BY[sel],lit=cur&&!cur.pad?(FN[keyOf(cur)]||keyOf(cur)):probe;
       // 光っているキーをもう一度押すと、修飾キーも含めて選択を解除する
