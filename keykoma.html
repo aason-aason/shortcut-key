@@ -113,6 +113,9 @@ button:disabled{opacity:.35;cursor:default}
 .k{flex:1 1 0;min-width:0;height:var(--kh);border-radius:var(--kr);background:var(--key);color:var(--key-ink);font-family:var(--f-key);font-size:var(--kf);font-weight:500;
   box-shadow:0 2px 0 var(--key-edge);display:grid;place-items:center;position:relative;transition:transform .08s, background .18s, color .18s;padding:0 1px;overflow:hidden;white-space:nowrap}
 .k.small{font-size:calc(var(--kf) * .8)}
+/* 修飾キーは記号の下に短い名前を小さく入れる */
+.k.mk{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1.05}
+.k.mk small{font-size:calc(var(--kf) * .72);opacity:.8;letter-spacing:0}
 .k.has::after{content:"";position:absolute;left:50%;bottom:3px;width:10px;height:2px;margin-left:-5px;border-radius:2px;background:var(--sub);opacity:.8}
 .k.lit{background:var(--lit);color:var(--lit-ink);transform:translateY(2px);box-shadow:0 0 0 var(--key-edge)}
 .k.probe{background:color-mix(in srgb,var(--sub) 40%,var(--key))}
@@ -350,7 +353,7 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
 <script src="data/scenes.js"></script>
 <script src="data/logic-pro.js"></script>
 <script>
-const MODS={ctrl:{sym:'⌃',name:'control'},opt:{sym:'⌥',name:'option'},shift:{sym:'⇧',name:'shift'},cmd:{sym:'⌘',name:'command'}};
+const MODS={ctrl:{sym:'⌃',name:'control',short:'ctrl'},opt:{sym:'⌥',name:'option',short:'opt'},shift:{sym:'⇧',name:'shift',short:'shift'},cmd:{sym:'⌘',name:'command',short:'cmd'}};
 const ORDER=['ctrl','opt','shift','cmd'];
 
 const SKINS=[
@@ -423,7 +426,7 @@ function kbHTML(){
     if(k==='ARROWS')return `<button class="k" style="flex-grow:1" data-key="←" aria-label="左矢印">←</button><div class="arrows"><button class="k" data-key="↑" aria-label="上矢印">↑</button><button class="k" data-key="↓" aria-label="下矢印">↓</button></div><button class="k" style="flex-grow:1" data-key="→" aria-label="右矢印">→</button>`;
     const lab=label!==undefined?label:k;
     const small=lab.length>2;
-    if(mod)return `<button class="k" style="flex-grow:${w}" data-mod="${mod}" aria-label="${MODS[mod].name}">${esc(lab)}</button>`;
+    if(mod)return `<button class="k mk" style="flex-grow:${w}" data-mod="${mod}" aria-label="${MODS[mod].name}"><span>${esc(lab)}</span><small>${MODS[mod].short}</small></button>`;
     return `<button class="k${small?' small':''}" style="flex-grow:${w}" data-key="${esc(k)}">${esc(lab)}</button>`;
   }).join('')}</div>`).join('');
 }
