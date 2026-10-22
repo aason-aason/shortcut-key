@@ -76,7 +76,13 @@ button:disabled{opacity:.35;cursor:default}
 .brand b{font-family:var(--f-disp);font-weight:900;font-size:18px;line-height:1.3;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand small{font-family:var(--f-key);font-size:10px;color:var(--sub);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
 .skinbtn{display:flex;align-items:center;gap:7px;font-size:12px;padding:5px 10px 5px 6px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);white-space:nowrap}
-.skinbtn i{width:16px;height:16px;border-radius:50%;background:conic-gradient(var(--cmd) 0 25%,var(--opt) 0 50%,var(--shift) 0 75%,var(--ctrl) 0);display:inline-block}
+.skinbtn svg{width:18px;height:18px}
+.kbtype{font-family:var(--f-key);font-size:10.5px;padding:3px 11px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);color:var(--sub);white-space:nowrap}
+.tgl{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px}
+.sw{flex:none;width:46px;height:28px;border-radius:999px;background:var(--line);position:relative;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--key);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.sw[aria-checked="true"]{background:var(--lit)}
+.sw[aria-checked="true"]::after{transform:translateX(18px)}
 
 /* deck */
 .deck{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;display:flex;flex-direction:column;gap:8px;
@@ -255,7 +261,7 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
 <div class="app" id="app">
   <header class="top">
     <div class="brand"><b>DAWショートカット辞典</b><small id="appName">Logic Pro 12</small></div>
-    <button class="skinbtn" id="skinBtn" aria-label="カラーを選ぶ"><i></i><span id="skinName">自動</span></button>
+    <button class="skinbtn" id="setBtn" aria-label="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3v18M12 3v18M18 3v18"/><rect x="3.5" y="13" width="5" height="3.5" rx="1" fill="currentColor"/><rect x="9.5" y="6" width="5" height="3.5" rx="1" fill="currentColor"/><rect x="15.5" y="10" width="5" height="3.5" rx="1" fill="currentColor"/></svg><span>設定</span></button>
   </header>
 
   <div class="deck" id="deck">
@@ -275,7 +281,7 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
       <div class="kbwrap"><div class="kb" id="kb"></div></div>
       <div class="kbbar">
         <span class="hint" id="kbHint">キーをタップすると、その機能がわかります</span>
-        <div class="seg" id="layoutSeg"><button data-l="us" aria-pressed="true">US</button><button data-l="jis" aria-pressed="false">JIS</button></div>
+        <button class="kbtype" id="kbType"></button>
       </div>
     </div>
   </div>
@@ -315,11 +321,6 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
       </div>
       <div class="list" id="myList"></div>
     </section>
-    <section>
-      <div class="label">データの引っ越し</div>
-      <div class="datab"><button class="btn" id="expBtn">書き出す</button><button class="btn" id="impBtn">読み込む</button></div>
-      <p class="hint">マイリスト・覚えた・メモは、この端末のブラウザに保存されます。別の端末やWeb版に移すときに使います。</p>
-    </section>
     <p class="mock">試作版 v4。Apple 公式ユーザガイド「キーコマンドの表」の初期設定のショートカットをすべて収録しています。<br>言いかえ語と覚え方は順に追加中です。</p>
   </main>
 </div>
@@ -341,11 +342,25 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
     <button class="btn" id="shDone" style="align-self:flex-end">閉じる</button>
   </div>
 </div>
-<div class="sheet" id="skinSheet" role="dialog" aria-modal="true" aria-label="カラーを選ぶ">
+<div class="sheet" id="setSheet" role="dialog" aria-modal="true" aria-label="設定">
   <div class="in">
     <div class="grab"></div>
-    <div class="sh-name">カラーを選ぶ</div>
-    <div id="skinGroups"></div>
+    <div class="sh-head"><div class="sh-name">設定</div><button class="btn" id="setDone">閉じる</button></div>
+    <section>
+      <div class="label">キーボード</div>
+      <div class="chips" id="kbTypes"></div>
+      <div class="tgl"><span>control と caps lock を入れ替える</span><button class="sw" id="swapBtn" role="switch" aria-checked="false" aria-label="control と caps lock を入れ替える"></button></div>
+      <p class="hint">お使いのキーボードの並びに合わせます。Windows用キーボードを Mac につなぐと、Windows キーが ⌘ command、Alt キーが ⌥ option として働きます。</p>
+    </section>
+    <section>
+      <div class="label">カラー</div>
+      <div id="skinGroups"></div>
+    </section>
+    <section>
+      <div class="label">データの引っ越し</div>
+      <div class="datab"><button class="btn" id="expBtn">書き出す</button><button class="btn" id="impBtn">読み込む</button></div>
+      <p class="hint">マイリスト・覚えた・メモは、この端末のブラウザに保存されます。別の端末やWeb版に移すときに使います。</p>
+    </section>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -380,7 +395,8 @@ const store={
   get(k,d){try{const v=localStorage.getItem('kk2_'+k);return v?JSON.parse(v):d}catch(e){return d}},
   set(k,v){try{localStorage.setItem('kk2_'+k,JSON.stringify(v))}catch(e){}}
 };
-const S={star:store.get('star',[]),learned:store.get('learned',[]),memo:store.get('memo',{}),recent:store.get('recent',[]),skin:store.get('skin','auto'),layout:store.get('layout','us')};
+// kb: キーボードの種類（us / jis / winus / winjis）。以前の layout（us / jis）から引き継ぐ。swap: control と caps lock の入れ替え
+const S={star:store.get('star',[]),learned:store.get('learned',[]),memo:store.get('memo',{}),recent:store.get('recent',[]),skin:store.get('skin','auto'),kb:store.get('kb',store.get('layout','us')),swap:store.get('swap',false)};
 if(!SKINS.some(s=>s.id===S.skin))S.skin=SKIN_MOVED[S.skin]||'auto';
 function save(){for(const k in S)store.set(k,S[k])}
 
@@ -394,7 +410,8 @@ const cmbHTML=(mods,key)=>`<span class="cmb">${sortMods(mods).map(m=>`<i class="
 const KEYNAME={FwdDel:'Fwd Del',PgUp:'PageUp',PgDn:'PageDown'};
 // ノートパソコンのキーボードでは fn と一緒に押すキー（フルキーボードには専用キーがある）
 const FN={Home:'←',End:'→',PgUp:'↑',PgDn:'↓',FwdDel:'Delete',Enter:'Return'};
-const keyOf=s=>S.layout==='jis'&&s.jk?s.jk:s.key;
+const isJIS=()=>S.kb==='jis'||S.kb==='winjis';
+const keyOf=s=>isJIS()&&s.jk?s.jk:s.key;
 const keyLabel=s=>(s.pad?'テンキー':'')+(KEYNAME[keyOf(s)]||keyOf(s));
 const pill=s=>`<span class="pill">${cmbHTML(s.mods,keyLabel(s))}</span>`;
 const sceneName=id=>(SCENES.find(x=>x.id===id)||{}).name||'';
@@ -419,14 +436,39 @@ const LAYOUTS={
   [['ctrl',1.75,'⌃','ctrl'],['A'],['S'],['D'],['F'],['G'],['H'],['J'],['K'],['L'],[';'],[':'],[']'],['Return',.75,'']],
   [['shift',2.25,'⇧','shift'],['Z'],['X'],['C'],['V'],['B'],['N'],['M'],[','],['.'],['/'],['_'],['shift',1.25,'⇧','shift']],
   [['Caps',1,'caps'],['opt',1,'⌥','opt'],['cmd',1.25,'⌘','cmd'],['英数',1.25,'英数'],['Space',4.5,'space'],['かな',1.25,'かな'],['cmd',1.25,'⌘','cmd'],['ARROWS',3]]
+ ],
+ // Windows用キーボードを Mac につないだとき。Windows キーが ⌘、Alt キーが ⌥ になる（5つ目は刻印の名前）
+ winus:[
+  [['`'],['1'],['2'],['3'],['4'],['5'],['6'],['7'],['8'],['9'],['0'],['-'],['='],['Delete',1.5,'bs']],
+  [['Tab',1.5,'tab'],['Q'],['W'],['E'],['R'],['T'],['Y'],['U'],['I'],['O'],['P'],['['],[']'],['\\']],
+  [['Caps',1.75,'caps'],['A'],['S'],['D'],['F'],['G'],['H'],['J'],['K'],['L'],[';'],["'"],['Return',1.75,'enter']],
+  [['shift',2.25,'⇧','shift'],['Z'],['X'],['C'],['V'],['B'],['N'],['M'],[','],['.'],['/'],['shift',2.25,'⇧','shift']],
+  [['ctrl',1.25,'⌃','ctrl'],['cmd',1.25,'⌘','cmd','win'],['opt',1.25,'⌥','opt','alt'],['Space',5,'space'],['opt',1.25,'⌥','opt','alt'],['cmd',1.25,'⌘','cmd','win'],['ARROWS',3]]
+ ],
+ winjis:[
+  [['半/全',1,'半/全'],['1'],['2'],['3'],['4'],['5'],['6'],['7'],['8'],['9'],['0'],['-'],['^'],['¥'],['Delete',1,'bs']],
+  [['Tab',1.5,'tab'],['Q'],['W'],['E'],['R'],['T'],['Y'],['U'],['I'],['O'],['P'],['@'],['['],['Return',1,'⏎']],
+  [['Caps',1.75,'英数'],['A'],['S'],['D'],['F'],['G'],['H'],['J'],['K'],['L'],[';'],[':'],[']'],['Return',.75,'']],
+  [['shift',2.25,'⇧','shift'],['Z'],['X'],['C'],['V'],['B'],['N'],['M'],[','],['.'],['/'],['_'],['shift',1.25,'⇧','shift']],
+  [['ctrl',1.25,'⌃','ctrl'],['cmd',1.25,'⌘','cmd','win'],['opt',1.25,'⌥','opt','alt'],['無変換',1.25,'無変換'],['Space',3,'space'],['変換',1.25,'変換'],['かな',1,'かな'],['ARROWS',3]]
  ]
 };
+const KBTYPES=[{id:'us',name:'Apple US'},{id:'jis',name:'Apple JIS'},{id:'winus',name:'Windows用 US'},{id:'winjis',name:'Windows用 JIS'}];
+// A の左のキーと、いちばん下の段の ctrl／caps を入れ替える（幅はそれぞれの位置のまま）
+function kbRows(){
+  const rows=(LAYOUTS[S.kb]||LAYOUTS.us).map(r=>r.map(k=>[...k]));
+  if(S.swap){
+    const a=rows[2][0],j=rows[4].findIndex(k=>k[0]==='ctrl'||k[0]==='Caps'),b=rows[4][j];
+    if(b){rows[2][0]=[b[0],a[1],...b.slice(2)];rows[4][j]=[a[0],b[1],...a.slice(2)]}
+  }
+  return rows;
+}
 function kbHTML(){
-  return LAYOUTS[S.layout].map(row=>`<div class="kr">${row.map(([k,w=1,label,mod])=>{
+  return kbRows().map(row=>`<div class="kr">${row.map(([k,w=1,label,mod,cap])=>{
     if(k==='ARROWS')return `<button class="k" style="flex-grow:1" data-key="←" aria-label="左矢印">←</button><div class="arrows"><button class="k" data-key="↑" aria-label="上矢印">↑</button><button class="k" data-key="↓" aria-label="下矢印">↓</button></div><button class="k" style="flex-grow:1" data-key="→" aria-label="右矢印">→</button>`;
     const lab=label!==undefined?label:k;
     const small=lab.length>2;
-    if(mod)return `<button class="k mk" style="flex-grow:${w}" data-mod="${mod}" aria-label="${MODS[mod].name}"><span>${esc(lab)}</span><small>${MODS[mod].short}</small></button>`;
+    if(mod)return `<button class="k mk" style="flex-grow:${w}" data-mod="${mod}" aria-label="${MODS[mod].name}"><span>${esc(lab)}</span><small>${cap||MODS[mod].short}</small></button>`;
     return `<button class="k${small?' small':''}" style="flex-grow:${w}" data-key="${esc(k)}">${esc(lab)}</button>`;
   }).join('')}</div>`).join('');
 }
@@ -444,7 +486,7 @@ function paintKB(root,{mods:m,key,dots,probe:p,fn}){
 }
 function renderKB(){
   $('#kb').innerHTML=kbHTML();
-  $$('#layoutSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===S.layout));
+  $('#kbType').textContent=(KBTYPES.find(x=>x.id===S.kb)||KBTYPES[0]).name+(S.swap?' ⇄':'')+' ▸';
   paintMain();
 }
 function paintMain(){
@@ -594,9 +636,13 @@ function renderSkins(){
     return `<button class="skt" data-skin="${s.id}" aria-pressed="${s.id===S.skin}"><div class="pv" style="background:${bg}"><div class="l" style="background:${lcd};color:${ink}">⌘S 保存</div><div class="ks"><i style="background:${key}"></i><i style="background:${lit}"></i><i style="background:${key}"></i><i style="background:${key}"></i></div></div><b>${s.name}</b><span>${s.d}</span></button>`;
   }).join('')}</div>`).join('');
 }
+function renderSettings(){
+  $('#kbTypes').innerHTML=KBTYPES.map(x=>`<button class="chip" data-kb="${x.id}" aria-pressed="${x.id===S.kb}">${x.name}</button>`).join('');
+  $('#swapBtn').setAttribute('aria-checked',S.swap);
+  renderSkins();
+}
 function applySkin(){
   if(S.skin==='auto')document.body.removeAttribute('data-skin');else document.body.dataset.skin=S.skin;
-  $('#skinName').textContent=(SKINS.find(s=>s.id===S.skin)||SKINS[0]).name;
   $$('.skt').forEach(b=>b.setAttribute('aria-pressed',b.dataset.skin===S.skin));
 }
 
@@ -616,14 +662,15 @@ function refresh(){
 /* ---------- events ---------- */
 document.addEventListener('click',e=>{
   const t=e.target.closest('button,#scrim');if(!t)return;
-  if(t.id==='scrim'||t.id==='shDone')return closeSheets();
-  if(t.id==='skinBtn'){renderSkins();return openPanel('#skinSheet')}
+  if(t.id==='scrim'||t.id==='shDone'||t.id==='setDone')return closeSheets();
+  if(t.id==='setBtn'||t.id==='kbType'){renderSettings();return openPanel('#setSheet')}
+  if(t.dataset.kb){S.kb=t.dataset.kb;save();renderSettings();renderKB();return}
+  if(t.id==='swapBtn'){S.swap=!S.swap;save();renderSettings();renderKB();return}
   if(t.dataset.skin){S.skin=t.dataset.skin;save();applySkin();toast((SKINS.find(s=>s.id===S.skin)||{}).name+' に変更しました');return}
   if(t.id==='qClear'){$('#q').value='';renderSearch(true);return}
   // 検索画面で「さがす」をもう一度押すと、入力と場面選びを消して最初の画面に戻る
   if(t.classList.contains('tb')&&t.dataset.v==='search'&&current==='search'){$('#q').value='';br={by:null,id:null,sub:null};renderSearch(true);window.scrollTo({top:0,behavior:'smooth'});return}
   if(t.classList.contains('tb'))return show(t.dataset.v);
-  if(t.dataset.l){S.layout=t.dataset.l;save();renderKB();return}
   if(t.closest('#kb')){
     if(t.dataset.mod){const m=t.dataset.mod;const base=sel?BY[sel].mods:mods;mods=base.includes(m)?base.filter(x=>x!==m):[...base,m];sel=null;probe=null;select(null);return}
     if(t.dataset.key){
