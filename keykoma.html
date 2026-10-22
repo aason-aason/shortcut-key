@@ -97,7 +97,7 @@ button:disabled{opacity:.35;cursor:default}
 .lcd-now .cmb{font-size:16px;letter-spacing:.06em;text-shadow:var(--glow)}
 .lcd-now .cmb .m{font-style:normal}
 .lcd-mn{min-height:18px;font-size:11.5px;line-height:1.5;opacity:.78;position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.soft{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.soft{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
 .sk{height:32px;border-radius:calc(var(--kr) + 2px);background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 2px 0 var(--key-edge);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;transition:transform .06s}
 .sk:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
 .sk[aria-pressed="true"]{background:var(--lit);color:var(--lit-ink);box-shadow:0 2px 0 var(--key-edge)}
@@ -262,7 +262,6 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
       </div>
       <div class="soft">
         <button class="sk" id="skStar" disabled aria-pressed="false"><span class="s">★</span>マイ</button>
-        <button class="sk" id="skLearn" disabled aria-pressed="false">✓ 覚えた</button>
         <button class="sk" id="skMemo" disabled>✎ メモ</button>
       </div>
     </div>
@@ -491,9 +490,8 @@ function setNow(){
   else now.innerHTML=`<span class="dim">言葉で探すか、下から選ぶ</span>`;
   $('#lcdMn').textContent=s?(s.mn?'覚え方　'+s.mn:sceneName(s.scene)+' › '+s.sub):'';
   $('#lcdMode').textContent=s?(br.scene&&!$('#q').value?'SCENE · '+(SCENES.find(x=>x.id===br.scene)||{}).code:'SELECT'):($('#q').value?'SEARCH':'READY');
-  for(const id of ['skStar','skLearn','skMemo'])$('#'+id).disabled=!s;
+  for(const id of ['skStar','skMemo'])$('#'+id).disabled=!s;
   $('#skStar').setAttribute('aria-pressed',!!s&&S.star.includes(sel));
-  $('#skLearn').setAttribute('aria-pressed',!!s&&S.learned.includes(sel));
   $('#skMemo').dataset.has=s&&S.memo[sel]?'1':'';
 }
 
@@ -584,7 +582,7 @@ function renderBranch(){
 /* ---------- my ---------- */
 function renderMy(){
   const ids=myTab==='star'?S.star:myTab==='learned'?S.learned:myTab==='recent'?S.recent:Object.keys(S.memo).filter(k=>S.memo[k]);
-  const msg={star:'「★ マイ」を押すと、ここに追加されます',learned:'「✓ 覚えた」を押すと、ここに並びます',memo:'「✎ メモ」を押すと、自分のメモを書けます',recent:'選んだショートカットがここに残ります'}[myTab];
+  const msg={star:'「★ マイ」を押すと、ここに追加されます',learned:'練習モードで覚えたものが、ここに並びます（練習モードは準備中）',memo:'「✎ メモ」を押すと、自分のメモを書けます',recent:'選んだショートカットがここに残ります'}[myTab];
   $('#myList').innerHTML=ids.filter(id=>BY[id]).map(id=>rowHTML(BY[id])).join('')||`<div class="empty">${msg}</div>`;
   $$('#myTabs .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.t===myTab));
 }
@@ -653,7 +651,6 @@ document.addEventListener('click',e=>{
   if(t.dataset.crumb==='scene'){br.sub=null;renderBranch();return}
   if(t.dataset.t){myTab=t.dataset.t;renderMy();return}
   if(t.id==='skStar'){if(!sel)return;const on=!S.star.includes(sel);S.star=on?[sel,...S.star]:S.star.filter(x=>x!==sel);save();setNow();toast(on?'マイリストに追加しました':'マイリストから外しました');if(current==='my')renderMy();return}
-  if(t.id==='skLearn'){if(!sel)return;const on=!S.learned.includes(sel);S.learned=on?[sel,...S.learned]:S.learned.filter(x=>x!==sel);save();setNow();toast(on?'覚えたに追加しました':'覚えたから外しました');if(current==='my')renderMy();return}
   if(t.id==='skMemo'){if(sel)openMemo(sel);return}
   if(t.id==='expBtn'||t.id==='impBtn'){toast('モックアップでは動きません');return}
   if(t.dataset.id)select(t.dataset.id,true);
