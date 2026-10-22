@@ -684,8 +684,8 @@ document.addEventListener('click',e=>{
     }
     if(t.dataset.key){
       const k=t.dataset.key,cur=sel&&BY[sel],lit=cur&&!cur.pad?(FN[keyOf(cur)]||keyOf(cur)):probe;
-      // 光っているキーをもう一度押すと、修飾キーも含めて選択を解除する
-      if(lit&&k===lit){mods=[];select(null);return}
+      // 光っているキーをもう一度押すと、そのキーだけ外す（修飾キーは残す）
+      if(lit&&k===lit){mods=cur?[...cur.mods]:mods;select(null);return}
       const base=sel?BY[sel].mods:mods;mods=[...base];
       const s=lookup(k,mods);
       if(s){select(s.id,true)}else{sel=null;probe=k;paintMain();setNow();$$('[data-id]').forEach(el=>el.classList.remove('sel'))}
