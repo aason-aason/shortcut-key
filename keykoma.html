@@ -656,7 +656,8 @@ document.addEventListener('click',e=>{
   if(t.dataset.id)select(t.dataset.id,true);
 });
 $('#q').addEventListener('input',()=>renderSearch(true));
-$('#q').addEventListener('keydown',e=>{if(e.key==='Escape'){e.target.value='';renderSearch(true)}if(e.key==='Enter')e.target.blur()});
+$('#q').addEventListener('keydown',e=>{if(e.key==='Escape'){e.target.value='';renderSearch(true)}if(e.key==='Enter'&&!e.isComposing&&e.keyCode!==229)e.target.blur()});
+// ↑ 日本語入力で変換を確定するエンターでは離れない（確定中に離れると文字が二重に入るため）
 $('#shMemo').addEventListener('input',e=>{if(!openId)return;S.memo[openId]=e.target.value;save()});
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&$('#scrim').classList.contains('open'))return closeSheets();
