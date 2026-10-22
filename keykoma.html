@@ -1,0 +1,705 @@
+<title>キーコマ帳</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Mono:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Zen+Old+Mincho:wght@400;700;900&display=swap">
+<style>
+/* Layout: portrait = sticky "deck" (LCD search + soft keys + keyboard) above a scrolling branch/results area;
+   landscape or wide = left column (LCD + results) beside a large sticky keyboard, tabs become a left rail. */
+:root{
+  --bg:#E3E5E8; --bg2:#D8DBDF; --panel:#F2F3F4; --ink:#16181B; --sub:#5B616A; --line:#C8CCD1;
+  --key:#FBFBFC; --key-ink:#23262B; --key-edge:#B4B9C0; --tray:#CDD1D6;
+  --lcd-bg:#1A1E19; --lcd-ink:#C8F25C; --lcd-dim:#56683A;
+  --lit:#16181B; --lit-ink:#C8F25C;
+  --cmd:#2D66F5; --opt:#13915A; --shift:#E8710F; --ctrl:#D9335F; --on-mod:#FFFFFF; --star:#D99A0B;
+  --r:14px; --kr:6px; --bdw:1px;
+  --glow:0 0 10px color-mix(in srgb,var(--lcd-ink) 45%,transparent);
+  --scan:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.18) 2px 3px);
+  --f-lcd:"DotGothic16","Osaka-Mono",monospace;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-disp:"Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+  --f-key:"IBM Plex Mono",ui-monospace,"SF Mono",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#101214; --bg2:#0A0B0D; --panel:#191C1F; --ink:#ECEEF0; --sub:#8C939B; --line:#2A2F34;
+  --key:#25292D; --key-ink:#DDE1E5; --key-edge:#07080A; --tray:#0C0E10;
+  --lcd-bg:#0A0D0B; --lcd-ink:#FF9A3C; --lcd-dim:#6A4019; --lit:#F2F4F6; --lit-ink:#101214;
+  --cmd:#5E8DFF; --opt:#35C77C; --shift:#FFA047; --ctrl:#FF5F8B; --on-mod:#0E1012; --star:#FFC23D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101214; --bg2:#0A0B0D; --panel:#191C1F; --ink:#ECEEF0; --sub:#8C939B; --line:#2A2F34;
+  --key:#25292D; --key-ink:#DDE1E5; --key-edge:#07080A; --tray:#0C0E10;
+  --lcd-bg:#0A0D0B; --lcd-ink:#FF9A3C; --lcd-dim:#6A4019; --lit:#F2F4F6; --lit-ink:#101214;
+  --cmd:#5E8DFF; --opt:#35C77C; --shift:#FFA047; --ctrl:#FF5F8B; --on-mod:#0E1012; --star:#FFC23D; color-scheme:dark}
+
+/* ===== Skins: each sets the whole token set on body, so it wins over the system theme ===== */
+body[data-skin="alu"]{--bg:#E3E5E8;--bg2:#D8DBDF;--panel:#F2F3F4;--ink:#16181B;--sub:#5B616A;--line:#C8CCD1;--key:#FBFBFC;--key-ink:#23262B;--key-edge:#B4B9C0;--tray:#CDD1D6;--lcd-bg:#1A1E19;--lcd-ink:#C8F25C;--lcd-dim:#56683A;--lit:#16181B;--lit-ink:#C8F25C;--cmd:#2D66F5;--opt:#13915A;--shift:#E8710F;--ctrl:#D9335F;--on-mod:#FFFFFF;--star:#D99A0B;color-scheme:light}
+body[data-skin="studio"]{--bg:#101214;--bg2:#0A0B0D;--panel:#191C1F;--ink:#ECEEF0;--sub:#8C939B;--line:#2A2F34;--key:#25292D;--key-ink:#DDE1E5;--key-edge:#07080A;--tray:#0C0E10;--lcd-bg:#0A0D0B;--lcd-ink:#FF9A3C;--lcd-dim:#6A4019;--lit:#F2F4F6;--lit-ink:#101214;--cmd:#5E8DFF;--opt:#35C77C;--shift:#FFA047;--ctrl:#FF5F8B;--on-mod:#0E1012;--star:#FFC23D;color-scheme:dark}
+body[data-skin="console"]{--bg:#4B5763;--bg2:#3E4852;--panel:#56636F;--ink:#F1F4F6;--sub:#C3CCD4;--line:#6B7884;--key:#DCE1E5;--key-ink:#1E252B;--key-edge:#29313A;--tray:#353E47;--lcd-bg:#0C1820;--lcd-ink:#7FE3FF;--lcd-dim:#2A5566;--lit:#F7E15A;--lit-ink:#1E252B;--cmd:#3D7BFF;--opt:#1FB86A;--shift:#FF8A1F;--ctrl:#F0436E;--on-mod:#FFFFFF;--star:#F7E15A;color-scheme:dark}
+body[data-skin="score"]{--bg:#FFFFFF;--bg2:#FFFFFF;--panel:#FFFFFF;--ink:#111111;--sub:#6A6A6A;--line:#1A1A1A;--key:#FFFFFF;--key-ink:#111111;--key-edge:#111111;--tray:#FFFFFF;--lcd-bg:#FFFFFF;--lcd-ink:#111111;--lcd-dim:#9A9A9A;--lit:#C8102E;--lit-ink:#FFFFFF;--cmd:#1F4FBF;--opt:#1D7A47;--shift:#C25A0E;--ctrl:#9E1B6B;--on-mod:#FFFFFF;--star:#C8102E;--staff:#E1E1E1;--r:2px;--kr:3px;--glow:none;--scan:none;--f-lcd:"Zen Old Mincho","Hiragino Mincho ProN",serif;--f-body:"Zen Old Mincho","Hiragino Mincho ProN",serif;--f-disp:"Zen Old Mincho","Hiragino Mincho ProN",serif;color-scheme:light}
+body[data-skin="gameboy"]{--bg:#9BBC0F;--bg2:#9BBC0F;--panel:#8BAC0F;--ink:#0F380F;--sub:#306230;--line:#306230;--key:#9BBC0F;--key-ink:#0F380F;--key-edge:#306230;--tray:#8BAC0F;--lcd-bg:#8BAC0F;--lcd-ink:#0F380F;--lcd-dim:#4F7A2A;--lit:#0F380F;--lit-ink:#9BBC0F;--cmd:#306230;--opt:#306230;--shift:#306230;--ctrl:#306230;--on-mod:#9BBC0F;--star:#0F380F;--r:0px;--kr:0px;--bdw:2px;--glow:none;--scan:repeating-linear-gradient(0deg,transparent 0 3px,rgba(15,56,15,.08) 3px 4px);--f-lcd:"DotGothic16",monospace;--f-body:"DotGothic16",monospace;--f-disp:"DotGothic16",monospace;--f-key:"DotGothic16",monospace;color-scheme:light}
+body[data-skin="scope"]{--bg:#050806;--bg2:#000000;--panel:#0A110C;--ink:#BFFFD0;--sub:#5A9A6B;--line:#163A21;--key:#07100A;--key-ink:#8CFFA8;--key-edge:#123020;--tray:#030604;--lcd-bg:#020403;--lcd-ink:#59FF8A;--lcd-dim:#1F6232;--lit:#59FF8A;--lit-ink:#021006;--cmd:#66B3FF;--opt:#B6FF6A;--shift:#FFD25A;--ctrl:#FF6A8E;--on-mod:#021006;--star:#FFD25A;--r:6px;--kr:4px;--glow:0 0 8px rgba(89,255,138,.7);--scan:linear-gradient(rgba(89,255,138,.10) 1px,transparent 1px) 0 0/100% 18px,linear-gradient(90deg,rgba(89,255,138,.10) 1px,transparent 1px) 0 0/18px 100%;--f-lcd:"IBM Plex Mono",monospace;color-scheme:dark}
+body[data-skin="piano"]{--bg:#0B0B0C;--bg2:#18181B;--panel:#141416;--ink:#F4EFE6;--sub:#9C968C;--line:#2A2A2D;--key:#F6F1E7;--key-ink:#1A1A1A;--key-edge:#B9B09F;--tray:#050505;--lcd-bg:#050505;--lcd-ink:#F6F1E7;--lcd-dim:#57524A;--lit:#B3122E;--lit-ink:#FFFFFF;--cmd:#4F7BFF;--opt:#2FB574;--shift:#F08A2A;--ctrl:#E0457B;--on-mod:#FFFFFF;--star:#D9B35A;--r:10px;--kr:4px;--glow:none;--scan:none;--f-disp:"Zen Old Mincho",serif;--f-lcd:"Zen Old Mincho",serif;color-scheme:dark}
+body[data-skin="tube"]{--bg:#161311;--bg2:#0F0D0B;--panel:#1F1A16;--ink:#EFE3C8;--sub:#AA997C;--line:#7A6236;--key:#2A231D;--key-ink:#EFE3C8;--key-edge:#0A0806;--tray:#0E0B09;--lcd-bg:#140A03;--lcd-ink:#FFB35C;--lcd-dim:#6A4416;--lit:#FFB35C;--lit-ink:#1A0F05;--cmd:#7EA0FF;--opt:#69D39A;--shift:#FF9F4A;--ctrl:#FF7096;--on-mod:#140C06;--star:#E2B65A;--r:8px;--glow:0 0 14px rgba(255,150,60,.75);--f-disp:"Zen Old Mincho",serif;color-scheme:dark}
+body[data-skin="braun"]{--bg:#ECECEA;--bg2:#E4E4E1;--panel:#F8F8F7;--ink:#1D1D1D;--sub:#737373;--line:#D2D2CF;--key:#FFFFFF;--key-ink:#2A2A2A;--key-edge:#C2C2BF;--tray:#DCDCD9;--lcd-bg:#2B2B2B;--lcd-ink:#F2F2F0;--lcd-dim:#777777;--lit:#F2C200;--lit-ink:#1D1D1D;--cmd:#2E64D8;--opt:#2E9B5F;--shift:#E0731B;--ctrl:#D23C5E;--on-mod:#FFFFFF;--star:#E0A800;--r:20px;--kr:10px;--glow:none;--scan:none;--f-lcd:"Zen Kaku Gothic New",sans-serif;color-scheme:light}
+body[data-skin="synth"]{--bg:#1A0B2E;--bg2:#2B0F45;--panel:#241040;--ink:#F7E9FF;--sub:#B79BD6;--line:#43246A;--key:#2A1348;--key-ink:#F3DDFF;--key-edge:#0D0418;--tray:#12061F;--lcd-bg:#0C0418;--lcd-ink:#FF4FD8;--lcd-dim:#6A2766;--lit:#29E6FF;--lit-ink:#0C0418;--cmd:#29A8FF;--opt:#3CFFB0;--shift:#FFB547;--ctrl:#FF4F8B;--on-mod:#0C0418;--star:#FFE14F;--r:12px;--glow:0 0 12px rgba(255,79,216,.85);color-scheme:dark}
+body[data-skin="urushi"]{--bg:#0E0B0A;--bg2:#1A0F0C;--panel:#18110F;--ink:#F2E8DA;--sub:#A38F7C;--line:#3A2820;--key:#1E1512;--key-ink:#F2E8DA;--key-edge:#040202;--tray:#0A0706;--lcd-bg:#0A0605;--lcd-ink:#E8452C;--lcd-dim:#5E2216;--lit:#D93A22;--lit-ink:#FFF4E8;--cmd:#7C9BE8;--opt:#4FB38A;--shift:#E59A3A;--ctrl:#E06A8A;--on-mod:#0E0B0A;--star:#C9A45C;--r:3px;--kr:3px;--glow:none;--scan:none;--f-lcd:"Zen Old Mincho",serif;--f-body:"Zen Old Mincho",serif;--f-disp:"Zen Old Mincho",serif;color-scheme:dark}
+body[data-skin="hc"]{--bg:#FFFFFF;--bg2:#FFFFFF;--panel:#FFFFFF;--ink:#000000;--sub:#000000;--line:#000000;--key:#FFFFFF;--key-ink:#000000;--key-edge:#000000;--tray:#FFFFFF;--lcd-bg:#000000;--lcd-ink:#FFFFFF;--lcd-dim:#9A9A9A;--lit:#000000;--lit-ink:#FFFFFF;--cmd:#0038E0;--opt:#006B2D;--shift:#A84300;--ctrl:#B0003A;--on-mod:#FFFFFF;--star:#000000;--bdw:2px;--glow:none;--scan:none;color-scheme:light}
+
+/* skin textures */
+body[data-skin="score"]{background-image:linear-gradient(180deg,transparent 40px,var(--staff) 40px 41px,transparent 41px 48px,var(--staff) 48px 49px,transparent 49px 56px,var(--staff) 56px 57px,transparent 57px 64px,var(--staff) 64px 65px,transparent 65px 72px,var(--staff) 72px 73px,transparent 73px)!important;background-size:100% 104px!important}
+body[data-skin="tube"]{background-image:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1.6px),linear-gradient(180deg,var(--bg),var(--bg2))!important;background-size:4px 4px,auto!important}
+body[data-skin="synth"]{background-image:linear-gradient(0deg,rgba(255,79,216,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(41,230,255,.07) 1px,transparent 1px),linear-gradient(180deg,var(--bg),var(--bg2))!important;background-size:100% 44px,44px 100%,auto!important}
+body[data-skin="piano"]{background-image:linear-gradient(160deg,#1E1E21 0%,var(--bg) 42%,var(--bg2) 100%)!important}
+body[data-skin="score"] .lcd{box-shadow:inset 0 2px 0 var(--ink),inset 0 -2px 0 var(--ink)!important;border-radius:0}
+body[data-skin="score"] .k{box-shadow:inset 0 0 0 1.2px var(--ink)!important}
+body[data-skin="score"] .kbwrap{background:transparent;box-shadow:none}
+body[data-skin="gameboy"] .lcd{box-shadow:inset 0 0 0 3px var(--ink)!important}
+body[data-skin="scope"] .k{box-shadow:inset 0 0 0 1px var(--line)!important}
+body[data-skin="scope"] .k.lit{box-shadow:0 0 12px var(--lit)!important}
+body[data-skin="tube"] .panelish{box-shadow:inset 0 0 0 1px var(--line)}
+body[data-skin="tube"] .lcd{box-shadow:inset 0 0 0 1px var(--line),inset 0 0 30px rgba(255,140,40,.15)!important}
+body[data-skin="synth"] .k.lit{box-shadow:0 0 14px var(--lit)!important}
+body[data-skin="hc"] .k{box-shadow:inset 0 0 0 2px #000!important}
+body[data-skin="piano"] .kbwrap{box-shadow:inset 0 0 0 1px #2A2A2D,inset 0 6px 0 #8E1024}
+body[data-skin="urushi"] .lcd{box-shadow:inset 0 0 0 1px #6B5530!important}
+body[data-skin="console"] .k[data-mod]{box-shadow:0 2px 0 var(--key-edge),inset 0 -3px 0 var(--mc,transparent)}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background-color:var(--bg);background-image:linear-gradient(180deg,var(--bg),var(--bg2));background-attachment:fixed;color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--lit);outline-offset:2px}
+button:disabled{opacity:.35;cursor:default}
+
+.app{max-width:480px;margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:12px calc(100px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:baseline;gap:8px;min-width:0}
+.brand b{font-family:var(--f-disp);font-weight:900;font-size:20px;letter-spacing:.02em}
+.brand small{font-family:var(--f-key);font-size:10px;color:var(--sub);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.skinbtn{display:flex;align-items:center;gap:7px;font-size:12px;padding:5px 10px 5px 6px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);white-space:nowrap}
+.skinbtn i{width:16px;height:16px;border-radius:50%;background:conic-gradient(var(--cmd) 0 25%,var(--opt) 0 50%,var(--shift) 0 75%,var(--ctrl) 0);display:inline-block}
+
+/* deck */
+.deck{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;display:flex;flex-direction:column;gap:8px;
+  margin-inline:-16px;padding:8px 16px 10px;background:var(--bg);border-bottom:var(--bdw) solid var(--line)}
+.lcdbox{display:flex;flex-direction:column;gap:6px}
+.lcd{background:var(--lcd-bg);color:var(--lcd-ink);border-radius:var(--r);padding:9px 14px 9px;font-family:var(--f-lcd);position:relative;overflow:hidden;
+  box-shadow:inset 0 2px 0 rgba(0,0,0,.35),0 1px 0 var(--key);display:flex;flex-direction:column;gap:2px}
+.lcd::after{content:"";position:absolute;inset:0;pointer-events:none;background:var(--scan)}
+.lcd-row{display:flex;justify-content:space-between;gap:10px;font-size:10px;letter-spacing:.14em;opacity:.7}
+.lcd input{all:unset;font-family:var(--f-lcd);font-size:20px;line-height:1.4;color:var(--lcd-ink);caret-color:var(--lcd-ink);text-shadow:var(--glow);width:100%;min-width:0;position:relative;z-index:1}
+.lcd input::placeholder{color:var(--lcd-dim);text-shadow:none;opacity:1}
+.lcd input::-webkit-search-cancel-button{display:none}
+.lcd-now{display:flex;align-items:center;gap:10px;min-height:24px;font-size:13px;position:relative;z-index:1;overflow:hidden;white-space:nowrap}
+.lcd-now .nm{overflow:hidden;text-overflow:ellipsis;text-shadow:var(--glow)}
+.lcd-now .dim{color:var(--lcd-dim)}
+.lcd-now .cmb{font-size:16px;letter-spacing:.06em;text-shadow:var(--glow)}
+.lcd-now .cmb .m{font-style:normal}
+.soft{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.sk{height:32px;border-radius:calc(var(--kr) + 2px);background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 2px 0 var(--key-edge);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;transition:transform .06s}
+.sk:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.sk[aria-pressed="true"]{background:var(--lit);color:var(--lit-ink);box-shadow:0 2px 0 var(--key-edge)}
+.sk .s{color:var(--star)} .sk[aria-pressed="true"] .s{color:inherit}
+
+/* keyboard */
+.kbbox{display:flex;flex-direction:column;gap:6px}
+.kbwrap{background:var(--tray);border-radius:calc(var(--r) + 2px);padding:6px;box-shadow:inset 0 1px 0 rgba(0,0,0,.12)}
+.kb{display:flex;flex-direction:column;gap:3px;--kh:28px;--kf:10px}
+.kr{display:flex;gap:3px}
+.k{flex:1 1 0;min-width:0;height:var(--kh);border-radius:var(--kr);background:var(--key);color:var(--key-ink);font-family:var(--f-key);font-size:var(--kf);font-weight:500;
+  box-shadow:0 2px 0 var(--key-edge);display:grid;place-items:center;position:relative;transition:transform .08s, background .18s, color .18s;padding:0 1px;overflow:hidden;white-space:nowrap}
+.k.small{font-size:calc(var(--kf) * .8)}
+.k.has::after{content:"";position:absolute;left:50%;bottom:3px;width:10px;height:2px;margin-left:-5px;border-radius:2px;background:var(--sub);opacity:.8}
+.k.lit{background:var(--lit);color:var(--lit-ink);transform:translateY(2px);box-shadow:0 0 0 var(--key-edge)}
+.k.probe{background:color-mix(in srgb,var(--sub) 40%,var(--key))}
+.k[data-mod].on{transform:translateY(2px);box-shadow:0 0 0 var(--key-edge);color:var(--on-mod)}
+.k[data-mod="cmd"]{--mc:var(--cmd)} .k[data-mod="opt"]{--mc:var(--opt)} .k[data-mod="shift"]{--mc:var(--shift)} .k[data-mod="ctrl"]{--mc:var(--ctrl)}
+.k[data-mod].on{background:var(--mc)}
+.arrows{display:flex;flex-direction:column;gap:2px;flex:1 1 0;min-width:0}
+.arrows .k{height:calc((var(--kh) - 2px) / 2);font-size:calc(var(--kf) * .75)}
+.kbbar{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.seg{display:inline-flex;background:var(--panel);border-radius:999px;padding:2px;box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.seg button{font-family:var(--f-key);font-size:10.5px;padding:3px 11px;border-radius:999px;color:var(--sub)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.hint{font-size:11.5px;color:var(--sub);line-height:1.5}
+.kb.static .k{pointer-events:none}
+
+/* combo text (quiet) */
+.cmb{font-family:var(--f-key);font-weight:600;white-space:nowrap}
+.cmb .m{font-style:normal;margin-right:1px}
+.m.cmd{color:var(--cmd)} .m.opt{color:var(--opt)} .m.shift{color:var(--shift)} .m.ctrl{color:var(--ctrl)}
+.pill{display:inline-flex;align-items:center;gap:1px;padding:3px 9px;border-radius:calc(var(--kr) + 2px);background:var(--key);color:var(--key-ink);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 1.5px 0 var(--key-edge);font-size:12.5px}
+.lcd .m.cmd,.lcd .m.opt,.lcd .m.shift,.lcd .m.ctrl{text-shadow:none}
+
+/* content */
+.label{font-family:var(--f-key);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.label em{font-style:normal;font-family:var(--f-body);letter-spacing:0;text-transform:none;font-size:11px}
+section{display:flex;flex-direction:column;gap:10px}
+.crumb{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:13px;color:var(--sub)}
+.crumb button{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.crumb .here{color:var(--ink);font-weight:700}
+
+.pads{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.pad{position:relative;background:var(--panel);border-radius:var(--r);padding:12px 13px 11px;min-height:86px;display:flex;flex-direction:column;gap:2px;
+  box-shadow:inset 0 0 0 var(--bdw) var(--line),0 3px 0 var(--key-edge);transition:transform .07s, box-shadow .07s}
+.pad:active{transform:translateY(3px);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.pad .code{font-family:var(--f-lcd);font-size:11px;letter-spacing:.16em;color:var(--sub)}
+.pad .nm{font-family:var(--f-disp);font-weight:900;font-size:16.5px;line-height:1.3}
+.pad .ct{font-size:11px;color:var(--sub);margin-top:auto;font-variant-numeric:tabular-nums}
+.pad .led{position:absolute;top:12px;right:12px;width:6px;height:6px;border-radius:50%;background:var(--line)}
+.pad.feature .led{background:var(--lit);box-shadow:0 0 8px var(--lit)}
+.subpads{display:flex;flex-wrap:wrap;gap:6px}
+.subpad{font-size:13px;font-weight:700;padding:8px 13px;border-radius:calc(var(--kr) + 4px);background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 2px 0 var(--key-edge)}
+.subpad[aria-pressed="true"]{background:var(--lit);color:var(--lit-ink);transform:translateY(2px);box-shadow:none}
+
+.cands{display:flex;flex-direction:column;gap:8px}
+.cand{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--panel);border-radius:var(--r);padding:11px 13px;box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.cand .rank{font-family:var(--f-lcd);font-size:20px;color:var(--sub);width:20px;text-align:center}
+.cand .nm{font-weight:700;font-size:15px;line-height:1.35}
+.cand .why{font-size:11px;color:var(--sub);margin-top:1px}
+.cand.sel{box-shadow:inset 0 0 0 2px var(--lit)}
+.cand.sel .rank{color:var(--ink)}
+.list{display:flex;flex-direction:column;background:var(--panel);border-radius:var(--r);box-shadow:inset 0 0 0 var(--bdw) var(--line);overflow:hidden}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 13px;border-top:var(--bdw) solid var(--line);position:relative}
+.row:first-child{border-top:0}
+.row .nm{font-size:14px;min-width:0}
+.row .st{color:var(--star);font-size:11px;margin-left:5px}
+.row.sel{background:color-mix(in srgb,var(--lit) 14%,var(--panel))}
+.row.sel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--lit)}
+.empty{color:var(--sub);font-size:13px;padding:14px;text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;padding:4px 11px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);box-shadow:none}
+.today{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--panel);border-radius:var(--r);padding:12px 13px;box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.today .nm{font-weight:900;font-family:var(--f-disp);font-size:16px}
+.today .mn{display:block;font-size:11.5px;color:var(--sub);font-weight:400;font-family:var(--f-body)}
+.card{background:var(--panel);border-radius:var(--r);padding:16px;box-shadow:inset 0 0 0 var(--bdw) var(--line);display:flex;flex-direction:column;gap:10px}
+.card h2{margin:0;font-family:var(--f-disp);font-size:19px;font-weight:900}
+.card ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px;font-size:14px}
+.badge{align-self:flex-start;font-family:var(--f-key);font-size:10px;letter-spacing:.12em;padding:2px 8px;border-radius:999px;background:var(--lit);color:var(--lit-ink)}
+.datab{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font-size:13px;padding:8px 14px;border-radius:10px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.mock{font-size:11px;color:var(--sub);text-align:center;line-height:1.7}
+
+/* tab bar = transport buttons */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:var(--bdw) solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.tabbar .in{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tb{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0 6px;border-radius:calc(var(--kr) + 4px);background:var(--panel);
+  box-shadow:inset 0 0 0 var(--bdw) var(--line),0 3px 0 var(--key-edge);color:var(--sub);font-size:10.5px;font-weight:700;position:relative;transition:transform .07s}
+.tb svg{width:20px;height:20px}
+.tb .led{position:absolute;top:6px;right:10px;width:5px;height:5px;border-radius:50%;background:var(--line)}
+.tb[aria-selected="true"]{color:var(--ink);transform:translateY(2px);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 1px 0 var(--key-edge)}
+.tb[aria-selected="true"] .led{background:var(--lit);box-shadow:0 0 6px var(--lit)}
+
+/* sheets */
+.scrim{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.sheet.open{transform:none;pointer-events:auto}
+.sheet .in{max-width:560px;margin:0 auto;background:var(--bg);border-radius:22px 22px 0 0;max-height:88vh;overflow:auto;
+  padding:10px max(18px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;box-shadow:0 -10px 40px rgba(0,0,0,.3)}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto}
+.sh-path{font-size:12px;color:var(--sub)}
+.sh-name{font-family:var(--f-disp);font-size:22px;font-weight:900;line-height:1.3;text-wrap:balance}
+.bigcombo{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.bigcombo .cap{font-family:var(--f-key);font-weight:600;font-size:20px;min-width:50px;height:50px;padding:0 14px;border-radius:calc(var(--kr) + 6px);display:inline-grid;place-items:center;background:var(--key);color:var(--key-ink);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 3px 0 var(--key-edge)}
+.bigcombo .cap small{display:block;font-size:8.5px;font-weight:500;letter-spacing:.06em;color:var(--sub);margin-top:-6px}
+.bigcombo .cap.cmd{color:var(--cmd)} .bigcombo .cap.opt{color:var(--opt)} .bigcombo .cap.shift{color:var(--shift)} .bigcombo .cap.ctrl{color:var(--ctrl)}
+.mnemo{background:var(--lcd-bg);color:var(--lcd-ink);font-family:var(--f-lcd);border-radius:var(--r);padding:10px 14px;font-size:14px}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.act{height:44px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px}
+.act[aria-pressed="true"]{background:var(--lit);color:var(--lit-ink);box-shadow:none}
+.act .s{color:var(--star)} .act[aria-pressed="true"] .s{color:inherit}
+textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);padding:10px 12px;font:inherit;font-size:14px;color:var(--ink);resize:vertical}
+.skingrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.skt{display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:14px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.skt[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--ink)}
+.skt .pv{height:64px;border-radius:9px;position:relative;overflow:hidden;padding:7px;display:flex;flex-direction:column;gap:6px}
+.skt .pv .l{height:20px;border-radius:4px;font-family:"DotGothic16",monospace;font-size:11px;padding:0 6px;display:flex;align-items:center}
+.skt .pv .ks{display:flex;gap:3px}
+.skt .pv .ks i{flex:1;height:18px;border-radius:3px}
+.skt b{font-size:13.5px;line-height:1.2}
+.skt span{font-size:10.5px;color:var(--sub);line-height:1.4}
+.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);z-index:40;background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:13px;opacity:0;transition:.2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ===== landscape phone / wide screens ===== */
+@media (orientation:landscape) and (max-height:600px), (min-width:960px){
+  .app{max-width:1280px;display:grid;grid-template-columns:minmax(300px,.85fr) minmax(0,1.5fr);
+    grid-template-areas:"head kb" "lcd kb" "content kb";grid-template-rows:auto auto 1fr;column-gap:22px;row-gap:12px;align-items:start;
+    padding-left:calc(84px + env(safe-area-inset-left,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+  .deck{display:contents}
+  .top{grid-area:head}
+  .lcdbox{grid-area:lcd}
+  .kbbox{grid-area:kb;position:sticky;top:calc(12px + env(safe-area-inset-top,0px));align-self:start}
+  .view{grid-area:content;min-width:0}
+  .kb{--kh:clamp(34px,11.5vh,60px);--kf:13px}
+  .kbwrap{padding:10px;border-radius:calc(var(--r) + 6px)}
+  .kr{gap:5px} .kb{gap:5px}
+  .tabbar{right:auto;top:0;bottom:0;width:calc(72px + env(safe-area-inset-left,0px));border-top:0;border-right:var(--bdw) solid var(--line);
+    padding:calc(12px + env(safe-area-inset-top,0px)) 8px calc(12px + env(safe-area-inset-bottom,0px)) calc(8px + env(safe-area-inset-left,0px))}
+  .tabbar .in{grid-template-columns:1fr;grid-auto-rows:min-content;gap:10px}
+  .toast{bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+  .pads{grid-template-columns:repeat(2,1fr)}
+}
+@media (min-width:960px){ .kb{--kh:52px;--kf:13px} .pads{grid-template-columns:repeat(3,1fr)} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand"><b>キーコマ帳</b><small>Logic Pro 12</small></div>
+    <button class="skinbtn" id="skinBtn"><i></i><span id="skinName">自動</span></button>
+  </header>
+
+  <div class="deck" id="deck">
+    <div class="lcdbox">
+      <div class="lcd" id="lcd">
+        <div class="lcd-row"><span id="lcdMode">SEARCH</span><span id="lcdCount"></span></div>
+        <input id="q" type="search" placeholder="何をしたい？ 例：ミスった" autocomplete="off" aria-label="やりたいことで検索">
+        <div class="lcd-now" id="lcdNow" aria-live="polite"></div>
+      </div>
+      <div class="soft">
+        <button class="sk" id="skStar" disabled aria-pressed="false"><span class="s">★</span>マイ</button>
+        <button class="sk" id="skLearn" disabled aria-pressed="false">✓ 覚えた</button>
+        <button class="sk" id="skInfo" disabled>詳細 ▸</button>
+      </div>
+    </div>
+    <div class="kbbox">
+      <div class="kbwrap"><div class="kb" id="kb"></div></div>
+      <div class="kbbar">
+        <span class="hint" id="kbHint">キーをタップすると、その機能がわかります</span>
+        <div class="seg" id="layoutSeg"><button data-l="us" aria-pressed="true">US</button><button data-l="jis" aria-pressed="false">JIS</button></div>
+      </div>
+    </div>
+  </div>
+
+  <main id="v-search" class="view">
+    <section id="resultSec" hidden>
+      <div class="label">候補 TOP 3 <em id="resCount"></em></div>
+      <div class="cands" id="cands"></div>
+      <div class="list" id="moreList"></div>
+    </section>
+    <section id="branchSec">
+      <div class="crumb" id="crumb"></div>
+      <div id="branch"></div>
+    </section>
+  </main>
+
+  <main id="v-practice" class="view" hidden>
+    <section class="card">
+      <span class="badge">NEXT</span>
+      <h2>練習モード</h2>
+      <ol>
+        <li>「保存」のようなお題が出る</li>
+        <li>キーボード図をタップして答える</li>
+        <li>間違えたものほど、多めに出題される</li>
+      </ol>
+      <p class="hint">次の段階で作ります。お題の範囲は「よく使う」「マイリスト」「シーン別」から選べるようにする予定です。</p>
+    </section>
+  </main>
+
+  <main id="v-my" class="view" hidden>
+    <section>
+      <div class="chips" id="myTabs">
+        <button class="chip" data-t="star" aria-pressed="true">★ マイリスト</button>
+        <button class="chip" data-t="learned" aria-pressed="false">覚えた</button>
+        <button class="chip" data-t="memo" aria-pressed="false">メモあり</button>
+        <button class="chip" data-t="recent" aria-pressed="false">最近見た</button>
+      </div>
+      <div class="list" id="myList"></div>
+    </section>
+    <section>
+      <div class="label">データの引っ越し</div>
+      <div class="datab"><button class="btn" id="expBtn">書き出す</button><button class="btn" id="impBtn">読み込む</button></div>
+      <p class="hint">マイリスト・覚えた・メモは、この端末のブラウザに保存されます。別の端末やWeb版に移すときに使います。</p>
+    </section>
+    <p class="mock">モックアップ v2。収録は見本の33個です。<br>正式版では Apple 公式ガイドをもとに全部を収録します。</p>
+  </main>
+</div>
+
+<nav class="tabbar" role="tablist" aria-label="画面">
+  <div class="in">
+    <button class="tb" role="tab" data-v="search" aria-selected="true"><span class="led"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/></svg>さがす</button>
+    <button class="tb" role="tab" data-v="practice" aria-selected="false"><span class="led"></span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z"/></svg>練習</button>
+    <button class="tb" role="tab" data-v="my" aria-selected="false"><span class="led"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3.5 2.6 5.3 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.3-4.1 5.9-.8z"/></svg>マイ</button>
+  </div>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shName">
+  <div class="in">
+    <div class="grab"></div>
+    <div><div class="sh-path" id="shPath"></div><div class="sh-name" id="shName"></div></div>
+    <div class="bigcombo" id="shCombo"></div>
+    <div class="kbwrap"><div class="kb static" id="shKb"></div></div>
+    <div class="mnemo" id="shMnemo"></div>
+    <div class="acts">
+      <button class="act" id="shStar" aria-pressed="false"><span class="s">★</span>マイリスト</button>
+      <button class="act" id="shLearn" aria-pressed="false">✓ 覚えた</button>
+    </div>
+    <div><div class="label" style="margin-bottom:6px">自分のメモ</div><textarea id="shMemo" placeholder="自分用の覚え方や、変更した割り当てなど"></textarea></div>
+    <div id="shSimWrap"><div class="label" style="margin-bottom:6px">似ているキー</div><div class="list" id="shSim"></div></div>
+  </div>
+</div>
+<div class="sheet" id="skinSheet" role="dialog" aria-modal="true" aria-label="カラーを選ぶ">
+  <div class="in">
+    <div class="grab"></div>
+    <div class="sh-name">カラーを選ぶ</div>
+    <div id="skinGroups"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const MODS={ctrl:{sym:'⌃',name:'control'},opt:{sym:'⌥',name:'option'},shift:{sym:'⇧',name:'shift'},cmd:{sym:'⌘',name:'command'}};
+const ORDER=['ctrl','opt','shift','cmd'];
+
+const SKINS=[
+ {id:'auto',name:'自動',g:'基本',d:'端末のライト／ダークに合わせる',pv:['#E3E5E8','#1A1E19','#C8F25C','#FBFBFC','#16181B']},
+ {id:'hc',name:'ハイコントラスト',g:'基本',d:'白と黒だけ。屋外や見やすさ重視',pv:['#FFFFFF','#000000','#FFFFFF','#FFFFFF','#000000']},
+ {id:'alu',name:'アルミ',g:'機材',d:'明るい金属に緑の液晶',pv:['#E3E5E8','#1A1E19','#C8F25C','#FBFBFC','#16181B']},
+ {id:'studio',name:'スタジオ',g:'機材',d:'黒いボディにオレンジの液晶',pv:['#101214','#0A0D0B','#FF9A3C','#25292D','#F2F4F6']},
+ {id:'console',name:'コンソール',g:'機材',d:'大型ミキサー卓のブルーグレー',pv:['#4B5763','#0C1820','#7FE3FF','#DCE1E5','#F7E15A']},
+ {id:'score',name:'五線譜',g:'世界観',d:'白い紙と黒インク、赤鉛筆',pv:['#FFFFFF','#FFFFFF','#111111','#FFFFFF','#C8102E']},
+ {id:'gameboy',name:'ゲームボーイ',g:'世界観',d:'緑4色のドットの世界',pv:['#9BBC0F','#8BAC0F','#0F380F','#9BBC0F','#0F380F']},
+ {id:'scope',name:'オシロスコープ',g:'世界観',d:'黒い画面に光る蛍光グリーン',pv:['#050806','#020403','#59FF8A','#07100A','#59FF8A']},
+ {id:'piano',name:'グランドピアノ',g:'世界観',d:'艶のある黒と象牙、赤いフェルト',pv:['#0B0B0C','#050505','#F6F1E7','#F6F1E7','#B3122E']},
+ {id:'tube',name:'真空管アンプ',g:'世界観',d:'黒いレザーに金、灯る真空管',pv:['#161311','#140A03','#FFB35C','#2A231D','#FFB35C']},
+ {id:'braun',name:'白い家電',g:'世界観',d:'白とグレーに黄色をひとつ',pv:['#ECECEA','#2B2B2B','#F2F2F0','#FFFFFF','#F2C200']},
+ {id:'synth',name:'シンセウェイヴ',g:'世界観',d:'夜の紫にネオンのピンクと青',pv:['#1A0B2E','#0C0418','#FF4FD8','#2A1348','#29E6FF']},
+ {id:'urushi',name:'漆と朱',g:'世界観',d:'漆黒に朱。和楽器の世界',pv:['#0E0B0A','#0A0605','#E8452C','#1E1512','#D93A22']}
+];
+
+const SCENES=[
+ {id:'top',code:'TOP',name:'よく使うもの',feature:1},
+ {id:'rec',code:'REC',name:'録音する'},
+ {id:'play',code:'PLAY',name:'再生・移動する'},
+ {id:'edit',code:'EDIT',name:'編集する'},
+ {id:'midi',code:'MIDI',name:'打ち込む'},
+ {id:'mix',code:'MIX',name:'ミックスする'},
+ {id:'view',code:'VIEW',name:'画面を切り替える'},
+ {id:'track',code:'TRK',name:'トラックを作る'}
+];
+
+// 見本データ（正式版では Apple 公式ガイドから全件を作成）
+const SC=[
+ {id:'play',name:'再生／停止',key:'Space',mods:[],scene:'play',sub:'再生・停止',top:1,mn:'一番大きいキー＝一番よく使う操作',tags:'再生 停止 止める 止まる 流す 聴く 聞く 鳴らす プレイ スタート ストップ 一時停止 ポーズ play stop'},
+ {id:'rec',name:'録音を開始',key:'R',mods:[],scene:'rec',sub:'始める・止める',top:1,mn:'R ＝ Record',tags:'録音 レコーディング 録る 収録 歌を録る 宅録 録り始め 録音開始 rec record'},
+ {id:'recstop',name:'録音を停止',key:'Space',mods:[],scene:'rec',sub:'始める・止める',mn:'再生と同じスペースで止まる',tags:'録音停止 録音を止める 止める ストップ stop',alias:1},
+ {id:'home',name:'先頭へ移動',key:'Return',mods:[],scene:'play',sub:'移動',top:1,mn:'Return ＝ 最初に「戻る」',tags:'先頭 最初 頭 頭出し 戻る 始め スタート位置 ゼロ 曲頭 最初から beginning'},
+ {id:'barback',name:'1小節戻る',key:',',mods:[],scene:'play',sub:'移動',mn:'キーの「<」の向き＝左へ',tags:'戻る 巻き戻し 小節 前 左 少し戻る リワインド rewind'},
+ {id:'barfwd',name:'1小節進む',key:'.',mods:[],scene:'play',sub:'移動',mn:'キーの「>」の向き＝右へ',tags:'進む 早送り 小節 次 右 少し進む フォワード forward'},
+ {id:'cycle',name:'サイクル（ループ再生）',key:'C',mods:[],scene:'play',sub:'くり返す',top:1,mn:'C ＝ Cycle',tags:'サイクル ループ 繰り返し くり返し 反復 リピート 何度も 同じところ 区間 cycle loop repeat'},
+ {id:'cycleset',name:'選択範囲をサイクル範囲にする',key:'U',mods:['cmd'],scene:'play',sub:'くり返す',mn:'',tags:'サイクル範囲 ループ範囲 ロケータ 区間 範囲指定 locator'},
+ {id:'metro',name:'メトロノーム',key:'K',mods:[],scene:'rec',sub:'準備する',top:1,mn:'K ＝ Klick（ドイツ語のクリック）',tags:'メトロノーム クリック テンポ 拍 リズム ガイド カチカチ click metronome'},
+ {id:'mute',name:'トラックをミュート',key:'M',mods:[],scene:'mix',sub:'ミュート・ソロ',top:1,mn:'M ＝ Mute',tags:'ミュート 消音 音を消す 黙らせる 鳴らさない 無音 うるさい mute'},
+ {id:'solo',name:'トラックをソロ',key:'S',mods:[],scene:'mix',sub:'ミュート・ソロ',top:1,mn:'S ＝ Solo',tags:'ソロ 単独 それだけ聴く 1つだけ 一つだけ 他を消す solo'},
+ {id:'mixer',name:'ミキサーを表示',key:'X',mods:[],scene:'mix',sub:'画面',top:1,mn:'X ＝ miXer',tags:'ミキサー ミックス 音量 バランス フェーダー コンソール mixer'},
+ {id:'auto',name:'オートメーションを表示',key:'A',mods:[],scene:'mix',sub:'オートメーション',mn:'A ＝ Automation',tags:'オートメーション 自動 音量変化 フェード 線を書く automation'},
+ {id:'editor',name:'エディタを表示',key:'E',mods:[],scene:'view',sub:'パネル',mn:'E ＝ Editor',tags:'エディタ 編集画面 下の画面 詳細 editor'},
+ {id:'piano',name:'ピアノロールを表示',key:'P',mods:[],scene:'midi',sub:'画面',top:1,mn:'P ＝ Piano roll',tags:'ピアノロール 打ち込み ノート 音符 MIDI 鍵盤 piano roll'},
+ {id:'library',name:'ライブラリを表示',key:'Y',mods:[],scene:'view',sub:'パネル',mn:'',tags:'ライブラリ 音色 プリセット 楽器を選ぶ 音を変える サウンド library'},
+ {id:'smart',name:'Smart Controls を表示',key:'B',mods:[],scene:'view',sub:'パネル',mn:'',tags:'スマートコントロール つまみ ノブ 音作り エフェクト smart controls'},
+ {id:'inspector',name:'インスペクタを表示',key:'I',mods:[],scene:'view',sub:'パネル',mn:'I ＝ Inspector',tags:'インスペクタ 左のパネル 詳細 設定 プロパティ inspector'},
+ {id:'zoomfit',name:'選択範囲にズーム',key:'Z',mods:[],scene:'view',sub:'ズーム',mn:'Z ＝ Zoom',tags:'ズーム 拡大 見やすく 寄る フィット 画面に合わせる zoom'},
+ {id:'zoomin',name:'横方向に拡大',key:'→',mods:['cmd'],scene:'view',sub:'ズーム',mn:'→ で広げる',tags:'拡大 ズームイン 大きく 横 広げる zoom in'},
+ {id:'zoomout',name:'横方向に縮小',key:'←',mods:['cmd'],scene:'view',sub:'ズーム',mn:'← で縮める',tags:'縮小 ズームアウト 小さく 引く 全体を見る zoom out'},
+ {id:'tool',name:'ツールメニューを開く',key:'T',mods:[],scene:'edit',sub:'ツール',mn:'T ＝ Tool',tags:'ツール 道具 ハサミ 鉛筆 消しゴム カーソル tool'},
+ {id:'undo',name:'元に戻す',key:'Z',mods:['cmd'],scene:'edit',sub:'取り消す',top:1,mn:'Mac共通。どのアプリでも同じ',tags:'元に戻す 戻す 取り消し 取り消す やり直したい 間違えた ミス ミスった 失敗 アンドゥ ひとつ前 undo'},
+ {id:'redo',name:'やり直す（取り消しを戻す）',key:'Z',mods:['shift','cmd'],scene:'edit',sub:'取り消す',mn:'元に戻す ＋ ⇧ ＝ 逆向き',tags:'やり直す 戻しすぎ 取り消しを取り消す リドゥ redo'},
+ {id:'save',name:'保存',key:'S',mods:['cmd'],scene:'edit',sub:'保存する',top:1,mn:'Mac共通',tags:'保存 セーブ 上書き 残す save'},
+ {id:'saveas',name:'別名で保存',key:'S',mods:['shift','cmd'],scene:'edit',sub:'保存する',mn:'保存 ＋ ⇧ ＝ 別の名前で',tags:'別名 名前を付けて保存 コピーを保存 別ファイル save as'},
+ {id:'split',name:'再生ヘッドの位置で分割',key:'T',mods:['cmd'],scene:'edit',sub:'切る・つなぐ',top:1,mn:'',tags:'分割 切る カット ハサミ 分ける 切り離す 真っ二つ split cut'},
+ {id:'join',name:'リージョンを結合',key:'J',mods:['cmd'],scene:'edit',sub:'切る・つなぐ',mn:'J ＝ Join',tags:'結合 つなげる くっつける まとめる 合体 1つにする join merge'},
+ {id:'repeat',name:'リージョンを繰り返す',key:'R',mods:['cmd'],scene:'edit',sub:'増やす・伸ばす',mn:'R ＝ Repeat',tags:'繰り返す リピート 複製 コピー 増やす 並べる repeat'},
+ {id:'loopreg',name:'リージョンをループ',key:'L',mods:[],scene:'edit',sub:'増やす・伸ばす',mn:'L ＝ Loop',tags:'ループ 伸ばす 繰り返し リージョン 延長 loop'},
+ {id:'quant',name:'クオンタイズ',key:'Q',mods:[],scene:'midi',sub:'タイミング',top:1,mn:'Q ＝ Quantize',tags:'クオンタイズ ずれ ズレ 揃える そろえる タイミング 補正 リズムを直す quantize'},
+ {id:'musical',name:'ミュージカルタイピング',key:'K',mods:['cmd'],scene:'midi',sub:'入力',mn:'K ＝ Keyboard',tags:'ミュージカルタイピング キーボードで弾く PCで演奏 鍵盤がない 入力 musical typing'},
+ {id:'newtrack',name:'新規トラック',key:'N',mods:['opt','cmd'],scene:'track',sub:'作る',top:1,mn:'N ＝ New',tags:'新規 トラック 追加 作る 増やす 新しい new track'},
+ {id:'duptrack',name:'同じ設定でトラックを追加',key:'D',mods:['cmd'],scene:'track',sub:'作る',mn:'D ＝ Duplicate',tags:'複製 同じ設定 コピー トラック 増やす duplicate'}
+];
+const BY=Object.fromEntries(SC.map(s=>[s.id,s]));
+const PAIRS=[['zoomin','zoomout'],['barback','barfwd'],['cycle','cycleset'],['undo','redo'],['save','saveas']];
+
+/* ---------- storage ---------- */
+const store={
+  get(k,d){try{const v=localStorage.getItem('kk2_'+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem('kk2_'+k,JSON.stringify(v))}catch(e){}}
+};
+const S={star:store.get('star',[]),learned:store.get('learned',[]),memo:store.get('memo',{}),recent:store.get('recent',[]),skin:store.get('skin','auto'),layout:store.get('layout','us')};
+function save(){for(const k in S)store.set(k,S[k])}
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sortMods=m=>ORDER.filter(o=>m.includes(o));
+const sameMods=(a,b)=>sortMods(a).join()===sortMods(b).join();
+const cmbHTML=(mods,key)=>`<span class="cmb">${sortMods(mods).map(m=>`<i class="m ${m}">${MODS[m].sym}</i>`).join('')}${esc(key)}</span>`;
+const pill=s=>`<span class="pill">${cmbHTML(s.mods,s.key)}</span>`;
+const sceneName=id=>(SCENES.find(x=>x.id===id)||{}).name||'';
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1600)}
+
+/* ---------- state ---------- */
+let current='search', sel=null, mods=[], probe=null, br={scene:null,sub:null}, myTab='star', openId=null;
+
+/* ---------- keyboard ---------- */
+const LAYOUTS={
+ us:[
+  [['`'],['1'],['2'],['3'],['4'],['5'],['6'],['7'],['8'],['9'],['0'],['-'],['='],['Delete',1.5,'delete']],
+  [['Tab',1.5,'tab'],['Q'],['W'],['E'],['R'],['T'],['Y'],['U'],['I'],['O'],['P'],['['],[']'],['\\']],
+  [['Caps',1.75,'caps'],['A'],['S'],['D'],['F'],['G'],['H'],['J'],['K'],['L'],[';'],["'"],['Return',1.75,'return']],
+  [['shift',2.25,'⇧','shift'],['Z'],['X'],['C'],['V'],['B'],['N'],['M'],[','],['.'],['/'],['shift',2.25,'⇧','shift']],
+  [['fn',1,'fn'],['ctrl',1,'⌃','ctrl'],['opt',1,'⌥','opt'],['cmd',1.25,'⌘','cmd'],['Space',5,'space'],['cmd',1.25,'⌘','cmd'],['opt',1,'⌥','opt'],['ARROWS',3]]
+ ],
+ jis:[
+  [['1'],['2'],['3'],['4'],['5'],['6'],['7'],['8'],['9'],['0'],['-'],['^'],['¥'],['Delete',1.5,'delete']],
+  [['Tab',1.5,'tab'],['Q'],['W'],['E'],['R'],['T'],['Y'],['U'],['I'],['O'],['P'],['@'],['['],['Return',1,'⏎']],
+  [['ctrl',1.75,'⌃','ctrl'],['A'],['S'],['D'],['F'],['G'],['H'],['J'],['K'],['L'],[';'],[':'],[']'],['Return',.75,'']],
+  [['shift',2.25,'⇧','shift'],['Z'],['X'],['C'],['V'],['B'],['N'],['M'],[','],['.'],['/'],['_'],['shift',1.25,'⇧','shift']],
+  [['Caps',1,'caps'],['opt',1,'⌥','opt'],['cmd',1.25,'⌘','cmd'],['英数',1.25,'英数'],['Space',4.5,'space'],['かな',1.25,'かな'],['cmd',1.25,'⌘','cmd'],['ARROWS',3]]
+ ]
+};
+function kbHTML(){
+  return LAYOUTS[S.layout].map(row=>`<div class="kr">${row.map(([k,w=1,label,mod])=>{
+    if(k==='ARROWS')return `<button class="k" style="flex-grow:1" data-key="←" aria-label="左矢印">←</button><div class="arrows"><button class="k" data-key="↑" aria-label="上矢印">↑</button><button class="k" data-key="↓" aria-label="下矢印">↓</button></div><button class="k" style="flex-grow:1" data-key="→" aria-label="右矢印">→</button>`;
+    const lab=label!==undefined?label:k;
+    const small=lab.length>2;
+    if(mod)return `<button class="k" style="flex-grow:${w}" data-mod="${mod}" aria-label="${MODS[mod].name}">${esc(lab)}</button>`;
+    return `<button class="k${small?' small':''}" style="flex-grow:${w}" data-key="${esc(k)}">${esc(lab)}</button>`;
+  }).join('')}</div>`).join('');
+}
+const lookup=(k,m)=>SC.find(s=>!s.alias&&s.key===k&&sameMods(s.mods,m));
+function paintKB(root,{mods:m,key,dots,probe:p}){
+  root.querySelectorAll('.k[data-key]').forEach(b=>{
+    const k=b.dataset.key;
+    b.classList.toggle('lit',!!key&&k===key);
+    b.classList.toggle('probe',!!p&&k===p);
+    b.classList.toggle('has',!!dots&&!!lookup(k,m));
+  });
+  root.querySelectorAll('.k[data-mod]').forEach(b=>b.classList.toggle('on',m.includes(b.dataset.mod)));
+}
+function renderKB(){
+  $('#kb').innerHTML=kbHTML();
+  $$('#layoutSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===S.layout));
+  paintMain();
+}
+function paintMain(){
+  const s=sel&&BY[sel];
+  paintKB($('#kb'),{mods:s?s.mods:mods,key:s?s.key:null,dots:!s,probe});
+  $('#kbHint').textContent=s?'光っているキーを同時に押します':(mods.length?'印のあるキーに機能があります':'キーをタップすると、その機能がわかります');
+}
+
+/* ---------- LCD ---------- */
+function setNow(){
+  const s=sel&&BY[sel];
+  const now=$('#lcdNow');
+  if(s)now.innerHTML=`${cmbHTML(s.mods,s.key)}<span class="nm">${esc(s.name)}</span>`;
+  else if(probe)now.innerHTML=`${cmbHTML(mods,probe)}<span class="dim">初期設定では割り当てなし</span>`;
+  else if(mods.length)now.innerHTML=`${cmbHTML(mods,'')}<span class="dim">＋ キーを選ぶ</span>`;
+  else now.innerHTML=`<span class="dim">言葉で探すか、下から選ぶ</span>`;
+  $('#lcdMode').textContent=s?(br.scene&&!$('#q').value?'SCENE · '+(SCENES.find(x=>x.id===br.scene)||{}).code:'SELECT'):($('#q').value?'SEARCH':'READY');
+  for(const id of ['skStar','skLearn','skInfo'])$('#'+id).disabled=!s;
+  $('#skStar').setAttribute('aria-pressed',!!s&&S.star.includes(sel));
+  $('#skLearn').setAttribute('aria-pressed',!!s&&S.learned.includes(sel));
+}
+
+/* ---------- selection ---------- */
+function select(id,remember){
+  sel=id;probe=null;
+  if(id){mods=[...BY[id].mods];if(remember){S.recent=[id,...S.recent.filter(x=>x!==id)].slice(0,12);save()}}
+  paintMain();setNow();
+  $$('[data-id]').forEach(el=>el.classList.toggle('sel',el.dataset.id===id));
+}
+
+/* ---------- search ---------- */
+function norm(s){
+  return String(s).toLowerCase().replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60))
+    .replace(/[ａ-ｚ０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/[\s　・、。／/（）()]/g,'');
+}
+const MODWORDS={cmd:['command','cmd','コマンド','⌘'],opt:['option','opt','alt','オプション','⌥'],shift:['shift','シフト','⇧'],ctrl:['control','ctrl','コントロール','⌃']};
+function bigrams(s){const o=new Set();for(let i=0;i<s.length-1;i++)o.add(s.slice(i,i+2));if(s.length===1)o.add(s);return o}
+function search(q){
+  const nq=norm(q);if(!nq)return[];
+  let rest=q.toLowerCase();const want=[];
+  for(const m of ORDER)for(const w of MODWORDS[m]){const lw=w.toLowerCase();if(rest.includes(lw)){if(!want.includes(m))want.push(m);rest=rest.split(lw).join(' ')}}
+  const keyPart=rest.replace(/[\s+＋]/g,'').toUpperCase();
+  const out=[];
+  for(const s of SC){
+    let sc=0,why='';
+    const raw=s.tags.split(' '),tags=raw.map(norm),nn=norm(s.name);
+    if(nn===nq){sc=100;why='名前が一致'}
+    else if(nn.includes(nq)){sc=70;why='名前に含む'}
+    tags.forEach((t,i)=>{
+      if(t===nq){if(sc<90){sc=90;why='「'+raw[i]+'」で登録'}}
+      else if(t.length>1&&(t.includes(nq)||nq.includes(t))){const v=55+Math.min(t.length,nq.length)*3;if(v>sc){sc=v;why='近い言葉：'+raw[i]}}
+    });
+    if(want.length&&sameMods(want,s.mods)&&(!keyPart||keyPart===String(s.key).toUpperCase())){sc=Math.max(sc,keyPart?95:40);why='キーの組み合わせ'}
+    else if(!want.length&&nq.length===1&&s.mods.length===0&&keyPart===String(s.key).toUpperCase()){sc=Math.max(sc,80);why='キー '+s.key}
+    if(sc<40&&nq.length>=2){
+      const qb=bigrams(nq);let best=0;
+      for(const t of [nn,...tags]){const tb=bigrams(t);let c=0;qb.forEach(b=>{if(tb.has(b))c++});best=Math.max(best,c/qb.size)}
+      if(best>=.5){sc=Math.round(best*45);why='似ている言葉'}
+    }
+    if(sc>0&&!s.alias||sc>=90)out.push({s,sc,why});
+  }
+  return out.sort((a,b)=>b.sc-a.sc);
+}
+function rowHTML(s){
+  const st=S.star.includes(s.id)?'<span class="st">★</span>':'';
+  return `<button class="row${s.id===sel?' sel':''}" data-id="${s.id}"><span class="nm">${esc(s.name)}${st}</span>${pill(s)}</button>`;
+}
+function renderSearch(typed){
+  const q=$('#q').value.trim();
+  $('#resultSec').hidden=!q;$('#branchSec').hidden=!!q;
+  if(!q){renderBranch();setNow();return}
+  const res=search(q);
+  $('#resCount').textContent=res.length?`${res.length}件`:'';
+  $('#cands').innerHTML=res.slice(0,3).map((r,i)=>`<button class="cand" data-id="${r.s.id}"><span class="rank">${i+1}</span><span><div class="nm">${esc(r.s.name)}</div><div class="why">${esc(r.why)}</div></span>${pill(r.s)}</button>`).join('')||'<div class="empty">見つかりませんでした。別の言い方を試してください。</div>';
+  const more=res.slice(3);
+  $('#moreList').hidden=!more.length;
+  $('#moreList').innerHTML=more.map(r=>rowHTML(r.s)).join('');
+  // 入力中だけ1位を自動で選ぶ（タブ切替や詳細を閉じたときは今の選択を保つ）
+  if(typed===true)select(res[0]?res[0].s.id:null,false);
+  else $$('[data-id]').forEach(el=>el.classList.toggle('sel',el.dataset.id===sel));
+}
+
+/* ---------- branch ---------- */
+function itemsOf(scene){return scene==='top'?SC.filter(s=>s.top):SC.filter(s=>s.scene===scene)}
+function renderBranch(){
+  const c=$('#crumb'),b=$('#branch');
+  if(!br.scene){
+    c.innerHTML='<span class="here">やりたいことから探す</span>';
+    const d=new Date(),pool=SC.filter(s=>!s.alias),t=pool[(d.getFullYear()*372+d.getMonth()*31+d.getDate())%pool.length];
+    b.innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
+      <div class="pads">${SCENES.map(sc=>`<button class="pad${sc.feature?' feature':''}" data-sc="${sc.id}"><span class="led"></span><span class="code">${sc.code}</span><span class="nm">${esc(sc.name)}</span><span class="ct">${itemsOf(sc.id).length} 個</span></button>`).join('')}</div>
+      <div class="label">今日の1個 <em>${d.getMonth()+1}月${d.getDate()}日</em></div>
+      <button class="today" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span><span class="mn">${esc(t.mn||sceneName(t.scene)+'ときに使う')}</span></span>${pill(t)}</button>
+    </div>`;
+    return;
+  }
+  const sc=SCENES.find(x=>x.id===br.scene);
+  const items=itemsOf(br.scene);
+  const subs=br.scene==='top'?[]:[...new Set(items.map(s=>s.sub))];
+  c.innerHTML=`<button data-crumb="root">やりたいこと</button><span>›</span>`+(br.sub?`<button data-crumb="scene">${esc(sc.name)}</button><span>›</span><span class="here">${esc(br.sub)}</span>`:`<span class="here">${esc(sc.name)}</span>`);
+  const list=items.filter(s=>!br.sub||s.sub===br.sub);
+  b.innerHTML=`<div style="display:flex;flex-direction:column;gap:12px">
+    ${subs.length?`<div class="subpads">${subs.map(x=>`<button class="subpad" data-sub="${esc(x)}" aria-pressed="${x===br.sub}">${esc(x)}</button>`).join('')}</div>`:''}
+    <div class="list">${list.map(rowHTML).join('')}</div></div>`;
+}
+
+/* ---------- my ---------- */
+function renderMy(){
+  const ids=myTab==='star'?S.star:myTab==='learned'?S.learned:myTab==='recent'?S.recent:Object.keys(S.memo).filter(k=>S.memo[k]);
+  const msg={star:'「★ マイ」を押すと、ここに追加されます',learned:'「✓ 覚えた」を押すと、ここに並びます',memo:'詳細画面で自分のメモを書けます',recent:'選んだショートカットがここに残ります'}[myTab];
+  $('#myList').innerHTML=ids.filter(id=>BY[id]).map(id=>rowHTML(BY[id])).join('')||`<div class="empty">${msg}</div>`;
+  $$('#myTabs .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.t===myTab));
+}
+
+/* ---------- sheets ---------- */
+function openSheet(id){
+  const s=BY[id];if(!s)return;openId=id;
+  $('#shPath').textContent=sceneName(s.scene)+' › '+s.sub;
+  $('#shName').textContent=s.name;
+  $('#shCombo').innerHTML=sortMods(s.mods).map(m=>`<span class="cap ${m}"><span>${MODS[m].sym}<small>${MODS[m].name}</small></span></span>`).join('')+`<span class="cap">${esc(s.key)}</span>`;
+  $('#shKb').innerHTML=kbHTML();
+  paintKB($('#shKb'),{mods:s.mods,key:s.key,dots:false});
+  $('#shMnemo').textContent='覚え方　'+(s.mn||'—');
+  $('#shStar').setAttribute('aria-pressed',S.star.includes(id));
+  $('#shLearn').setAttribute('aria-pressed',S.learned.includes(id));
+  $('#shMemo').value=S.memo[id]||'';
+  const sim=new Set();
+  SC.forEach(o=>{if(o.id!==id&&!o.alias&&!s.alias&&o.key===s.key)sim.add(o.id)});
+  PAIRS.forEach(([a,b])=>{if(a===id)sim.add(b);if(b===id)sim.add(a)});
+  $('#shSimWrap').hidden=!sim.size;
+  $('#shSim').innerHTML=[...sim].map(x=>rowHTML(BY[x])).join('');
+  openPanel('#sheet');
+}
+function openPanel(id){$$('.sheet').forEach(x=>x.classList.toggle('open','#'+x.id===id));$('#scrim').classList.add('open')}
+function closeSheets(){$$('.sheet').forEach(x=>x.classList.remove('open'));$('#scrim').classList.remove('open');openId=null;refresh()}
+function renderSkins(){
+  const groups=[...new Set(SKINS.map(s=>s.g))];
+  $('#skinGroups').innerHTML=groups.map(g=>`<div class="label" style="margin:6px 0 8px">${g}</div><div class="skingrid">${SKINS.filter(s=>s.g===g).map(s=>{
+    const [bg,lcd,ink,key,lit]=s.pv;
+    return `<button class="skt" data-skin="${s.id}" aria-pressed="${s.id===S.skin}"><div class="pv" style="background:${bg}"><div class="l" style="background:${lcd};color:${ink}">⌘S 保存</div><div class="ks"><i style="background:${key}"></i><i style="background:${lit}"></i><i style="background:${key}"></i><i style="background:${key}"></i></div></div><b>${s.name}</b><span>${s.d}</span></button>`;
+  }).join('')}</div>`).join('');
+}
+function applySkin(){
+  if(S.skin==='auto')document.body.removeAttribute('data-skin');else document.body.dataset.skin=S.skin;
+  $('#skinName').textContent=(SKINS.find(s=>s.id===S.skin)||SKINS[0]).name;
+  $$('.skt').forEach(b=>b.setAttribute('aria-pressed',b.dataset.skin===S.skin));
+}
+
+/* ---------- views ---------- */
+function show(v){
+  current=v;
+  for(const x of ['search','practice','my'])$('#v-'+x).hidden=x!==v;
+  $$('.tb').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
+  refresh();
+}
+function refresh(){
+  if(current==='search')renderSearch();
+  if(current==='my')renderMy();
+  paintMain();setNow();
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,#scrim');if(!t)return;
+  if(t.id==='scrim')return closeSheets();
+  if(t.id==='skinBtn'){renderSkins();return openPanel('#skinSheet')}
+  if(t.dataset.skin){S.skin=t.dataset.skin;save();applySkin();toast((SKINS.find(s=>s.id===S.skin)||{}).name+' に変更しました');return}
+  if(t.classList.contains('tb'))return show(t.dataset.v);
+  if(t.dataset.l){S.layout=t.dataset.l;save();renderKB();return}
+  if(t.closest('#kb')){
+    if(t.dataset.mod){const m=t.dataset.mod;const base=sel?BY[sel].mods:mods;mods=base.includes(m)?base.filter(x=>x!==m):[...base,m];sel=null;probe=null;select(null);return}
+    if(t.dataset.key){
+      const k=t.dataset.key,base=sel?BY[sel].mods:mods;mods=[...base];
+      const s=lookup(k,mods);
+      if(s){select(s.id,true)}else{sel=null;probe=k;paintMain();setNow();$$('[data-id]').forEach(el=>el.classList.remove('sel'))}
+      return;
+    }
+  }
+  if(t.dataset.sc){br={scene:t.dataset.sc,sub:null};renderBranch();return}
+  if(t.dataset.sub!==undefined){br.sub=br.sub===t.dataset.sub?null:t.dataset.sub;renderBranch();return}
+  if(t.dataset.crumb==='root'){br={scene:null,sub:null};renderBranch();return}
+  if(t.dataset.crumb==='scene'){br.sub=null;renderBranch();return}
+  if(t.dataset.t){myTab=t.dataset.t;renderMy();return}
+  if(t.id==='skStar'||t.id==='shStar'){const id=openId||sel;if(!id)return;const on=!S.star.includes(id);S.star=on?[id,...S.star]:S.star.filter(x=>x!==id);save();$('#shStar').setAttribute('aria-pressed',on);setNow();toast(on?'マイリストに追加しました':'マイリストから外しました');if(current==='my')renderMy();return}
+  if(t.id==='skLearn'||t.id==='shLearn'){const id=openId||sel;if(!id)return;const on=!S.learned.includes(id);S.learned=on?[id,...S.learned]:S.learned.filter(x=>x!==id);save();$('#shLearn').setAttribute('aria-pressed',on);setNow();toast(on?'覚えたに追加しました':'覚えたから外しました');if(current==='my')renderMy();return}
+  if(t.id==='skInfo'){if(sel)openSheet(sel);return}
+  if(t.id==='expBtn'||t.id==='impBtn'){toast('モックアップでは動きません');return}
+  if(t.dataset.id){
+    const id=t.dataset.id;
+    if(openId){closeSheets();select(id,true);setTimeout(()=>openSheet(id),200);return}
+    if(sel===id&&t.closest('.view'))return openSheet(id);
+    select(id,true);
+  }
+});
+$('#q').addEventListener('input',()=>renderSearch(true));
+$('#q').addEventListener('keydown',e=>{if(e.key==='Escape'){e.target.value='';renderSearch(true)}if(e.key==='Enter'&&sel)openSheet(sel)});
+$('#shMemo').addEventListener('input',e=>{if(!openId)return;S.memo[openId]=e.target.value;save()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&$('#scrim').classList.contains('open'))return closeSheets();
+  if(e.target.matches('input,textarea')||$('#scrim').classList.contains('open'))return;
+  if(['Meta','Alt','Shift','Control','CapsLock'].includes(e.key))return;
+  const map={' ':'Space',Enter:'Return',ArrowLeft:'←',ArrowRight:'→',ArrowUp:'↑',ArrowDown:'↓',Backspace:'Delete',Tab:'Tab'};
+  let k=map[e.key]||(e.code.startsWith('Key')?e.code.slice(3):e.code.startsWith('Digit')?e.code.slice(5):e.key);
+  if(e.code==='Comma')k=',';if(e.code==='Period')k='.';
+  const m=[];if(e.metaKey)m.push('cmd');if(e.altKey)m.push('opt');if(e.shiftKey)m.push('shift');if(e.ctrlKey)m.push('ctrl');
+  e.preventDefault();mods=m;
+  const s=lookup(k,m);
+  if(s)select(s.id,true);else{sel=null;probe=k;paintMain();setNow()}
+});
+
+applySkin();renderKB();
+$('#lcdCount').textContent=String(SC.filter(s=>!s.alias).length).padStart(3,'0')+' CMDS';
+show('search');
+</script>
