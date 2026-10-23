@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Mono:wght@500;600&family=Jost:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&family=Zen+Old+Mincho:wght@400;700;900&display=swap">
 <style>
 /* Layout: portrait = sticky "deck" (LCD search + soft keys + keyboard) above a scrolling branch/results area;
-   landscape or wide = left column (LCD + results) beside a large sticky keyboard, tabs become a left rail. */
+   landscape phone = left column (LCD + results) beside a large sticky keyboard, tabs become a left rail; PC stays portrait, just wider. */
 :root{
   --bg:#E3E5E8; --bg2:#D8DBDF; --panel:#F2F3F4; --ink:#16181B; --sub:#5B616A; --line:#C8CCD1;
   --key:#FBFBFC; --key-ink:#23262B; --key-edge:#B4B9C0; --tray:#CDD1D6;
@@ -239,8 +239,14 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
 .toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);z-index:40;background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:13px;opacity:0;transition:.2s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
-/* ===== landscape phone / wide screens ===== */
-@media (orientation:landscape) and (max-height:600px), (min-width:960px){
+/* ===== PC など幅の広い画面：縦並びのまま、幅を広げてキーボードを大きくする ===== */
+@media (min-width:760px){
+  .app{max-width:680px} .tabbar .in{max-width:680px}
+  .kb{--kh:44px;--kf:13px} .kr{gap:5px} .kb{gap:5px} .kbwrap{padding:9px}
+  .lcd input{font-size:22px}
+}
+/* ===== 横向きのスマホ（指で操作する端末）だけ横並び。上の PC 用の指定より後に書いて上書きする ===== */
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse){
   .app{max-width:1280px;display:grid;grid-template-columns:minmax(300px,.85fr) minmax(0,1.5fr);
     grid-template-areas:"head kb" "lcd kb" "content kb";grid-template-rows:auto auto 1fr;column-gap:22px;row-gap:12px;align-items:start;
     padding-left:calc(84px + env(safe-area-inset-left,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
@@ -259,7 +265,7 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
   .toast{bottom:calc(20px + env(safe-area-inset-bottom,0px))}
 }
 /* 横向きのスマホ：左の列を細くして、キーボードに幅を回す */
-@media (orientation:landscape) and (max-height:600px){
+@media (orientation:landscape) and (max-height:600px) and (pointer:coarse){
   .app{grid-template-columns:minmax(220px,.55fr) minmax(0,2fr);column-gap:14px;
     padding-left:calc(68px + env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
   .tabbar{width:calc(58px + env(safe-area-inset-left,0px));padding-left:calc(6px + env(safe-area-inset-left,0px));padding-right:6px}
@@ -268,7 +274,6 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
   .kb{--kh:clamp(30px,10.5vh,52px);--kf:12px}
   .kbwrap{padding:7px} .kr{gap:4px} .kb{gap:4px}
 }
-@media (min-width:960px){ .kb{--kh:52px;--kf:13px} }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
