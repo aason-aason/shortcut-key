@@ -7,6 +7,7 @@ Logic Pro のショートカット（キーコマンド）を、スマホで探�
 - データ: `data/scenes.js`（どのDAWでも共通の場面一覧）、`data/logic-pro.js`（Logic Pro のショートカット）。DAWを足すときは `data/` にファイルを1つ追加する
 - `data/logic-pro.js` は `python3 tools/build_logic.py` で Apple 公式ガイドから作る（手で直さない）。言いかえ語・覚え方・「基本」に入れるものは `tools/logic_extra.py` に書く
 - Webアプリ版：`python3 tools/build_web.py` で `docs/` に組み立てる（keykoma.html を普通の Web ページに包み、ホーム画面用の manifest、電波なしで動かす sw.js、アイコンを添える）。keykoma.html やデータを直したら、組み立て直してから保存する
+  - 公開中の住所：https://daw.shortcut-jiten.workers.dev （Cloudflare のアカウント名 shortcut-jiten ＋ Worker 名 daw。Worker 名は wrangler.jsonc の name と Cloudflare 側でそろえる）
   - 公開先は Cloudflare Workers。設定は wrangler.jsonc（docs/ をそのまま配るだけ）。Cloudflare とこのリポジトリをつなぎ、main ブランチに入ったものが公開される。作業は作業用ブランチで行い、公開したい段階で main に取り込む
   - このリポジトリは公開（public）リポジトリ
   - アイコンの元は tools/icon.html。`node tools/make_icons.js docs/icons` で PNG にする
