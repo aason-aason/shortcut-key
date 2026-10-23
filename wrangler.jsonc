@@ -1,0 +1,9 @@
+// Cloudflare Workers で Webアプリ版を公開するための設定。
+// docs/（tools/build_web.py が組み立てた一式）をそのまま配るだけで、サーバー側のプログラムはない。
+{
+  "name": "daw-shortcut-dictionary",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./docs"
+  }
+}
