@@ -186,6 +186,8 @@ section{display:flex;flex-direction:column;gap:10px}
 .badge{align-self:flex-start;font-family:var(--f-key);font-size:10px;letter-spacing:.12em;padding:2px 8px;border-radius:999px;background:var(--lit);color:var(--lit-ink)}
 .datab{display:flex;gap:8px;flex-wrap:wrap}
 .btn{font-size:13px;padding:8px 14px;border-radius:10px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.pastebox{display:flex;flex-direction:column;gap:8px}
+.pastebox .btn{align-self:flex-start}
 .mock{font-size:11px;color:var(--sub);text-align:center;line-height:1.7}
 
 /* tab bar = transport buttons */
@@ -355,8 +357,15 @@ textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(-
     </section>
     <section>
       <div class="label">データの引っ越し</div>
-      <div class="datab"><button class="btn" id="expBtn">書き出す</button><button class="btn" id="impBtn">読み込む</button></div>
-      <p class="hint">マイリスト・覚えた・メモは、この端末のブラウザに保存されます。別の端末やWeb版に移すときに使います。</p>
+      <div class="datab"><button class="btn" id="expBtn">ファイルに書き出す</button><button class="btn" id="impBtn">ファイルから読み込む</button></div>
+      <div class="datab"><button class="btn" id="copyBtn">文字でコピー</button><button class="btn" id="pasteBtn">文字を貼り付けて読み込む</button></div>
+      <div class="pastebox" id="pasteBox" hidden>
+        <p class="hint" id="pasteMsg"></p>
+        <textarea id="pasteText" placeholder="書き出した文字をここに貼り付け"></textarea>
+        <button class="btn" id="pasteGo">この文字を読み込む</button>
+      </div>
+      <input type="file" id="impFile" accept=".json,application/json,text/plain" hidden>
+      <p class="hint">マイリスト・覚えた・メモ・最近見たもの・設定は、この端末のブラウザに保存されます。機種変更やWeb版に移るときは、書き出して移した先で読み込みます。読み込んでも今あるデータは消えず、足し合わされます。</p>
     </section>
   </div>
 </div>
@@ -652,6 +661,62 @@ function applySkin(){
   const d=$('#skinDesc');if(d)d.textContent=(SKINS.find(s=>s.id===S.skin)||SKINS[0]).d;
 }
 
+/* ---------- data export / import ---------- */
+// 番号（id）はデータを作り直すとずれることがあるので、名前と画面も一緒に書き出し、読み込み時はそちらで照合する
+const EXPORT_TAG='daw-shortcut-dictionary';
+function exportText(){
+  const ids=new Set([...S.star,...S.learned,...S.recent,...Object.keys(S.memo)]);
+  const refs={};ids.forEach(id=>{if(BY[id])refs[id]={n:BY[id].name,w:BY[id].win}});
+  return JSON.stringify({app:EXPORT_TAG,format:1,soft:APP.id,exportedAt:new Date().toISOString(),
+    data:{star:S.star,learned:S.learned,recent:S.recent,memo:S.memo,skin:S.skin,kb:S.kb,swap:S.swap},refs},null,1);
+}
+async function exportFile(){
+  const d=new Date(),name=`daw-shortcut-dictionary-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  const text=exportText();
+  // Claude の中では downloads の仕組みで保存する（確認が出る）。それ以外のブラウザでは普通のダウンロード
+  const dl=window.claude&&claude.use?await claude.use('downloads').catch(()=>null):null;
+  if(dl){
+    try{await dl.save({filename:name,data:text});toast('書き出しました')}
+    catch(e){if(e&&e.code==='declined')return;if(e&&e.code==='rate_limited'){toast('少し待ってからもう一度押してください');return}showPaste(text,'ファイルに保存できなかったので、下の文字をすべて選んでコピーしてください')}
+    return;
+  }
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('書き出しました');
+}
+async function copyText(){
+  const text=exportText();
+  try{await navigator.clipboard.writeText(text);toast('コピーしました。移したい端末で貼り付けてください')}
+  catch(e){showPaste(text,'自動でコピーできなかったので、下の文字をすべて選んでコピーしてください')}
+}
+function showPaste(text,msg){
+  $('#pasteBox').hidden=false;$('#pasteText').value=text;
+  $('#pasteMsg').textContent=msg||'書き出した文字を貼り付けて「この文字を読み込む」を押してください';
+  $('#pasteGo').hidden=!!text;
+  if(text){$('#pasteText').select()}else{$('#pasteText').focus()}
+}
+function importText(text){
+  let o;try{o=JSON.parse(text)}catch(e){toast('読み込めませんでした（形式が違います）');return}
+  if(!o||o.app!==EXPORT_TAG||!o.data){toast('このアプリで書き出したデータではありません');return}
+  const refs=o.refs||{},d=o.data;
+  // 番号で探し、名前と画面が合わなければ名前と画面で探し直す
+  const resolve=id=>{const r=refs[id],s=BY[id];if(s&&(!r||(s.name===r.n&&s.win===r.w)))return id;if(!r)return null;const f=SC.find(x=>x.name===r.n&&x.win===r.w);return f?f.id:null};
+  const merge=(cur,add)=>{const out=[...cur];(add||[]).map(resolve).forEach(id=>{if(id&&!out.includes(id))out.push(id)});return out};
+  const before={star:S.star.length,memo:Object.keys(S.memo).filter(k=>S.memo[k]).length};
+  S.star=merge(S.star,d.star);S.learned=merge(S.learned,d.learned);S.recent=merge(S.recent,d.recent).slice(0,12);
+  for(const [k,v] of Object.entries(d.memo||{})){
+    const id=resolve(k);if(!id||!v)continue;
+    const cur=S.memo[id]||'';
+    S.memo[id]=!cur||cur===v?v:cur.includes(v)?cur:cur+'\n'+v;
+  }
+  if(SKINS.some(s=>s.id===d.skin))S.skin=d.skin;
+  if(KBTYPES.some(x=>x.id===d.kb))S.kb=d.kb;
+  if(typeof d.swap==='boolean')S.swap=d.swap;
+  save();applySkin();renderKB();renderSettings();
+  $('#pasteBox').hidden=true;$('#pasteText').value='';
+  const memoN=Object.keys(S.memo).filter(k=>S.memo[k]).length;
+  toast(`読み込みました（マイ +${S.star.length-before.star}・メモ +${memoN-before.memo}）`);
+}
+
 /* ---------- views ---------- */
 function show(v){
   current=v;
@@ -705,12 +770,17 @@ document.addEventListener('click',e=>{
   if(t.dataset.t){myTab=t.dataset.t;renderMy();return}
   if(t.id==='skStar'){if(!sel)return;const on=!S.star.includes(sel);S.star=on?[sel,...S.star]:S.star.filter(x=>x!==sel);save();setNow();toast(on?'マイリストに追加しました':'マイリストから外しました');if(current==='my')renderMy();return}
   if(t.id==='skMemo'){if(sel)openMemo(sel);return}
-  if(t.id==='expBtn'||t.id==='impBtn'){toast('モックアップでは動きません');return}
+  if(t.id==='expBtn'){exportFile();return}
+  if(t.id==='impBtn'){$('#impFile').value='';$('#impFile').click();return}
+  if(t.id==='copyBtn'){copyText();return}
+  if(t.id==='pasteBtn'){showPaste('');return}
+  if(t.id==='pasteGo'){importText($('#pasteText').value);return}
   if(t.dataset.id)select(t.dataset.id,true);
 });
 $('#q').addEventListener('input',()=>renderSearch(true));
 $('#q').addEventListener('keydown',e=>{if(e.key==='Escape'){e.target.value='';renderSearch(true)}if(e.key==='Enter'&&!e.isComposing&&e.keyCode!==229)e.target.blur()});
 // ↑ 日本語入力で変換を確定するエンターでは離れない（確定中に離れると文字が二重に入るため）
+$('#impFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>importText(String(r.result));r.readAsText(f)});
 $('#shMemo').addEventListener('input',e=>{if(!openId)return;S.memo[openId]=e.target.value;save()});
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&$('#scrim').classList.contains('open'))return closeSheets();
