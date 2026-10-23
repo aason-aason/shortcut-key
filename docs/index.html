@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DAWショートカット辞典</title>
+<meta name="description" content="Logic Pro のショートカットを、やりたいことの言葉で探して、押し方をキーボード図で確かめる辞典">
+<meta name="theme-color" content="#E3E5E8">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DAW辞典">
+<style>html,body{margin:0}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Mono:wght@500;600&family=Jost:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&family=Zen+Old+Mincho:wght@400;700;900&display=swap">
+<style>
+/* Layout: portrait = sticky "deck" (LCD search + soft keys + keyboard) above a scrolling branch/results area;
+   landscape or wide = left column (LCD + results) beside a large sticky keyboard, tabs become a left rail. */
+:root{
+  --bg:#E3E5E8; --bg2:#D8DBDF; --panel:#F2F3F4; --ink:#16181B; --sub:#5B616A; --line:#C8CCD1;
+  --key:#FBFBFC; --key-ink:#23262B; --key-edge:#B4B9C0; --tray:#CDD1D6;
+  --lcd-bg:#1A1E19; --lcd-ink:#C8F25C; --lcd-dim:#56683A;
+  --lit:#16181B; --lit-ink:#C8F25C;
+  --cmd:#2D66F5; --opt:#13915A; --shift:#E8710F; --ctrl:#D9335F; --on-mod:#FFFFFF; --star:#D99A0B;
+  --r:14px; --kr:6px; --bdw:1px;
+  --glow:0 0 10px color-mix(in srgb,var(--lcd-ink) 45%,transparent);
+  --scan:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.18) 2px 3px);
+  --f-lcd:"DotGothic16","Osaka-Mono",monospace;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-disp:"Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+  --f-key:"IBM Plex Mono",ui-monospace,"SF Mono",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#101214; --bg2:#0A0B0D; --panel:#191C1F; --ink:#ECEEF0; --sub:#8C939B; --line:#2A2F34;
+  --key:#25292D; --key-ink:#DDE1E5; --key-edge:#07080A; --tray:#0C0E10;
+  --lcd-bg:#0A0D0B; --lcd-ink:#FF9A3C; --lcd-dim:#6A4019; --lit:#F2F4F6; --lit-ink:#101214;
+  --cmd:#5E8DFF; --opt:#35C77C; --shift:#FFA047; --ctrl:#FF5F8B; --on-mod:#0E1012; --star:#FFC23D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101214; --bg2:#0A0B0D; --panel:#191C1F; --ink:#ECEEF0; --sub:#8C939B; --line:#2A2F34;
+  --key:#25292D; --key-ink:#DDE1E5; --key-edge:#07080A; --tray:#0C0E10;
+  --lcd-bg:#0A0D0B; --lcd-ink:#FF9A3C; --lcd-dim:#6A4019; --lit:#F2F4F6; --lit-ink:#101214;
+  --cmd:#5E8DFF; --opt:#35C77C; --shift:#FFA047; --ctrl:#FF5F8B; --on-mod:#0E1012; --star:#FFC23D; color-scheme:dark}
+
+/* ===== Skins: each sets the whole token set on body, so it wins over the system theme ===== */
+/* alu = アルミの見た目 + ハイコントラストの読みやすさ（黒い文字・濃い枠・濃いめの修飾キー色） */
+body[data-skin="alu"]{--bg:#E3E5E8;--bg2:#D8DBDF;--panel:#F7F8F9;--ink:#000000;--sub:#2E3338;--line:#7D838B;--key:#FFFFFF;--key-ink:#000000;--key-edge:#6E747C;--tray:#C3C8CE;--lcd-bg:#000000;--lcd-ink:#D4FF4F;--lcd-dim:#7E9A3A;--lit:#000000;--lit-ink:#D4FF4F;--cmd:#0038E0;--opt:#006B2D;--shift:#A84300;--ctrl:#B0003A;--on-mod:#FFFFFF;--star:#A86F00;--bdw:1.5px;color-scheme:light}
+body[data-skin="console"]{--bg:#4B5763;--bg2:#3E4852;--panel:#56636F;--ink:#F1F4F6;--sub:#C3CCD4;--line:#6B7884;--key:#DCE1E5;--key-ink:#1E252B;--key-edge:#29313A;--tray:#353E47;--lcd-bg:#0C1820;--lcd-ink:#7FE3FF;--lcd-dim:#2A5566;--lit:#F7E15A;--lit-ink:#1E252B;--cmd:#3D7BFF;--opt:#1FB86A;--shift:#FF8A1F;--ctrl:#F0436E;--on-mod:#FFFFFF;--star:#F7E15A;color-scheme:dark}
+/* GB = グレーの本体、紺の縁取りの中に黄緑の液晶、A/Bボタンの赤紫 */
+body[data-skin="gameboy"]{--bg:#CAC8C2;--bg2:#C0BEB7;--panel:#D8D6D0;--ink:#2B2A35;--sub:#5F5E6B;--line:#A3A19B;--key:#E4E2DC;--key-ink:#2B2A35;--key-edge:#8F8D88;--tray:#B3B1AB;--lcd-bg:#9BBC0F;--lcd-ink:#0F380F;--lcd-dim:#4E7A1E;--lit:#9A2257;--lit-ink:#FFFFFF;--cmd:#33339A;--opt:#2E7A36;--shift:#C2741B;--ctrl:#7048A8;--on-mod:#FFFFFF;--star:#9A2257;--r:8px;--kr:5px;--bdw:1.5px;--glow:none;--scan:repeating-linear-gradient(0deg,transparent 0 2px,rgba(15,56,15,.10) 2px 3px),repeating-linear-gradient(90deg,transparent 0 2px,rgba(15,56,15,.06) 2px 3px);--f-lcd:"DotGothic16",monospace;--f-body:"DotGothic16",monospace;--f-disp:"DotGothic16",monospace;--f-key:"DotGothic16",monospace;color-scheme:light}
+/* piano = 艶のある黒と象牙、赤いフェルト。字は細身で上品なゴシック */
+body[data-skin="piano"]{--bg:#0B0B0C;--bg2:#18181B;--panel:#141416;--ink:#F4EFE6;--sub:#A39D93;--line:#2A2A2D;--key:#F6F1E7;--key-ink:#1A1A1A;--key-edge:#B9B09F;--tray:#050505;--lcd-bg:#050505;--lcd-ink:#F6F1E7;--lcd-dim:#6A655C;--lit:#B3122E;--lit-ink:#FFFFFF;--cmd:#4F7BFF;--opt:#2FB574;--shift:#F08A2A;--ctrl:#E0457B;--on-mod:#FFFFFF;--star:#D9B35A;--r:10px;--kr:4px;--glow:none;--scan:none;--f-body:"Jost","Zen Kaku Gothic New",sans-serif;--f-disp:"Jost","Zen Kaku Gothic New",sans-serif;--f-lcd:"Jost","Zen Kaku Gothic New",sans-serif;--f-key:"Jost","Zen Kaku Gothic New",sans-serif;color-scheme:dark}
+body[data-skin="tube"]{--bg:#161311;--bg2:#0F0D0B;--panel:#1F1A16;--ink:#EFE3C8;--sub:#AA997C;--line:#7A6236;--key:#2A231D;--key-ink:#EFE3C8;--key-edge:#0A0806;--tray:#0E0B09;--lcd-bg:#140A03;--lcd-ink:#FFB35C;--lcd-dim:#6A4416;--lit:#FFB35C;--lit-ink:#1A0F05;--cmd:#7EA0FF;--opt:#69D39A;--shift:#FF9F4A;--ctrl:#FF7096;--on-mod:#140C06;--star:#E2B65A;--r:8px;--glow:0 0 14px rgba(255,150,60,.75);--f-disp:"Zen Old Mincho",serif;color-scheme:dark}
+body[data-skin="braun"]{--bg:#ECECEA;--bg2:#E4E4E1;--panel:#F8F8F7;--ink:#1D1D1D;--sub:#737373;--line:#D2D2CF;--key:#FFFFFF;--key-ink:#2A2A2A;--key-edge:#C2C2BF;--tray:#DCDCD9;--lcd-bg:#2B2B2B;--lcd-ink:#F2F2F0;--lcd-dim:#777777;--lit:#F2C200;--lit-ink:#1D1D1D;--cmd:#2E64D8;--opt:#2E9B5F;--shift:#E0731B;--ctrl:#D23C5E;--on-mod:#FFFFFF;--star:#E0A800;--r:20px;--kr:10px;--glow:none;--scan:none;--f-lcd:"Zen Kaku Gothic New",sans-serif;color-scheme:light}
+
+/* skin textures */
+body[data-skin="tube"]{background-image:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1.6px),linear-gradient(180deg,var(--bg),var(--bg2))!important;background-size:4px 4px,auto!important}
+body[data-skin="piano"]{background-image:linear-gradient(160deg,#1E1E21 0%,var(--bg) 42%,var(--bg2) 100%)!important}
+body[data-skin="alu"] .k{box-shadow:inset 0 0 0 1.5px #2B3036,0 2px 0 var(--key-edge)}
+body[data-skin="alu"] .k.lit,body[data-skin="alu"] .k[data-mod].on{box-shadow:inset 0 0 0 1.5px #000}
+body[data-skin="gameboy"] .lcd{border:9px solid #55546A;border-radius:8px 8px 30px 8px;box-shadow:inset 0 0 0 2px #7F9C0C}
+body[data-skin="gameboy"] .lcd-row{opacity:.85}
+body[data-skin="tube"] .lcd{box-shadow:inset 0 0 0 1px var(--line),inset 0 0 30px rgba(255,140,40,.15)!important}
+body[data-skin="piano"] .kbwrap{box-shadow:inset 0 0 0 1px #2A2A2D,inset 0 6px 0 #8E1024}
+body[data-skin="piano"] :is(.pad .nm,.today .nm,.card h2,.sh-name,.cand .nm,.sk){font-weight:300;letter-spacing:.06em}
+body[data-skin="piano"] .lcd input{font-weight:300;letter-spacing:.04em}
+body[data-skin="piano"] .cmb{font-weight:400;letter-spacing:.04em}
+body[data-skin="console"] .k[data-mod]{box-shadow:0 2px 0 var(--key-edge),inset 0 -3px 0 var(--mc,transparent)}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background-color:var(--bg);background-image:linear-gradient(180deg,var(--bg),var(--bg2));background-attachment:fixed;color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--lit);outline-offset:2px}
+button:disabled{opacity:.35;cursor:default}
+
+.app{max-width:480px;margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:12px calc(100px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;flex-direction:column;min-width:0}
+/* アプリ名は機材の刻印風：細めの文字で字間を広く。どのカラーでも同じ */
+.brand b{font-family:"Zen Kaku Gothic New","Hiragino Sans",sans-serif;font-weight:400;font-size:15px;line-height:1.4;letter-spacing:.32em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small{font-family:var(--f-key);font-size:10px;color:var(--sub);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.skinbtn{display:flex;align-items:center;gap:7px;font-size:12px;padding:5px 10px 5px 6px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);white-space:nowrap}
+.skinbtn svg{width:18px;height:18px}
+.kbtype{font-family:var(--f-key);font-size:10.5px;padding:3px 11px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);color:var(--sub);white-space:nowrap}
+.tgl{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px}
+.sw{flex:none;width:46px;height:28px;border-radius:999px;background:var(--line);position:relative;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--key);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.sw[aria-checked="true"]{background:var(--lit)}
+.sw[aria-checked="true"]::after{transform:translateX(18px)}
+
+/* deck */
+.deck{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;display:flex;flex-direction:column;gap:8px;
+  margin-inline:-16px;padding:8px 16px 10px;background:var(--bg);border-bottom:var(--bdw) solid var(--line)}
+.lcdbox{display:flex;flex-direction:column;gap:6px}
+.lcd{background:var(--lcd-bg);color:var(--lcd-ink);border-radius:var(--r);padding:9px 14px 9px;font-family:var(--f-lcd);position:relative;overflow:hidden;
+  box-shadow:inset 0 2px 0 rgba(0,0,0,.35),0 1px 0 var(--key);display:flex;flex-direction:column;gap:2px}
+.lcd::after{content:"";position:absolute;inset:0;pointer-events:none;background:var(--scan)}
+.lcd-row{display:flex;justify-content:space-between;gap:10px;font-size:10px;letter-spacing:.14em;opacity:.7}
+.lcd input{all:unset;font-family:var(--f-lcd);font-size:20px;line-height:1.4;color:var(--lcd-ink);caret-color:var(--lcd-ink);text-shadow:var(--glow);width:100%;min-width:0;position:relative;z-index:1}
+.lcd input::placeholder{color:var(--lcd-dim);text-shadow:none;opacity:1}
+.lcd input::-webkit-search-cancel-button{display:none}
+.lcd-in{display:flex;align-items:center;gap:8px}
+.clr{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-body);font-size:18px;line-height:1;color:var(--lcd-bg);background:var(--lcd-ink);opacity:.75;position:relative;z-index:1;text-align:center}
+.lcd-now{display:flex;align-items:center;gap:10px;min-height:24px;font-size:13px;position:relative;z-index:1;overflow:hidden;white-space:nowrap}
+.lcd-now .nm{overflow:hidden;text-overflow:ellipsis;text-shadow:var(--glow)}
+.lcd-now .dim{color:var(--lcd-dim)}
+.lcd-now .cmb{font-size:16px;letter-spacing:.06em;text-shadow:var(--glow)}
+.lcd-now .cmb .m{font-style:normal}
+.lcd-mn{min-height:18px;font-size:11.5px;line-height:1.5;opacity:.78;position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.soft{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.sk{height:32px;border-radius:calc(var(--kr) + 2px);background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 2px 0 var(--key-edge);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;transition:transform .06s}
+.sk:active:not(:disabled){transform:translateY(2px);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.sk[aria-pressed="true"]{background:var(--lit);color:var(--lit-ink);box-shadow:0 2px 0 var(--key-edge)}
+.sk .s{color:var(--star)} .sk[aria-pressed="true"] .s{color:inherit}
+.sk{position:relative}
+.sk[data-has="1"]::after{content:"";position:absolute;top:5px;right:7px;width:6px;height:6px;border-radius:50%;background:var(--lit)}
+
+/* keyboard */
+.kbbox{display:flex;flex-direction:column;gap:6px}
+.kbwrap{background:var(--tray);border-radius:calc(var(--r) + 2px);padding:6px;box-shadow:inset 0 1px 0 rgba(0,0,0,.12)}
+.kb{display:flex;flex-direction:column;gap:3px;--kh:28px;--kf:10px}
+.kr{display:flex;gap:3px}
+.k{flex:1 1 0;min-width:0;height:var(--kh);border-radius:var(--kr);background:var(--key);color:var(--key-ink);font-family:var(--f-key);font-size:var(--kf);font-weight:500;
+  box-shadow:0 2px 0 var(--key-edge);display:grid;place-items:center;position:relative;transition:transform .08s, background .18s, color .18s;padding:0 1px;overflow:hidden;white-space:nowrap}
+.k.small{font-size:calc(var(--kf) * .8)}
+/* 修飾キーは記号の下に短い名前を小さく入れる */
+.k.mk{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1.05}
+.k.mk small{font-size:calc(var(--kf) * .72);opacity:.8;letter-spacing:0}
+.k.has::after{content:"";position:absolute;left:50%;bottom:3px;width:10px;height:2px;margin-left:-5px;border-radius:2px;background:var(--sub);opacity:.8}
+.k.lit{background:var(--lit);color:var(--lit-ink);transform:translateY(2px);box-shadow:0 0 0 var(--key-edge)}
+.k.probe{background:color-mix(in srgb,var(--sub) 40%,var(--key))}
+.k[data-mod].on{transform:translateY(2px);box-shadow:0 0 0 var(--key-edge);color:var(--on-mod)}
+.k[data-mod="cmd"]{--mc:var(--cmd)} .k[data-mod="opt"]{--mc:var(--opt)} .k[data-mod="shift"]{--mc:var(--shift)} .k[data-mod="ctrl"]{--mc:var(--ctrl)}
+.k[data-mod].on{background:var(--mc)}
+.arrows{display:flex;flex-direction:column;gap:2px;flex:1 1 0;min-width:0}
+.arrows .k{height:calc((var(--kh) - 2px) / 2);font-size:calc(var(--kf) * .75)}
+.kbbar{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.seg{display:inline-flex;background:var(--panel);border-radius:999px;padding:2px;box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.seg button{font-family:var(--f-key);font-size:10.5px;padding:3px 11px;border-radius:999px;color:var(--sub)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.hint{font-size:11.5px;color:var(--sub);line-height:1.5}
+
+/* combo text (quiet) */
+.cmb{font-family:var(--f-key);font-weight:600;white-space:nowrap}
+.cmb .m{font-style:normal;margin-right:1px}
+.m.cmd{color:var(--cmd)} .m.opt{color:var(--opt)} .m.shift{color:var(--shift)} .m.ctrl{color:var(--ctrl)}
+.pill{display:inline-flex;align-items:center;gap:1px;padding:3px 9px;border-radius:calc(var(--kr) + 2px);background:var(--key);color:var(--key-ink);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 1.5px 0 var(--key-edge);font-size:12.5px}
+.lcd .m.cmd,.lcd .m.opt,.lcd .m.shift,.lcd .m.ctrl{text-shadow:none}
+
+/* content */
+.label{font-family:var(--f-key);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.label em{font-style:normal;font-family:var(--f-body);letter-spacing:0;text-transform:none;font-size:11px}
+section{display:flex;flex-direction:column;gap:10px}
+.crumb{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:13px;color:var(--sub)}
+.crumb button{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.crumb .here{color:var(--ink);font-weight:700}
+.row .w{display:block;font-size:11px;color:var(--sub);line-height:1.4}
+
+.subpads{display:flex;flex-wrap:wrap;gap:6px}
+.subpad small{font-weight:400;font-size:10.5px;color:var(--sub);margin-left:6px;font-variant-numeric:tabular-nums}
+#branch .seg{align-self:flex-start}
+#branch .seg button{font-family:var(--f-body);font-size:12px;padding:4px 14px}
+.subpad{font-size:13px;font-weight:700;padding:8px 13px;border-radius:calc(var(--kr) + 4px);background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 2px 0 var(--key-edge)}
+.subpad[aria-pressed="true"]{background:var(--lit);color:var(--lit-ink);transform:translateY(2px);box-shadow:none}
+
+.cands{display:flex;flex-direction:column;gap:8px}
+.cand{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--panel);border-radius:var(--r);padding:11px 13px;box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.cand .rank{font-family:var(--f-lcd);font-size:20px;color:var(--sub);width:20px;text-align:center}
+.cand .nm{font-weight:700;font-size:15px;line-height:1.35}
+.cand .why{font-size:11px;color:var(--sub);margin-top:1px}
+.cand.sel{box-shadow:inset 0 0 0 2px var(--lit)}
+.cand.sel .rank{color:var(--ink)}
+.list{display:flex;flex-direction:column;background:var(--panel);border-radius:var(--r);box-shadow:inset 0 0 0 var(--bdw) var(--line);overflow:hidden}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 13px;border-top:var(--bdw) solid var(--line);position:relative}
+.row:first-child{border-top:0}
+.row .nm{font-size:14px;min-width:0}
+.row .st{color:var(--star);font-size:11px;margin-left:5px}
+.row.sel{background:color-mix(in srgb,var(--lit) 14%,var(--panel))}
+.row.sel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--lit)}
+.empty{color:var(--sub);font-size:13px;padding:14px;text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;padding:4px 11px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);box-shadow:none}
+.today{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--panel);border-radius:var(--r);padding:12px 13px;box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.today .nm{font-weight:900;font-family:var(--f-disp);font-size:16px}
+.today .mn{display:block;font-size:11.5px;color:var(--sub);font-weight:400;font-family:var(--f-body)}
+.card{background:var(--panel);border-radius:var(--r);padding:16px;box-shadow:inset 0 0 0 var(--bdw) var(--line);display:flex;flex-direction:column;gap:10px}
+.card h2{margin:0;font-family:var(--f-disp);font-size:19px;font-weight:900}
+.card ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px;font-size:14px}
+.badge{align-self:flex-start;font-family:var(--f-key);font-size:10px;letter-spacing:.12em;padding:2px 8px;border-radius:999px;background:var(--lit);color:var(--lit-ink)}
+.datab{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font-size:13px;padding:8px 14px;border-radius:10px;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line)}
+.pastebox{display:flex;flex-direction:column;gap:8px}
+.pastebox .btn{align-self:flex-start}
+.mock{font-size:11px;color:var(--sub);text-align:center;line-height:1.7}
+
+/* tab bar = transport buttons */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:var(--bdw) solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.tabbar .in{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tb{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0 6px;border-radius:calc(var(--kr) + 4px);background:var(--panel);
+  box-shadow:inset 0 0 0 var(--bdw) var(--line),0 3px 0 var(--key-edge);color:var(--sub);font-size:10.5px;font-weight:700;position:relative;transition:transform .07s}
+.tb svg{width:20px;height:20px}
+.tb .led{position:absolute;top:6px;right:10px;width:5px;height:5px;border-radius:50%;background:var(--line)}
+.tb[aria-selected="true"]{color:var(--ink);transform:translateY(2px);box-shadow:inset 0 0 0 var(--bdw) var(--line),0 1px 0 var(--key-edge)}
+.tb[aria-selected="true"] .led{background:var(--lit);box-shadow:0 0 6px var(--lit)}
+
+/* sheets */
+.scrim{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.sheet.open{transform:none;pointer-events:auto}
+.sheet .in{max-width:560px;margin:0 auto;background:var(--bg);border-radius:22px 22px 0 0;max-height:88vh;overflow:auto;
+  padding:10px max(18px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;box-shadow:0 -10px 40px rgba(0,0,0,.3)}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto}
+.sh-path{font-size:12px;color:var(--sub)}
+.sh-name{font-family:var(--f-disp);font-size:22px;font-weight:900;line-height:1.3;text-wrap:balance}
+.sh-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+textarea{width:100%;min-height:68px;border-radius:12px;border:0;background:var(--panel);box-shadow:inset 0 0 0 var(--bdw) var(--line);padding:10px 12px;font:inherit;font-size:14px;color:var(--ink);resize:vertical}
+.skingrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 8px}
+.skt{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+.skt .pv{width:100%;aspect-ratio:4/3;border-radius:10px;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);transition:box-shadow .15s}
+.skt[aria-pressed="true"] .pv{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
+.skt .pv .l{position:absolute;left:14%;right:14%;top:22%;height:30%;border-radius:4px;font:normal 9px/1 "DotGothic16",monospace;display:grid;place-items:center}
+.skt .pv .d{position:absolute;right:14%;bottom:14%;width:18%;aspect-ratio:1;border-radius:50%}
+.skt b{font-size:11px;font-weight:500;line-height:1.3;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.skt[aria-pressed="true"] b{font-weight:700}
+.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);z-index:40;background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:13px;opacity:0;transition:.2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ===== landscape phone / wide screens ===== */
+@media (orientation:landscape) and (max-height:600px), (min-width:960px){
+  .app{max-width:1280px;display:grid;grid-template-columns:minmax(300px,.85fr) minmax(0,1.5fr);
+    grid-template-areas:"head kb" "lcd kb" "content kb";grid-template-rows:auto auto 1fr;column-gap:22px;row-gap:12px;align-items:start;
+    padding-left:calc(84px + env(safe-area-inset-left,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+  .deck{display:contents}
+  .top{grid-area:head}
+  .skinbtn span{display:none} .skinbtn{padding:5px}
+  .lcdbox{grid-area:lcd}
+  .kbbox{grid-area:kb;position:sticky;top:calc(12px + env(safe-area-inset-top,0px));align-self:start}
+  .view{grid-area:content;min-width:0}
+  .kb{--kh:clamp(34px,11.5vh,60px);--kf:13px}
+  .kbwrap{padding:10px;border-radius:calc(var(--r) + 6px)}
+  .kr{gap:5px} .kb{gap:5px}
+  .tabbar{right:auto;top:0;bottom:0;width:calc(72px + env(safe-area-inset-left,0px));border-top:0;border-right:var(--bdw) solid var(--line);
+    padding:calc(12px + env(safe-area-inset-top,0px)) 8px calc(12px + env(safe-area-inset-bottom,0px)) calc(8px + env(safe-area-inset-left,0px))}
+  .tabbar .in{grid-template-columns:1fr;grid-auto-rows:min-content;gap:10px}
+  .toast{bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+}
+/* 横向きのスマホ：左の列を細くして、キーボードに幅を回す */
+@media (orientation:landscape) and (max-height:600px){
+  .app{grid-template-columns:minmax(220px,.55fr) minmax(0,2fr);column-gap:14px;
+    padding-left:calc(68px + env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+  .tabbar{width:calc(58px + env(safe-area-inset-left,0px));padding-left:calc(6px + env(safe-area-inset-left,0px));padding-right:6px}
+  .brand b{font-size:13px;letter-spacing:.14em}
+  .lcd input{font-size:16px}
+  .kb{--kh:clamp(30px,10.5vh,52px);--kf:12px}
+  .kbwrap{padding:7px} .kr{gap:4px} .kb{gap:4px}
+}
+@media (min-width:960px){ .kb{--kh:52px;--kf:13px} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand"><b>DAW ショートカット辞典</b><small id="appName">Logic Pro 12</small></div>
+    <button class="skinbtn" id="setBtn" aria-label="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3v18M12 3v18M18 3v18"/><rect x="3.5" y="13" width="5" height="3.5" rx="1" fill="currentColor"/><rect x="9.5" y="6" width="5" height="3.5" rx="1" fill="currentColor"/><rect x="15.5" y="10" width="5" height="3.5" rx="1" fill="currentColor"/></svg><span>設定</span></button>
+  </header>
+
+  <div class="deck" id="deck">
+    <div class="lcdbox">
+      <div class="lcd" id="lcd">
+        <div class="lcd-row"><span id="lcdMode">SEARCH</span><span id="lcdCount"></span></div>
+        <div class="lcd-in"><input id="q" type="search" placeholder="何をしたい？ 例：ミスった" autocomplete="off" aria-label="やりたいことで検索"><button class="clr" id="qClear" hidden aria-label="入力を消す">×</button></div>
+        <div class="lcd-now" id="lcdNow" aria-live="polite"></div>
+        <div class="lcd-mn" id="lcdMn"></div>
+      </div>
+      <div class="soft">
+        <button class="sk" id="skStar" disabled aria-pressed="false"><span class="s">★</span>マイ</button>
+        <button class="sk" id="skMemo" disabled>✎ メモ</button>
+      </div>
+    </div>
+    <div class="kbbox">
+      <div class="kbwrap"><div class="kb" id="kb"></div></div>
+      <div class="kbbar">
+        <span class="hint" id="kbHint">キーをタップすると、その機能がわかります</span>
+        <button class="kbtype" id="kbType"></button>
+      </div>
+    </div>
+  </div>
+
+  <main id="v-search" class="view">
+    <section id="resultSec" hidden>
+      <div class="label">候補 TOP 3 <em id="resCount"></em></div>
+      <div class="cands" id="cands"></div>
+      <div class="list" id="moreList"></div>
+    </section>
+    <section id="branchSec">
+      <div class="crumb" id="crumb"></div>
+      <div id="branch"></div>
+    </section>
+  </main>
+
+  <main id="v-practice" class="view" hidden>
+    <section class="card">
+      <span class="badge">NEXT</span>
+      <h2>練習モード</h2>
+      <ol>
+        <li>「保存」のようなお題が出る</li>
+        <li>キーボード図をタップして答える</li>
+        <li>間違えたものほど、多めに出題される</li>
+      </ol>
+      <p class="hint">次の段階で作ります。お題の範囲は「よく使う」「マイリスト」「シーン別」から選べるようにする予定です。</p>
+    </section>
+  </main>
+
+  <main id="v-my" class="view" hidden>
+    <section>
+      <div class="chips" id="myTabs">
+        <button class="chip" data-t="star" aria-pressed="true">★ マイリスト</button>
+        <button class="chip" data-t="learned" aria-pressed="false">覚えた</button>
+        <button class="chip" data-t="memo" aria-pressed="false">メモあり</button>
+        <button class="chip" data-t="recent" aria-pressed="false">最近見た</button>
+      </div>
+      <div class="list" id="myList"></div>
+    </section>
+    <p class="mock">試作版 v4。Apple 公式ユーザガイド「キーコマンドの表」の初期設定のショートカットをすべて収録しています。<br>言いかえ語と覚え方は順に追加中です。</p>
+  </main>
+</div>
+
+<nav class="tabbar" role="tablist" aria-label="画面">
+  <div class="in">
+    <button class="tb" role="tab" data-v="search" aria-selected="true"><span class="led"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/></svg>さがす</button>
+    <button class="tb" role="tab" data-v="practice" aria-selected="false"><span class="led"></span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z"/></svg>練習</button>
+    <button class="tb" role="tab" data-v="my" aria-selected="false"><span class="led"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3.5 2.6 5.3 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.3-4.1 5.9-.8z"/></svg>マイ</button>
+  </div>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shName">
+  <div class="in">
+    <div class="grab"></div>
+    <div class="sh-head"><div class="sh-name" id="shName"></div><span id="shCombo"></span></div>
+    <div><div class="label" style="margin-bottom:6px">自分のメモ</div><textarea id="shMemo" placeholder="自分用の覚え方や、変更した割り当てなど"></textarea></div>
+    <button class="btn" id="shDone" style="align-self:flex-end">閉じる</button>
+  </div>
+</div>
+<div class="sheet" id="setSheet" role="dialog" aria-modal="true" aria-label="設定">
+  <div class="in">
+    <div class="grab"></div>
+    <div class="sh-head"><div class="sh-name">設定</div><button class="btn" id="setDone">閉じる</button></div>
+    <section>
+      <div class="label">キーボード</div>
+      <div class="chips" id="kbTypes"></div>
+      <div class="tgl"><span>control と caps lock を入れ替える</span><button class="sw" id="swapBtn" role="switch" aria-checked="false" aria-label="control と caps lock を入れ替える"></button></div>
+      <p class="hint">お使いのキーボードの並びに合わせます。Windows用キーボードを Mac につなぐと、Windows キーが ⌘ command、Alt キーが ⌥ option として働きます。</p>
+    </section>
+    <section>
+      <div class="label">カラー</div>
+      <div id="skinGroups"></div>
+    </section>
+    <section>
+      <div class="label">データの引っ越し</div>
+      <div class="datab"><button class="btn" id="expBtn">ファイルに書き出す</button><button class="btn" id="impBtn">ファイルから読み込む</button></div>
+      <div class="datab"><button class="btn" id="copyBtn">文字でコピー</button><button class="btn" id="pasteBtn">文字を貼り付けて読み込む</button></div>
+      <div class="pastebox" id="pasteBox" hidden>
+        <p class="hint" id="pasteMsg"></p>
+        <textarea id="pasteText" placeholder="書き出した文字をここに貼り付け"></textarea>
+        <button class="btn" id="pasteGo">この文字を読み込む</button>
+      </div>
+      <input type="file" id="impFile" accept=".json,application/json,text/plain" hidden>
+      <p class="hint">マイリスト・覚えた・メモ・最近見たもの・設定は、この端末のブラウザに保存されます。機種変更やWeb版に移るときは、書き出して移した先で読み込みます。読み込んでも今あるデータは消えず、足し合わされます。</p>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="data/scenes.js"></script>
+<script src="data/logic-pro.js"></script>
+<script>
+const MODS={ctrl:{sym:'⌃',name:'control',short:'ctrl'},opt:{sym:'⌥',name:'option',short:'opt'},shift:{sym:'⇧',name:'shift',short:'shift'},cmd:{sym:'⌘',name:'command',short:'cmd'}};
+const ORDER=['ctrl','opt','shift','cmd'];
+
+const SKINS=[
+ {id:'auto',name:'自動',g:'基本',d:'端末のライト／ダークに合わせる',pv:['#E3E5E8','#1A1E19','#C8F25C','#FBFBFC','#16181B']},
+ {id:'alu',name:'アルミ',g:'機材',d:'明るい金属に緑の液晶。文字くっきりで見やすい',pv:['#E3E5E8','#000000','#D4FF4F','#FFFFFF','#000000']},
+ {id:'console',name:'ミキサー',g:'機材',d:'大型ミキサー卓のブルーグレー',pv:['#4B5763','#0C1820','#7FE3FF','#DCE1E5','#F7E15A']},
+ {id:'tube',name:'アンプ',g:'機材',d:'黒いレザーに金、灯る真空管',pv:['#161311','#140A03','#FFB35C','#2A231D','#FFB35C']},
+ {id:'gameboy',name:'GB',g:'世界観',d:'グレーの本体に黄緑の液晶、ドットの文字',pv:['#CAC8C2','#9BBC0F','#0F380F','#E4E2DC','#9A2257']},
+ {id:'braun',name:'シンセ',g:'世界観',d:'白とグレーに黄色をひとつ',pv:['#ECECEA','#2B2B2B','#F2F2F0','#FFFFFF','#F2C200']},
+ {id:'piano',name:'ピアノ',g:'世界観',d:'艶のある黒と象牙、細身の上品な文字',pv:['#0B0B0C','#050505','#F6F1E7','#F6F1E7','#B3122E']}
+];
+// v2 で選んでいて今回なくなったカラーは、近いものか「自動」に置きかえる
+const SKIN_MOVED={hc:'alu'};
+
+const SCENES=window.KK_SCENES;
+
+// 収録データは data/ フォルダ（ソフトごとに1ファイル）。今は Logic Pro のみ
+const APP=window.KK_APPS[0];
+const SC=APP.items;
+const BY=Object.fromEntries(SC.map(s=>[s.id,s]));
+
+/* ---------- storage ---------- */
+const store={
+  get(k,d){try{const v=localStorage.getItem('kk2_'+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem('kk2_'+k,JSON.stringify(v))}catch(e){}}
+};
+// kb: キーボードの種類（us / jis / winus / winjis）。以前の layout（us / jis）から引き継ぐ。swap: control と caps lock の入れ替え
+const S={star:store.get('star',[]),learned:store.get('learned',[]),memo:store.get('memo',{}),recent:store.get('recent',[]),skin:store.get('skin','auto'),kb:store.get('kb',store.get('layout','us')),swap:store.get('swap',false)};
+if(!SKINS.some(s=>s.id===S.skin))S.skin=SKIN_MOVED[S.skin]||'auto';
+function save(){for(const k in S)store.set(k,S[k])}
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sortMods=m=>ORDER.filter(o=>m.includes(o));
+const sameMods=(a,b)=>sortMods(a).join()===sortMods(b).join();
+const cmbHTML=(mods,key)=>`<span class="cmb">${sortMods(mods).map(m=>`<i class="m ${m}">${MODS[m].sym}</i>`).join('')}${esc(key)}</span>`;
+const KEYNAME={FwdDel:'Fwd Del',PgUp:'PageUp',PgDn:'PageDown'};
+// ノートパソコンのキーボードでは fn と一緒に押すキー（フルキーボードには専用キーがある）
+const FN={Home:'←',End:'→',PgUp:'↑',PgDn:'↓',FwdDel:'Delete',Enter:'Return'};
+const isJIS=()=>S.kb==='jis'||S.kb==='winjis';
+const keyOf=s=>isJIS()&&s.jk?s.jk:s.key;
+const keyLabel=s=>(s.pad?'テンキー':'')+(KEYNAME[keyOf(s)]||keyOf(s));
+const pill=s=>`<span class="pill">${cmbHTML(s.mods,keyLabel(s))}</span>`;
+const sceneName=id=>(SCENES.find(x=>x.id===id)||{}).name||'';
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1600)}
+
+/* ---------- state ---------- */
+// br.by: 'scene'（やりたいことから）か 'win'（使う画面から）。null は最初の画面
+let current='search', sel=null, mods=[], probe=null, br={by:null,id:null,sub:null}, listAxis='scene', myTab='star', openId=null;
+
+/* ---------- keyboard ---------- */
+const LAYOUTS={
+ us:[
+  [['`'],['1'],['2'],['3'],['4'],['5'],['6'],['7'],['8'],['9'],['0'],['-'],['='],['Delete',1.5,'delete']],
+  [['Tab',1.5,'tab'],['Q'],['W'],['E'],['R'],['T'],['Y'],['U'],['I'],['O'],['P'],['['],[']'],['\\']],
+  [['Caps',1.75,'caps'],['A'],['S'],['D'],['F'],['G'],['H'],['J'],['K'],['L'],[';'],["'"],['Return',1.75,'return']],
+  [['shift',2.25,'⇧','shift'],['Z'],['X'],['C'],['V'],['B'],['N'],['M'],[','],['.'],['/'],['shift',2.25,'⇧','shift']],
+  [['fn',1,'fn'],['ctrl',1,'⌃','ctrl'],['opt',1,'⌥','opt'],['cmd',1.25,'⌘','cmd'],['Space',5,'space'],['cmd',1.25,'⌘','cmd'],['opt',1,'⌥','opt'],['ARROWS',3]]
+ ],
+ jis:[
+  [['1'],['2'],['3'],['4'],['5'],['6'],['7'],['8'],['9'],['0'],['-'],['^'],['¥'],['Delete',1.5,'delete']],
+  [['Tab',1.5,'tab'],['Q'],['W'],['E'],['R'],['T'],['Y'],['U'],['I'],['O'],['P'],['@'],['['],['Return',1,'⏎']],
+  [['ctrl',1.75,'⌃','ctrl'],['A'],['S'],['D'],['F'],['G'],['H'],['J'],['K'],['L'],[';'],[':'],[']'],['Return',.75,'']],
+  [['shift',2.25,'⇧','shift'],['Z'],['X'],['C'],['V'],['B'],['N'],['M'],[','],['.'],['/'],['_'],['shift',1.25,'⇧','shift']],
+  [['Caps',1,'caps'],['opt',1,'⌥','opt'],['cmd',1.25,'⌘','cmd'],['英数',1.25,'英数'],['Space',4.5,'space'],['かな',1.25,'かな'],['cmd',1.25,'⌘','cmd'],['ARROWS',3]]
+ ],
+ // Windows用キーボードを Mac につないだとき。Windows キーが ⌘、Alt キーが ⌥ になる（5つ目は刻印の名前）
+ winus:[
+  [['`'],['1'],['2'],['3'],['4'],['5'],['6'],['7'],['8'],['9'],['0'],['-'],['='],['Delete',1.5,'bs']],
+  [['Tab',1.5,'tab'],['Q'],['W'],['E'],['R'],['T'],['Y'],['U'],['I'],['O'],['P'],['['],[']'],['\\']],
+  [['Caps',1.75,'caps'],['A'],['S'],['D'],['F'],['G'],['H'],['J'],['K'],['L'],[';'],["'"],['Return',1.75,'enter']],
+  [['shift',2.25,'⇧','shift'],['Z'],['X'],['C'],['V'],['B'],['N'],['M'],[','],['.'],['/'],['shift',2.25,'⇧','shift']],
+  [['ctrl',1.25,'⌃','ctrl'],['cmd',1.25,'⌘','cmd','win'],['opt',1.25,'⌥','opt','alt'],['Space',5,'space'],['opt',1.25,'⌥','opt','alt'],['cmd',1.25,'⌘','cmd','win'],['ARROWS',3]]
+ ],
+ winjis:[
+  [['半/全',1,'半/全'],['1'],['2'],['3'],['4'],['5'],['6'],['7'],['8'],['9'],['0'],['-'],['^'],['¥'],['Delete',1,'bs']],
+  [['Tab',1.5,'tab'],['Q'],['W'],['E'],['R'],['T'],['Y'],['U'],['I'],['O'],['P'],['@'],['['],['Return',1,'⏎']],
+  [['Caps',1.75,'英数'],['A'],['S'],['D'],['F'],['G'],['H'],['J'],['K'],['L'],[';'],[':'],[']'],['Return',.75,'']],
+  [['shift',2.25,'⇧','shift'],['Z'],['X'],['C'],['V'],['B'],['N'],['M'],[','],['.'],['/'],['_'],['shift',1.25,'⇧','shift']],
+  [['ctrl',1.25,'⌃','ctrl'],['cmd',1.25,'⌘','cmd','win'],['opt',1.25,'⌥','opt','alt'],['無変換',1.25,'無変換'],['Space',3,'space'],['変換',1.25,'変換'],['かな',1,'かな'],['ARROWS',3]]
+ ]
+};
+const KBTYPES=[{id:'us',name:'Apple US'},{id:'jis',name:'Apple JIS'},{id:'winus',name:'Windows用 US'},{id:'winjis',name:'Windows用 JIS'}];
+// A の左のキーと、いちばん下の段の ctrl／caps を入れ替える（幅はそれぞれの位置のまま）
+function kbRows(){
+  const rows=(LAYOUTS[S.kb]||LAYOUTS.us).map(r=>r.map(k=>[...k]));
+  if(S.swap){
+    const a=rows[2][0],j=rows[4].findIndex(k=>k[0]==='ctrl'||k[0]==='Caps'),b=rows[4][j];
+    if(b){rows[2][0]=[b[0],a[1],...b.slice(2)];rows[4][j]=[a[0],b[1],...a.slice(2)]}
+  }
+  return rows;
+}
+function kbHTML(){
+  return kbRows().map(row=>`<div class="kr">${row.map(([k,w=1,label,mod,cap])=>{
+    if(k==='ARROWS')return `<button class="k" style="flex-grow:1" data-key="←" aria-label="左矢印">←</button><div class="arrows"><button class="k" data-key="↑" aria-label="上矢印">↑</button><button class="k" data-key="↓" aria-label="下矢印">↓</button></div><button class="k" style="flex-grow:1" data-key="→" aria-label="右矢印">→</button>`;
+    const lab=label!==undefined?label:k;
+    const small=lab.length>2;
+    if(mod)return `<button class="k mk" style="flex-grow:${w}" data-mod="${mod}" aria-label="${MODS[mod].name}"><span>${esc(lab)}</span><small>${cap||MODS[mod].short}</small></button>`;
+    return `<button class="k${small?' small':''}" style="flex-grow:${w}" data-key="${esc(k)}">${esc(lab)}</button>`;
+  }).join('')}</div>`).join('');
+}
+// 同じキーでも画面によって働きが違うので、当てはまるものを全部返す（並びはガイドの順＝どこでも使うものが先）
+const lookupAll=(k,m)=>SC.filter(s=>!s.pad&&keyOf(s)===k&&sameMods(s.mods,m));
+const lookup=(k,m)=>lookupAll(k,m)[0];
+function paintKB(root,{mods:m,key,dots,probe:p,fn}){
+  root.querySelectorAll('.k[data-key]').forEach(b=>{
+    const k=b.dataset.key;
+    b.classList.toggle('lit',!!key&&k===key||!!fn&&k==='fn');
+    b.classList.toggle('probe',!!p&&k===p);
+    b.classList.toggle('has',!!dots&&!!lookup(k,m));
+  });
+  root.querySelectorAll('.k[data-mod]').forEach(b=>b.classList.toggle('on',m.includes(b.dataset.mod)));
+}
+function renderKB(){
+  $('#kb').innerHTML=kbHTML();
+  $('#kbType').textContent=(KBTYPES.find(x=>x.id===S.kb)||KBTYPES[0]).name+(S.swap?' ⇄':'')+' ▸';
+  paintMain();
+}
+function paintMain(){
+  const s=sel&&BY[sel];
+  let key=s&&!s.pad?keyOf(s):null,fn=false;
+  if(key&&FN[key]){fn=true;key=FN[key]}
+  paintKB($('#kb'),{mods:s?s.mods:mods,key,dots:!s,probe,fn});
+  $('#kbHint').textContent=s?(s.pad?'テンキー（数字だけのキーの区画）で押します':fn?`${KEYNAME[s.key]||s.key} キーがないキーボードでは fn と一緒に押します`:'光っているキーを同時に押します'):(mods.length?'印のあるキーに機能があります':'キーをタップすると、その機能がわかります');
+}
+
+/* ---------- LCD ---------- */
+function setNow(){
+  const s=sel&&BY[sel];
+  const now=$('#lcdNow');
+  if(s)now.innerHTML=`${cmbHTML(s.mods,keyLabel(s))}<span class="nm">${esc(s.name)}</span>`;
+  else if(probe)now.innerHTML=`${cmbHTML(mods,probe)}<span class="dim">初期設定では割り当てなし</span>`;
+  else if(mods.length)now.innerHTML=`${cmbHTML(mods,'')}<span class="dim">＋ キーを選ぶ</span>`;
+  else now.innerHTML=`<span class="dim">言葉で探すか、下から選ぶ</span>`;
+  const others=s&&!s.pad?lookupAll(keyOf(s),s.mods).length-1:0;
+  $('#lcdMn').textContent=s?[`［${s.win}］`,s.mn?'覚え方 '+s.mn:'',s.note?s.note:'',others>0?`同じキーで別の働き ${others}件`:''].filter(Boolean).join('　'):'';
+  const code=br.by==='scene'?(SCENES.find(x=>x.id===br.id)||{}).code:br.by==='win'?'WINDOW':'';
+  $('#lcdMode').textContent=s?(code&&!$('#q').value?code:'SELECT'):($('#q').value?'SEARCH':'READY');
+  for(const id of ['skStar','skMemo'])$('#'+id).disabled=!s;
+  $('#skStar').setAttribute('aria-pressed',!!s&&S.star.includes(sel));
+  $('#skMemo').dataset.has=s&&S.memo[sel]?'1':'';
+}
+
+/* ---------- selection ---------- */
+function select(id,remember){
+  sel=id;probe=null;
+  if(id){mods=[...BY[id].mods];if(remember){S.recent=[id,...S.recent.filter(x=>x!==id)].slice(0,12);save()}}
+  paintMain();setNow();
+  $$('[data-id]').forEach(el=>el.classList.toggle('sel',el.dataset.id===id));
+}
+
+/* ---------- search ---------- */
+function norm(s){
+  return String(s).toLowerCase().replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60))
+    .replace(/[ａ-ｚ０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/[\s　・、。／/（）()]/g,'');
+}
+const MODWORDS={cmd:['command','cmd','コマンド','⌘'],opt:['option','opt','alt','オプション','⌥'],shift:['shift','シフト','⇧'],ctrl:['control','ctrl','コントロール','⌃']};
+function bigrams(s){const o=new Set();for(let i=0;i<s.length-1;i++)o.add(s.slice(i,i+2));if(s.length===1)o.add(s);return o}
+function search(q){
+  const nq=norm(q);if(!nq)return[];
+  let rest=q.toLowerCase();const want=[];
+  for(const m of ORDER)for(const w of MODWORDS[m]){const lw=w.toLowerCase();if(rest.includes(lw)){if(!want.includes(m))want.push(m);rest=rest.split(lw).join(' ')}}
+  const keyPart=rest.replace(/[\s+＋]/g,'').toUpperCase();
+  const out=[];
+  for(const s of SC){
+    let sc=0,why='';
+    const raw=(s.tags||'').split(' ').filter(Boolean),tags=raw.map(norm),nn=norm(s.name);
+    if(nn===nq){sc=100;why='名前が一致'}
+    else if(nn.includes(nq)){sc=70;why='名前に含む'}
+    tags.forEach((t,i)=>{
+      if(t===nq){if(sc<90){sc=90;why='「'+raw[i]+'」で登録'}}
+      else if(t.length>1&&(t.includes(nq)||nq.includes(t))){const v=55+Math.min(t.length,nq.length)*3;if(v>sc){sc=v;why='近い言葉：'+raw[i]}}
+    });
+    // 言いかえ語が同じくらい当てはまるときは、機能名にその言葉が入っているほうを上にする
+    if(sc>=55&&sc<100&&nn.includes(nq))sc+=5;
+    // 「基本」に入っているものを少し優先する
+    if(sc>=55&&s.basic)sc+=6;
+    const k=String(keyOf(s)).toUpperCase();
+    if(want.length&&sameMods(want,s.mods)&&(!keyPart||keyPart===k)){sc=Math.max(sc,keyPart?95:40);why='キーの組み合わせ'}
+    else if(!want.length&&nq.length===1&&s.mods.length===0&&keyPart===k){sc=Math.max(sc,80);why='キー '+keyLabel(s)}
+    if(sc<40&&nq.length>=2){
+      const qb=bigrams(nq);let best=0;
+      for(const t of [nn,...tags]){const tb=bigrams(t);let c=0;qb.forEach(b=>{if(tb.has(b))c++});best=Math.max(best,c/qb.size)}
+      if(best>=.5){sc=Math.round(best*45);why='似ている言葉'}
+    }
+    if(sc>0&&!s.alias||sc>=90)out.push({s,sc,why});
+  }
+  return out.sort((a,b)=>b.sc-a.sc);
+}
+function rowHTML(s){
+  const st=S.star.includes(s.id)?'<span class="st">★</span>':'';
+  return `<button class="row${s.id===sel?' sel':''}" data-id="${s.id}"><span class="nm">${esc(s.name)}${st}<small class="w">${esc(s.win)}</small></span>${pill(s)}</button>`;
+}
+function renderSearch(typed){
+  const q=$('#q').value.trim();
+  $('#resultSec').hidden=!q;$('#branchSec').hidden=!!q;$('#qClear').hidden=!$('#q').value;
+  if(!q){renderBranch();setNow();return}
+  const res=search(q);
+  $('#resCount').textContent=res.length?`${res.length}件`:'';
+  $('#cands').innerHTML=res.slice(0,3).map((r,i)=>`<button class="cand" data-id="${r.s.id}"><span class="rank">${i+1}</span><span><div class="nm">${esc(r.s.name)}</div><div class="why">${esc(r.why)} · ${esc(r.s.win)}</div></span>${pill(r.s)}</button>`).join('')||'<div class="empty">見つかりませんでした。別の言い方を試してください。</div>';
+  const more=res.slice(3);
+  $('#moreList').hidden=!more.length;
+  $('#moreList').innerHTML=more.map(r=>rowHTML(r.s)).join('');
+  // 入力中だけ1位を自動で選ぶ（タブ切替やメモを閉じたときは今の選択を保つ）
+  if(typed===true)select(res[0]?res[0].s.id:null,false);
+  else $$('[data-id]').forEach(el=>el.classList.toggle('sel',el.dataset.id===sel));
+}
+
+/* ---------- branch ---------- */
+// 場面から選ぶと「使う画面」で、画面から選ぶと「場面」で、さらに絞り込める
+function itemsOf(by,id){return by==='win'?SC.filter(s=>s.g===id):id==='basic'?SC.filter(s=>s.basic):SC.filter(s=>s.scene===id)}
+const groupName=id=>(APP.groups.find(x=>x.id===id)||{}).name||'';
+const subOf=s=>br.by==='win'?s.scene:s.win;
+const subName=x=>br.by==='win'?sceneName(x):x;
+// 「一覧から探す」は1つの欄。［やりたいこと｜画面］の切りかえと、名前だけの札が並ぶ
+function listHTML(){
+  const tags=listAxis==='scene'
+    ?SCENES.map(sc=>`<button class="subpad" data-sc="${sc.id}">${esc(sc.name)}<small>${itemsOf('scene',sc.id).length}</small></button>`)
+    :APP.groups.map(g=>`<button class="subpad" data-g="${g.id}">${esc(g.name)}<small>${itemsOf('win',g.id).length}</small></button>`);
+  return `<div class="seg"><button data-axis="scene" aria-pressed="${listAxis==='scene'}">やりたいこと</button><button data-axis="win" aria-pressed="${listAxis==='win'}">使う画面</button></div>
+    <div class="subpads">${tags.join('')}</div>`;
+}
+function renderBranch(){
+  const c=$('#crumb'),b=$('#branch');
+  if(!br.by){
+    c.innerHTML='';c.hidden=true;
+    const t=BY[S.recent[0]];
+    b.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">
+      ${listHTML()}
+      ${t?`<div class="label" style="margin-top:4px">直前の検索</div>
+      <button class="today" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span><span class="mn">${esc(t.mn||t.win+'で使う')}</span></span>${pill(t)}</button>`:''}
+    </div>`;
+    return;
+  }
+  c.hidden=false;
+  const name=br.by==='win'?groupName(br.id):sceneName(br.id);
+  const items=itemsOf(br.by,br.id);
+  const subs=[...new Set(items.map(subOf))];
+  c.innerHTML=`<button data-crumb="root">${br.by==='win'?'使う画面':'やりたいこと'}</button><span>›</span>`+(br.sub?`<button data-crumb="mid">${esc(name)}</button><span>›</span><span class="here">${esc(subName(br.sub))}</span>`:`<span class="here">${esc(name)}</span>`);
+  const list=items.filter(s=>!br.sub||subOf(s)===br.sub);
+  b.innerHTML=`<div style="display:flex;flex-direction:column;gap:12px">
+    ${subs.length>1?`<div class="subpads">${subs.map(x=>`<button class="subpad" data-sub="${esc(x)}" aria-pressed="${x===br.sub}">${esc(subName(x))}</button>`).join('')}</div>`:''}
+    <div class="list">${list.map(rowHTML).join('')}</div></div>`;
+}
+
+/* ---------- my ---------- */
+function renderMy(){
+  const ids=myTab==='star'?S.star:myTab==='learned'?S.learned:myTab==='recent'?S.recent:Object.keys(S.memo).filter(k=>S.memo[k]);
+  const msg={star:'「★ マイ」を押すと、ここに追加されます',learned:'練習モードで覚えたものが、ここに並びます（練習モードは準備中）',memo:'「✎ メモ」を押すと、自分のメモを書けます',recent:'選んだショートカットがここに残ります'}[myTab];
+  $('#myList').innerHTML=ids.filter(id=>BY[id]).map(id=>rowHTML(BY[id])).join('')||`<div class="empty">${msg}</div>`;
+  $$('#myTabs .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.t===myTab));
+}
+
+/* ---------- sheets ---------- */
+function openMemo(id){
+  const s=BY[id];if(!s)return;openId=id;
+  $('#shName').textContent=s.name;
+  $('#shCombo').innerHTML=pill(s);
+  $('#shMemo').value=S.memo[id]||'';
+  openPanel('#sheet');
+  setTimeout(()=>$('#shMemo').focus(),300);
+}
+function openPanel(id){$$('.sheet').forEach(x=>x.classList.toggle('open','#'+x.id===id));$('#scrim').classList.add('open')}
+function closeSheets(){$$('.sheet').forEach(x=>x.classList.remove('open'));$('#scrim').classList.remove('open');openId=null;refresh()}
+// 小さな見本を横に並べ、説明は選んでいるものだけ下に出す。「自動」は明るい色と暗い色を斜めに半分ずつ
+function renderSkins(){
+  $('#skinGroups').innerHTML=`<div class="skingrid">${SKINS.map(s=>{
+    const [bg,lcd,ink,,lit]=s.pv;
+    const face=s.id==='auto'?'linear-gradient(135deg,#E3E5E8 50%,#101214 50%)':bg;
+    return `<button class="skt" data-skin="${s.id}" aria-pressed="${s.id===S.skin}"><span class="pv" style="background:${face}"><i class="l" style="background:${lcd};color:${ink}">⌘S</i><i class="d" style="background:${lit}"></i></span><b>${s.name}</b></button>`;
+  }).join('')}</div><p class="hint" id="skinDesc"></p>`;
+  applySkin();
+}
+function renderSettings(){
+  $('#kbTypes').innerHTML=KBTYPES.map(x=>`<button class="chip" data-kb="${x.id}" aria-pressed="${x.id===S.kb}">${x.name}</button>`).join('');
+  $('#swapBtn').setAttribute('aria-checked',S.swap);
+  renderSkins();
+}
+function applySkin(){
+  if(S.skin==='auto')document.body.removeAttribute('data-skin');else document.body.dataset.skin=S.skin;
+  $$('.skt').forEach(b=>b.setAttribute('aria-pressed',b.dataset.skin===S.skin));
+  const d=$('#skinDesc');if(d)d.textContent=(SKINS.find(s=>s.id===S.skin)||SKINS[0]).d;
+}
+
+/* ---------- data export / import ---------- */
+// 番号（id）はデータを作り直すとずれることがあるので、名前と画面も一緒に書き出し、読み込み時はそちらで照合する
+const EXPORT_TAG='daw-shortcut-dictionary';
+function exportText(){
+  const ids=new Set([...S.star,...S.learned,...S.recent,...Object.keys(S.memo)]);
+  const refs={};ids.forEach(id=>{if(BY[id])refs[id]={n:BY[id].name,w:BY[id].win}});
+  return JSON.stringify({app:EXPORT_TAG,format:1,soft:APP.id,exportedAt:new Date().toISOString(),
+    data:{star:S.star,learned:S.learned,recent:S.recent,memo:S.memo,skin:S.skin,kb:S.kb,swap:S.swap},refs},null,1);
+}
+async function exportFile(){
+  const d=new Date(),name=`daw-shortcut-dictionary-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  const text=exportText();
+  // Claude の中では downloads の仕組みで保存する（確認が出る）。それ以外のブラウザでは普通のダウンロード
+  const dl=window.claude&&claude.use?await claude.use('downloads').catch(()=>null):null;
+  if(dl){
+    try{await dl.save({filename:name,data:text});toast('書き出しました')}
+    catch(e){if(e&&e.code==='declined')return;if(e&&e.code==='rate_limited'){toast('少し待ってからもう一度押してください');return}showPaste(text,'ファイルに保存できなかったので、下の文字をすべて選んでコピーしてください')}
+    return;
+  }
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('書き出しました');
+}
+async function copyText(){
+  const text=exportText();
+  try{await navigator.clipboard.writeText(text);toast('コピーしました。移したい端末で貼り付けてください')}
+  catch(e){showPaste(text,'自動でコピーできなかったので、下の文字をすべて選んでコピーしてください')}
+}
+function showPaste(text,msg){
+  $('#pasteBox').hidden=false;$('#pasteText').value=text;
+  $('#pasteMsg').textContent=msg||'書き出した文字を貼り付けて「この文字を読み込む」を押してください';
+  $('#pasteGo').hidden=!!text;
+  if(text){$('#pasteText').select()}else{$('#pasteText').focus()}
+}
+function importText(text){
+  let o;try{o=JSON.parse(text)}catch(e){toast('読み込めませんでした（形式が違います）');return}
+  if(!o||o.app!==EXPORT_TAG||!o.data){toast('このアプリで書き出したデータではありません');return}
+  const refs=o.refs||{},d=o.data;
+  // 番号で探し、名前と画面が合わなければ名前と画面で探し直す
+  const resolve=id=>{const r=refs[id],s=BY[id];if(s&&(!r||(s.name===r.n&&s.win===r.w)))return id;if(!r)return null;const f=SC.find(x=>x.name===r.n&&x.win===r.w);return f?f.id:null};
+  const merge=(cur,add)=>{const out=[...cur];(add||[]).map(resolve).forEach(id=>{if(id&&!out.includes(id))out.push(id)});return out};
+  const before={star:S.star.length,memo:Object.keys(S.memo).filter(k=>S.memo[k]).length};
+  S.star=merge(S.star,d.star);S.learned=merge(S.learned,d.learned);S.recent=merge(S.recent,d.recent).slice(0,12);
+  for(const [k,v] of Object.entries(d.memo||{})){
+    const id=resolve(k);if(!id||!v)continue;
+    const cur=S.memo[id]||'';
+    S.memo[id]=!cur||cur===v?v:cur.includes(v)?cur:cur+'\n'+v;
+  }
+  if(SKINS.some(s=>s.id===d.skin))S.skin=d.skin;
+  if(KBTYPES.some(x=>x.id===d.kb))S.kb=d.kb;
+  if(typeof d.swap==='boolean')S.swap=d.swap;
+  save();applySkin();renderKB();renderSettings();
+  $('#pasteBox').hidden=true;$('#pasteText').value='';
+  const memoN=Object.keys(S.memo).filter(k=>S.memo[k]).length;
+  toast(`読み込みました（マイ +${S.star.length-before.star}・メモ +${memoN-before.memo}）`);
+}
+
+/* ---------- views ---------- */
+function show(v){
+  current=v;
+  for(const x of ['search','practice','my'])$('#v-'+x).hidden=x!==v;
+  $$('.tb').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
+  refresh();
+}
+function refresh(){
+  if(current==='search')renderSearch();
+  if(current==='my')renderMy();
+  paintMain();setNow();
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,#scrim');if(!t)return;
+  if(t.id==='scrim'||t.id==='shDone'||t.id==='setDone')return closeSheets();
+  if(t.id==='setBtn'||t.id==='kbType'){renderSettings();return openPanel('#setSheet')}
+  if(t.dataset.kb){S.kb=t.dataset.kb;save();renderSettings();renderKB();return}
+  if(t.id==='swapBtn'){S.swap=!S.swap;save();renderSettings();renderKB();return}
+  if(t.dataset.skin){S.skin=t.dataset.skin;save();applySkin();toast((SKINS.find(s=>s.id===S.skin)||{}).name+' に変更しました');return}
+  if(t.id==='qClear'){$('#q').value='';renderSearch(true);return}
+  // 検索画面で「さがす」をもう一度押すと、入力と場面選びを消して最初の画面に戻る
+  if(t.classList.contains('tb')&&t.dataset.v==='search'&&current==='search'){$('#q').value='';br={by:null,id:null,sub:null};renderSearch(true);window.scrollTo({top:0,behavior:'smooth'});return}
+  if(t.classList.contains('tb'))return show(t.dataset.v);
+  if(t.closest('#kb')){
+    if(t.dataset.mod){
+      // 選んでいる文字キーは残したまま修飾キーだけ切り替え、その組み合わせのショートカットを探し直す
+      const m=t.dataset.mod,cur=sel&&BY[sel],base=cur?cur.mods:mods,k=cur?(cur.pad?null:keyOf(cur)):probe;
+      mods=base.includes(m)?base.filter(x=>x!==m):[...base,m];
+      const s=k&&lookup(k,mods);
+      if(s){select(s.id,true);return}
+      sel=null;probe=k;paintMain();setNow();$$('[data-id]').forEach(el=>el.classList.remove('sel'));return
+    }
+    if(t.dataset.key){
+      const k=t.dataset.key,cur=sel&&BY[sel],lit=cur&&!cur.pad?(FN[keyOf(cur)]||keyOf(cur)):probe;
+      // 光っているキーをもう一度押すと、そのキーだけ外す（修飾キーは残す）
+      if(lit&&k===lit){mods=cur?[...cur.mods]:mods;select(null);return}
+      const base=sel?BY[sel].mods:mods;mods=[...base];
+      const s=lookup(k,mods);
+      if(s){select(s.id,true)}else{sel=null;probe=k;paintMain();setNow();$$('[data-id]').forEach(el=>el.classList.remove('sel'))}
+      return;
+    }
+  }
+  if(t.dataset.axis){listAxis=t.dataset.axis;renderBranch();return}
+  if(t.dataset.sc){br={by:'scene',id:t.dataset.sc,sub:null};renderBranch();setNow();return}
+  if(t.dataset.g){br={by:'win',id:t.dataset.g,sub:null};renderBranch();setNow();return}
+  if(t.dataset.sub!==undefined){br.sub=br.sub===t.dataset.sub?null:t.dataset.sub;renderBranch();return}
+  if(t.dataset.crumb==='root'){br={by:null,id:null,sub:null};renderBranch();setNow();return}
+  if(t.dataset.crumb==='mid'){br.sub=null;renderBranch();return}
+  if(t.dataset.t){myTab=t.dataset.t;renderMy();return}
+  if(t.id==='skStar'){if(!sel)return;const on=!S.star.includes(sel);S.star=on?[sel,...S.star]:S.star.filter(x=>x!==sel);save();setNow();toast(on?'マイリストに追加しました':'マイリストから外しました');if(current==='my')renderMy();return}
+  if(t.id==='skMemo'){if(sel)openMemo(sel);return}
+  if(t.id==='expBtn'){exportFile();return}
+  if(t.id==='impBtn'){$('#impFile').value='';$('#impFile').click();return}
+  if(t.id==='copyBtn'){copyText();return}
+  if(t.id==='pasteBtn'){showPaste('');return}
+  if(t.id==='pasteGo'){importText($('#pasteText').value);return}
+  if(t.dataset.id)select(t.dataset.id,true);
+});
+$('#q').addEventListener('input',()=>renderSearch(true));
+$('#q').addEventListener('keydown',e=>{if(e.key==='Escape'){e.target.value='';renderSearch(true)}if(e.key==='Enter'&&!e.isComposing&&e.keyCode!==229)e.target.blur()});
+// ↑ 日本語入力で変換を確定するエンターでは離れない（確定中に離れると文字が二重に入るため）
+$('#impFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>importText(String(r.result));r.readAsText(f)});
+$('#shMemo').addEventListener('input',e=>{if(!openId)return;S.memo[openId]=e.target.value;save()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&$('#scrim').classList.contains('open'))return closeSheets();
+  if(e.target.matches('input,textarea')||$('#scrim').classList.contains('open'))return;
+  if(['Meta','Alt','Shift','Control','CapsLock'].includes(e.key))return;
+  const map={' ':'Space',Enter:'Return',ArrowLeft:'←',ArrowRight:'→',ArrowUp:'↑',ArrowDown:'↓',Backspace:'Delete',Tab:'Tab'};
+  let k=map[e.key]||(e.code.startsWith('Key')?e.code.slice(3):e.code.startsWith('Digit')?e.code.slice(5):e.key);
+  if(e.code==='Comma')k=',';if(e.code==='Period')k='.';
+  const m=[];if(e.metaKey)m.push('cmd');if(e.altKey)m.push('opt');if(e.shiftKey)m.push('shift');if(e.ctrlKey)m.push('ctrl');
+  e.preventDefault();mods=m;
+  const s=lookup(k,m);
+  if(s)select(s.id,true);else{sel=null;probe=k;paintMain();setNow()}
+});
+
+applySkin();renderKB();
+$('#appName').textContent=APP.name+' '+APP.version;
+$('#lcdCount').textContent=String(SC.length).padStart(3,'0')+' CMDS';
+show('search');
+</script>
+<script>
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>

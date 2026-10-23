@@ -6,6 +6,9 @@ Logic Pro のショートカット（キーコマンド）を、スマホで探�
 - 本体: `keykoma.html`（画面と仕組み。外部サービスに依存しない）
 - データ: `data/scenes.js`（どのDAWでも共通の場面一覧）、`data/logic-pro.js`（Logic Pro のショートカット）。DAWを足すときは `data/` にファイルを1つ追加する
 - `data/logic-pro.js` は `python3 tools/build_logic.py` で Apple 公式ガイドから作る（手で直さない）。言いかえ語・覚え方・「基本」に入れるものは `tools/logic_extra.py` に書く
+- Webアプリ版：`python3 tools/build_web.py` で `docs/` に組み立てる（keykoma.html を普通の Web ページに包み、ホーム画面用の manifest、電波なしで動かす sw.js、アイコンを添える）。keykoma.html やデータを直したら、組み立て直してから保存する
+  - 公開先は GitHub Pages（このリポジトリは公開リポジトリ）。Settings → Pages で、公開元を「ブランチ main-p4z3py の /docs」にすると https://aason-aason.github.io/shortcut-key/ で開ける
+  - アイコンの元は tools/icon.html。`node tools/make_icons.js docs/icons` で PNG にする
 - 公式ガイド（support.apple.com）を読むには、クラウド環境のネットワーク設定で `support.apple.com` を許可する必要がある
 
 ## 決まっている方針
